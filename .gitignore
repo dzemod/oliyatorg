@@ -1,0 +1,19 @@
+# Secrets
+.env
+.env.*
+credentials.json
+token.json
+
+# Dependencies
+node_modules/
+
+# Disposable / regenerated
+.tmp/
+temporary screenshots/
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

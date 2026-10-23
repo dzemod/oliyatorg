@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="meta.title">Оліяторг — соняшникова олія з України</title>
+  <meta name="description" data-i18n-attr="content:meta.desc" content="Оліяторг — український виробник і експортер соняшникової олії. Натуральна переробка, подвійне пресування, принципи ESG.">
+  <meta name="theme-color" content="#F3ECDF">
+  <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/brand/favicon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap">
+
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
+  <link rel="stylesheet" href="assets/css/style.css?v=18">
+  <script>
+    // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
+    document.documentElement.classList.add('js');
+    if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('is-h');
+    }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#about" data-i18n="ui.skip">Перейти до змісту</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header" id="header">
+    <a class="header__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
+      <!-- LOGO: assets/brand/logo.png (client's original) + logo-white.png (for dark sections / video).
+           Both are built by tools/make_logo_assets.mjs; CSS shows the right one. -->
+      <img class="logo logo--color" src="assets/brand/logo.png" alt="Оліяторг" width="200" height="200">
+      <img class="logo logo--white" src="assets/brand/logo-white.png" alt="" width="200" height="200" aria-hidden="true">
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Головне меню" data-i18n-attr="aria-label:ui.menu">
+      <ul class="nav__list">
+        <li><a href="#top" aria-current="page" data-i18n="nav.home">Головна</a></li>
+        <li><a href="products.html" data-i18n="nav.products">Продукція</a></li>
+        <li><a href="production.html" data-i18n="nav.production">Виробництво</a></li>
+        <li><a href="certificates.html" data-i18n="nav.certificates">Сертифікати</a></li>
+        <li><a href="#contacts" data-i18n="nav.contacts">Контакти</a></li>
+      </ul>
+      <div class="lang" role="group" aria-label="Мова сайту" data-i18n-attr="aria-label:ui.lang">
+        <button type="button" class="lang__btn" data-lang="uk" aria-pressed="true">UA</button>
+        <span class="lang__sep" aria-hidden="true">/</span>
+        <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </nav>
+
+    <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Відкрити меню" data-i18n-attr="aria-label:ui.openMenu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ============ HORIZONTAL TRACK (desktop) / normal flow (mobile) ============ -->
+  <div class="scroller" id="top">
+    <main class="track" id="track">
+
+      <!-- 1. HERO -->
+      <section class="panel hero" data-theme="dark" data-tone="photo" aria-labelledby="hero-title">
+        <div class="hero__media" aria-hidden="true">
+          <picture>
+            <source type="image/webp" media="(min-width: 1024px)" srcset="assets/img/hero-poster-1920.webp">
+            <source type="image/webp" srcset="assets/img/hero-poster-960.webp">
+            <img class="hero__poster" src="assets/img/hero-poster-1920.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+          </picture>
+          <!-- Video is attached by main.js only on desktop without "reduce motion"; mobile shows the poster. -->
+          <video class="hero__video" muted loop playsinline preload="none"
+                 poster="assets/img/hero-poster-1920.jpg"
+                 data-src-large="assets/img/hero-1920.mp4"
+                 data-src-small="assets/img/hero-960.mp4"></video>
+        </div>
+
+        <div class="hero__inner">
+          <p class="eyebrow eyebrow--light hero__eyebrow" data-hero data-i18n="hero.eyebrow">Соняшникова олія з України</p>
+          <h1 class="hero__title" id="hero-title">
+            <span class="line" data-hero><span data-i18n="hero.l1">Натуральна переробка.</span></span>
+            <span class="line" data-hero><span data-i18n="hero.l2">Відповідальне виробництво.</span></span>
+            <span class="line" data-hero><em data-i18n="hero.l3">Виняткова якість.</em></span>
+          </h1>
+          <p class="hero__lead" data-hero data-i18n="hero.lead">Оліяторг — український виробник і експортер соняшникової олії подвійного пресування.</p>
+          <a class="btn btn--light" href="#about" data-hero>
+            <span data-i18n="hero.cta">Дізнатися більше</span>
+            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path class="btn__arrow-out" d="M4 12h15m-6-6 6 6-6 6"/><path class="btn__arrow-in" d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <p class="hero__hint" data-hero aria-hidden="true">
+          <span data-i18n="hero.hint">Гортайте</span><i></i>
+        </p>
+      </section>
+
+      <!-- 2. ABOUT -->
+      <!-- TODO: confirm about text with the client (brief.txt for Oliyatorg was not in the project) -->
+      <section class="panel about" id="about" data-tone="cream" aria-labelledby="about-title">
+        <div class="about__text">
+          <p class="eyebrow" data-reveal><span data-i18n="about.eyebrow">Про компанію</span></p>
+          <h2 class="h2" id="about-title" data-reveal data-i18n="about.title">Від поля до&nbsp;пляшки — <em>з&nbsp;повагою до&nbsp;природи</em></h2>
+          <p class="text" data-reveal data-i18n="about.p1">Оліяторг переробляє соняшник, вирощений на родючих землях України. Ми поєднуємо сучасне обладнання з природною технологією подвійного пресування, щоб зберегти смак, колір і цінні властивості олії.</p>
+          <p class="text text--muted" data-reveal data-i18n="about.p2">Працюємо прозоро й відповідально — від приймання насіння до відвантаження партнерам в Україні та за кордоном.</p>
+        </div>
+
+        <div class="collage">
+          <figure class="collage__item collage__item--a" data-reveal data-parallax>
+            <picture>
+              <source type="image/webp" sizes="(min-width: 1024px) 72vh, 100vw" srcset="assets/img/about-field-sunset-800.webp 800w, assets/img/about-field-sunset-1400.webp 1400w, assets/img/about-field-sunset-2400.webp 2400w">
+              <img src="assets/img/about-field-sunset-1400.jpg" sizes="(min-width: 1024px) 72vh, 100vw" srcset="assets/img/about-field-sunset-800.jpg 800w, assets/img/about-field-sunset-1400.jpg 1400w, assets/img/about-field-sunset-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="788" loading="lazy" decoding="async">
+            </picture>
+            <span class="photo-title" aria-hidden="true" data-i18n="photo.fields">Поля України</span>
+          </figure>
+          <figure class="collage__item collage__item--b" data-reveal>
+            <picture>
+              <source type="image/webp" sizes="(min-width: 1024px) 46vh, 60vw" srcset="assets/img/about-field-aerial-800.webp 800w, assets/img/about-field-aerial-1400.webp 1400w">
+              <img src="assets/img/about-field-aerial-800.jpg" sizes="(min-width: 1024px) 46vh, 60vw" srcset="assets/img/about-field-aerial-800.jpg 800w, assets/img/about-field-aerial-1400.jpg 1400w" alt="Ряди соняшнику з висоти" data-i18n-attr="alt:alt.aerial" width="800" height="533" loading="lazy" decoding="async">
+            </picture>
+            <figcaption class="caption" data-i18n="about.cap">Поля Центральної України</figcaption>
+          </figure>
+          <figure class="collage__item collage__item--c" data-reveal>
+            <picture>
+              <source type="image/webp" sizes="(min-width: 1024px) 32vh, 50vw" srcset="assets/img/about-hands-seeds-800.webp 800w">
+              <img src="assets/img/about-hands-seeds-800.jpg" alt="Відбірне насіння соняшнику в долонях" data-i18n-attr="alt:alt.hands" width="800" height="533" loading="lazy" decoding="async">
+            </picture>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 3. KEY NUMBERS (dark) -->
+      <!-- TODO: client numbers — replace every "XX+" and check the captions -->
+      <section class="panel numbers" data-theme="dark" data-tone="photo" aria-labelledby="numbers-title">
+        <div class="numbers__bg" aria-hidden="true" data-parallax>
+          <picture>
+            <source type="image/webp" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.webp 800w, assets/img/numbers-seeds-macro-1400.webp 1400w, assets/img/numbers-seeds-macro-2400.webp 2400w">
+            <img src="assets/img/numbers-seeds-macro-1400.jpg" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.jpg 800w, assets/img/numbers-seeds-macro-1400.jpg 1400w, assets/img/numbers-seeds-macro-2400.jpg 2400w" alt="" width="1400" height="1050" loading="lazy" decoding="async">
+          </picture>
+        </div>
+        <div class="numbers__inner">
+          <header class="numbers__head">
+            <p class="eyebrow eyebrow--light" data-reveal><span data-i18n="numbers.eyebrow">Оліяторг у цифрах</span></p>
+            <h2 class="h2 h2--light" id="numbers-title" data-reveal data-i18n="numbers.title">Масштаб, <em>якому довіряють</em></h2>
+          </header>
+          <dl class="stats">
+            <div class="stat" data-reveal><dt class="stat__value">XX+</dt><dd class="stat__label" data-i18n="numbers.s1">років на ринку олії</dd></div>
+            <div class="stat" data-reveal><dt class="stat__value">XX+</dt><dd class="stat__label" data-i18n="numbers.s2">тисяч тонн насіння переробляємо щороку</dd></div>
+            <div class="stat" data-reveal><dt class="stat__value">XX+</dt><dd class="stat__label" data-i18n="numbers.s3">країн, куди експортуємо продукцію</dd></div>
+            <div class="stat" data-reveal><dt class="stat__value">XX+</dt><dd class="stat__label" data-i18n="numbers.s4">партнерів в Україні та світі</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- 4. PRODUCTS -->
+      <!-- TODO: confirm products (names, short descriptions, photos) -->
+      <section class="panel products" id="products" data-tone="cream" aria-labelledby="products-title">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal><span data-i18n="products.eyebrow">Продукція</span></p>
+          <h2 class="h2" id="products-title" data-reveal data-i18n="products.title">Чесний продукт <em>із&nbsp;соняшнику</em></h2>
+          <p class="text text--muted" data-reveal data-i18n="products.intro">Три продукти — одна культура якості. Кожна партія проходить лабораторний контроль.</p>
+          <a class="link" href="products.html" data-reveal>
+            <span data-i18n="products.all">Вся продукція</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
+        </header>
+
+        <ul class="cards">
+          <li class="card" data-reveal>
+            <a class="card__link" href="products.html#unrefined">
+              <figure class="card__media">
+                <picture>
+                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-unrefined-700.webp 700w, assets/img/product-oil-unrefined-1200.webp 1200w, assets/img/product-oil-unrefined-1800.webp 1800w">
+                  <img src="assets/img/product-oil-unrefined-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-unrefined-700.jpg 700w, assets/img/product-oil-unrefined-1200.jpg 1200w, assets/img/product-oil-unrefined-1800.jpg 1800w" alt="Пляшка і скляна мисочка нерафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.unrefined" width="700" height="869" loading="lazy" decoding="async">
+                </picture>
+              </figure>
+              <span class="card__num">01</span>
+              <h3 class="card__title" data-i18n="products.c1.title">Олія соняшникова нерафінована</h3>
+              <p class="card__text" data-i18n="products.c1.text">Насичений смак і аромат насіння. Подвійне пресування без хімічної обробки.</p>
+            </a>
+          </li>
+          <li class="card" data-reveal>
+            <a class="card__link" href="products.html#refined">
+              <figure class="card__media">
+                <picture>
+                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-refined-700.webp 700w, assets/img/product-oil-refined-1200.webp 1200w, assets/img/product-oil-refined-1800.webp 1800w">
+                  <img src="assets/img/product-oil-refined-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-refined-700.jpg 700w, assets/img/product-oil-refined-1200.jpg 1200w, assets/img/product-oil-refined-1800.jpg 1800w" alt="Пляшка і скляна мисочка рафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.refined" width="700" height="869" loading="lazy" decoding="async">
+                </picture>
+              </figure>
+              <span class="card__num">02</span>
+              <h3 class="card__title" data-i18n="products.c2.title">Олія соняшникова рафінована</h3>
+              <p class="card__text" data-i18n="products.c2.text">Чиста, легка, без запаху. Для кулінарії та харчової промисловості.</p>
+            </a>
+          </li>
+          <li class="card" data-reveal>
+            <a class="card__link" href="products.html#meal">
+              <figure class="card__media">
+                <picture>
+                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-meal-700.webp 700w, assets/img/product-meal-1200.webp 1200w, assets/img/product-meal-1800.webp 1800w">
+                  <img src="assets/img/product-meal-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-meal-700.jpg 700w, assets/img/product-meal-1200.jpg 1200w, assets/img/product-meal-1800.jpg 1800w" alt="Соняшниковий шрот у керамічній мисці" data-i18n-attr="alt:alt.meal" width="700" height="869" loading="lazy" decoding="async">
+                </picture>
+              </figure>
+              <span class="card__num">03</span>
+              <h3 class="card__title" data-i18n="products.c3.title">Шрот соняшниковий</h3>
+              <p class="card__text" data-i18n="products.c3.text">Цінний білковий компонент для комбікормів і тваринництва.</p>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 5. PRODUCTION -->
+      <!-- TODO: client production process — check the 4 steps, texts and photos -->
+      <section class="panel production" id="production" data-tone="stone" aria-labelledby="production-title">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal><span data-i18n="production.eyebrow">Виробництво</span></p>
+          <h2 class="h2" id="production-title" data-reveal data-i18n="production.title">Чотири кроки <em>до&nbsp;бездоганної олії</em></h2>
+          <p class="text text--muted" data-reveal data-i18n="production.intro">Сучасна лінія, механічне пресування і контроль на кожному етапі.</p>
+          <a class="link" href="production.html" data-reveal>
+            <span data-i18n="production.more">Про виробництво</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
+        </header>
+
+        <ol class="steps" data-reveal>
+          <li class="step is-active">
+            <button class="step__head" type="button" aria-expanded="true" aria-controls="step-1">
+              <span class="step__num">01</span>
+              <span class="step__title" data-i18n="production.s1.title">Приймання сировини</span>
+            </button>
+            <div class="step__body" id="step-1">
+              <p data-i18n="production.s1.text">Перевіряємо кожну партію насіння на вологість, олійність і чистоту ще до розвантаження.</p>
+            </div>
+            <figure class="step__media">
+              <picture>
+                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
+                <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+          </li>
+          <li class="step">
+            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-2">
+              <span class="step__num">02</span>
+              <span class="step__title" data-i18n="production.s2.title">Очищення</span>
+            </button>
+            <div class="step__body" id="step-2">
+              <p data-i18n="production.s2.text">Багатоступеневе очищення від домішок і пилу — у роботу йде лише відбірне насіння.</p>
+            </div>
+            <figure class="step__media">
+              <picture>
+                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/numbers-seeds-macro-800.webp 800w, assets/img/numbers-seeds-macro-1400.webp 1400w">
+                <img src="assets/img/numbers-seeds-macro-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/numbers-seeds-macro-800.jpg 800w, assets/img/numbers-seeds-macro-1400.jpg 1400w" alt="Очищене насіння соняшнику крупним планом" data-i18n-attr="alt:alt.clean" width="1400" height="1050" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+          </li>
+          <li class="step">
+            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-3">
+              <span class="step__num">03</span>
+              <span class="step__title" data-i18n="production.s3.title">Подвійне пресування</span>
+            </button>
+            <div class="step__body" id="step-3">
+              <p data-i18n="production.s3.text">Два етапи механічного віджиму дають більше олії та зберігають її природні властивості.</p>
+            </div>
+            <figure class="step__media">
+              <picture>
+                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-interior-800.webp 800w, assets/img/production-interior-1400.webp 1400w, assets/img/production-interior-2400.webp 2400w">
+                <img src="assets/img/production-interior-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-interior-800.jpg 800w, assets/img/production-interior-1400.jpg 1400w, assets/img/production-interior-2400.jpg 2400w" alt="Цех пресування з сучасним обладнанням" data-i18n-attr="alt:alt.press" width="1400" height="781" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+          </li>
+          <li class="step">
+            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-4">
+              <span class="step__num">04</span>
+              <span class="step__title" data-i18n="production.s4.title">Контроль якості та&nbsp;зберігання</span>
+            </button>
+            <div class="step__body" id="step-4">
+              <p data-i18n="production.s4.text">Лабораторія перевіряє кожну партію, а готова олія зберігається в резервуарах із контрольованими умовами.</p>
+            </div>
+            <figure class="step__media">
+              <picture>
+                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-lab-800.webp 800w, assets/img/production-lab-1400.webp 1400w, assets/img/production-lab-2400.webp 2400w">
+                <img src="assets/img/production-lab-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-lab-800.jpg 800w, assets/img/production-lab-1400.jpg 1400w, assets/img/production-lab-2400.jpg 2400w" alt="Лаборант перевіряє зразки олії" data-i18n-attr="alt:alt.lab" width="1400" height="781" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 6. VALUES / ESG -->
+      <section class="panel values" id="values" data-tone="sage" aria-labelledby="values-title">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal><span data-i18n="values.eyebrow">Цінності · ESG</span></p>
+          <h2 class="h2" id="values-title" data-reveal data-i18n="values.title">Те, у&nbsp;що <em>ми&nbsp;віримо</em></h2>
+          <p class="text text--muted" data-reveal data-i18n="values.intro">Ми працюємо за принципами ESG: бережемо довкілля, підтримуємо людей і ведемо бізнес чесно.</p>
+        </header>
+
+        <figure class="values__media" data-reveal data-parallax>
+          <picture>
+            <source type="image/webp" sizes="(min-width: 1024px) 48vh, 100vw" srcset="assets/img/about-field-aerial-800.webp 800w, assets/img/about-field-aerial-1400.webp 1400w, assets/img/about-field-aerial-2400.webp 2400w">
+            <img src="assets/img/about-field-aerial-1400.jpg" sizes="(min-width: 1024px) 48vh, 100vw" srcset="assets/img/about-field-aerial-800.jpg 800w, assets/img/about-field-aerial-1400.jpg 1400w, assets/img/about-field-aerial-2400.jpg 2400w" alt="Соняшникове поле з висоти пташиного польоту" data-i18n-attr="alt:alt.aerial2" width="1400" height="933" loading="lazy" decoding="async">
+          </picture>
+          <span class="photo-title" aria-hidden="true" data-i18n="photo.values">Земля і люди</span>
+        </figure>
+
+        <ul class="values__list">
+          <li class="value" data-reveal>
+            <span class="value__num">I</span>
+            <div>
+              <h3 class="value__title" data-i18n="values.v1.title">Натуральна переробка</h3>
+              <p class="value__text" data-i18n="values.v1.text">Механічне пресування без зайвої хімії. Олія зберігає все, що дала природа.</p>
+            </div>
+          </li>
+          <li class="value" data-reveal>
+            <span class="value__num">II</span>
+            <div>
+              <h3 class="value__title" data-i18n="values.v2.title">Відповідальне виробництво</h3>
+              <p class="value__text" data-i18n="values.v2.text">Ощадливо використовуємо ресурси й дбаємо про людей та громади, де працюємо.</p>
+            </div>
+          </li>
+          <li class="value" data-reveal>
+            <span class="value__num">III</span>
+            <div>
+              <h3 class="value__title" data-i18n="values.v3.title">Виняткова якість</h3>
+              <p class="value__text" data-i18n="values.v3.text">Лабораторний контроль на кожному етапі та відповідність міжнародним стандартам.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 7. EXPORT & PARTNERSHIP (dark) -->
+      <section class="panel export" id="export" data-theme="dark" data-tone="dark" aria-labelledby="export-title">
+        <figure class="export__media" data-parallax>
+          <picture>
+            <source type="image/webp" sizes="(min-width: 1024px) 72vh, 100vw" srcset="assets/img/export-port-700.webp 700w, assets/img/export-port-1200.webp 1200w, assets/img/export-port-1800.webp 1800w">
+            <img src="assets/img/export-port-1200.jpg" sizes="(min-width: 1024px) 72vh, 100vw" srcset="assets/img/export-port-700.jpg 700w, assets/img/export-port-1200.jpg 1200w, assets/img/export-port-1800.jpg 1800w" alt="Контейнеровоз під завантаженням у морському порту" data-i18n-attr="alt:alt.port" width="1200" height="1800" loading="lazy" decoding="async">
+          </picture>
+          <span class="photo-title" aria-hidden="true" data-i18n="photo.export">Експорт</span>
+        </figure>
+
+        <div class="export__text">
+          <p class="eyebrow eyebrow--light" data-reveal><span data-i18n="export.eyebrow">Експорт і партнерство</span></p>
+          <h2 class="h2 h2--light" id="export-title" data-reveal data-i18n="export.title">Українська олія — <em>для партнерів у&nbsp;всьому світі</em></h2>
+          <p class="text text--light" data-reveal data-i18n="export.text">Постачаємо наливом і в тарі — автотранспортом, залізницею та морем. Відкриті до довгострокової співпраці з дистриб’юторами й виробниками.</p>
+          <ul class="routes" data-reveal>
+            <li data-i18n="export.r1">Морські порти</li>
+            <li data-i18n="export.r2">Залізниця</li>
+            <li data-i18n="export.r3">Автоперевезення</li>
+          </ul>
+          <a class="btn btn--sage" href="#contacts" data-reveal>
+            <span data-i18n="export.cta">Стати партнером</span>
+            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path class="btn__arrow-out" d="M4 12h15m-6-6 6 6-6 6"/><path class="btn__arrow-in" d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <figure class="export__inset" data-reveal>
+          <picture>
+            <source type="image/webp" sizes="(min-width: 1024px) 50vh, 100vw" srcset="assets/img/export-trucks-800.webp 800w, assets/img/export-trucks-1400.webp 1400w">
+            <img src="assets/img/export-trucks-800.jpg" sizes="(min-width: 1024px) 50vh, 100vw" srcset="assets/img/export-trucks-800.jpg 800w, assets/img/export-trucks-1400.jpg 1400w" alt="Автоцистерни з олією на дорозі серед соняшникових полів" data-i18n-attr="alt:alt.trucks" width="800" height="447" loading="lazy" decoding="async">
+          </picture>
+          <figcaption class="caption caption--light" data-i18n="export.cap">Власна логістика — від заводу до порту</figcaption>
+        </figure>
+      </section>
+
+      <!-- 8. CONTACTS + FOOTER -->
+      <section class="panel contacts" id="contacts" data-tone="cream" aria-labelledby="contacts-title">
+        <div class="contacts__grid">
+          <div class="contacts__info">
+            <p class="eyebrow" data-reveal><span data-i18n="contacts.eyebrow">Контакти</span></p>
+            <h2 class="h2" id="contacts-title" data-reveal data-i18n="contacts.title">Поговорімо <em>про співпрацю</em></h2>
+            <dl class="contact-list" data-reveal>
+              <div><dt data-i18n="contacts.phone">Телефон</dt><dd><a href="tel:+380442281197">+38&nbsp;044&nbsp;228&nbsp;11&nbsp;97</a></dd></div>
+              <div><dt>E-mail</dt><dd><a href="mailto:office@oliyatorg.ua">office@oliyatorg.ua</a></dd></div>
+              <div><dt data-i18n="contacts.address">Адреса</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query=%D0%B2%D1%83%D0%BB.+%D0%A1%D0%B8%D0%BC%D0%BE%D0%BD%D0%B0+%D0%9F%D0%B5%D1%82%D0%BB%D1%8E%D1%80%D0%B8%2C+5%2C+%D0%9A%D0%B8%D1%97%D0%B2" target="_blank" rel="noopener" data-i18n="contacts.addressValue">м.&nbsp;Київ, вул.&nbsp;Симона Петлюри,&nbsp;5</a></dd></div>
+              <div><dt data-i18n="contacts.langs">Мови</dt><dd data-i18n="contacts.langsValue">Українська, English</dd></div>
+            </dl>
+          </div>
+
+          <form class="form" data-endpoint="" novalidate data-reveal>
+            <div class="field">
+              <input id="f-name" name="name" type="text" autocomplete="name" required placeholder=" ">
+              <label for="f-name" data-i18n="form.name">Ім’я</label>
+            </div>
+            <div class="field">
+              <input id="f-company" name="company" type="text" autocomplete="organization" placeholder=" ">
+              <label for="f-company" data-i18n="form.company">Компанія</label>
+            </div>
+            <div class="field field--wide">
+              <input id="f-email" name="email" type="email" autocomplete="email" required placeholder=" ">
+              <label for="f-email">E-mail</label>
+            </div>
+            <div class="field field--wide">
+              <textarea id="f-message" name="message" rows="3" placeholder=" "></textarea>
+              <label for="f-message" data-i18n="form.message">Повідомлення</label>
+            </div>
+            <div class="form__foot">
+              <button class="btn btn--dark" type="submit">
+                <span data-i18n="form.send">Надіслати</span>
+                <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path class="btn__arrow-out" d="M4 12h15m-6-6 6 6-6 6"/><path class="btn__arrow-in" d="M4 12h15m-6-6 6 6-6 6"/></svg>
+              </button>
+              <p class="form__status" role="status" aria-live="polite"></p>
+            </div>
+          </form>
+        </div>
+
+        <footer class="footer">
+          <a class="footer__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
+            <img class="logo logo--white" src="assets/brand/logo-white.png" alt="Оліяторг" width="200" height="200" loading="lazy">
+          </a>
+          <ul class="footer__nav">
+            <li><a href="#top" data-i18n="nav.home">Головна</a></li>
+            <li><a href="products.html" data-i18n="nav.products">Продукція</a></li>
+            <li><a href="production.html" data-i18n="nav.production">Виробництво</a></li>
+            <li><a href="certificates.html" data-i18n="nav.certificates">Сертифікати</a></li>
+            <li><a href="#contacts" data-i18n="nav.contacts">Контакти</a></li>
+          </ul>
+          <div class="lang" role="group" aria-label="Мова сайту" data-i18n-attr="aria-label:ui.lang">
+            <button type="button" class="lang__btn" data-lang="uk" aria-pressed="true">UA</button>
+            <span class="lang__sep" aria-hidden="true">/</span>
+            <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+          <p class="footer__copy">© <span data-year>2026</span> <span data-i18n="footer.copy">Оліяторг. Усі права захищено.</span></p>
+          <a class="footer__top" href="#top" data-i18n="footer.top">Нагору</a>
+        </footer>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <script src="assets/js/i18n.js?v=5"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/main.js?v=4" defer></script>
+</body>
+</html>
