@@ -78,6 +78,16 @@
   });
   matchMedia('(min-width: 1024px)').addEventListener('change', () => menu(false));
 
+  /* ---------- Contacts screen: the photo ends before the header menu starts ---------- */
+  // CSS reads --nav-left (desktop only) and keeps a gap, so no menu item ever meets the photo at any width.
+  // Runs before the scroll set-up below, so every later ScrollTrigger refresh measures the final layout.
+  const navList = $('.nav__list');
+  const fitContacts = () => root.style.setProperty('--nav-left', Math.round(navList.getBoundingClientRect().left) + 'px');
+  fitContacts();
+  addEventListener('resize', fitContacts);
+  document.addEventListener('langchange', fitContacts);
+  document.fonts && document.fonts.ready.then(fitContacts);
+
   /* ---------- Scroll mode ---------- */
   const track = $('#track');
   const scroller = $('.scroller');
@@ -94,9 +104,12 @@
   if (horizontal) {
     gsap.registerPlugin(ScrollTrigger);
     const distance = () => Math.max(0, track.scrollWidth - innerWidth);
-    const setBar = gsap.quickSetter('.progress__bar', 'scaleX');
     const logoLink = $('.header__logo');
-    const panels = $$('.panel');
+    // dark zones inside a panel (the contacts photo) come first, so they win over their light panel
+    const panels = [...$$('.panel [data-theme="dark"]'), ...$$('.panel')];
+    // each menu item and the language switch get their own colour, so while a dark and a light section
+    // meet under the menu every item matches the section right behind it
+    const navItems = [...$$('.nav__list li'), $('.nav .lang')];
     const frames = $$('[data-parallax]').map(fig => {
       const img = $('img', fig);
       if (!img) return null;
@@ -116,16 +129,16 @@
         panels: panels.map(p => ({ ...box(p), dark: p.dataset.theme === 'dark' })),
         frames: frames.map(f => box(f.fig)),
         logo: mid(logoLink),
-        nav: mid(nav)
+        nav: navItems.map(mid)
       };
     }
     const darkAt = x => { const p = geo.panels.find(p => x >= p.l && x < p.l + p.w); return !!p && p.dark; };
-    let logoDark = null, navDark = null;
+    let logoDark = null;
+    const navDark = navItems.map(() => null);
 
-    function onTrack(progress) {
+    function onTrack() {
       if (!geo) return;
       const x = gsap.getProperty(track, 'x');
-      setBar(progress);
       // Gentle parallax inside photo frames: -4% when the frame enters on the right, +4% as it leaves on the left
       frames.forEach((f, i) => {
         const { l, w } = geo.frames[i];
@@ -133,10 +146,13 @@
         const v = Math.round((-4 + 8 * t) * 100) / 100;
         if (v !== f.v) { f.v = v; f.set(v); }
       });
-      // Logo and menu each switch to light colours over a dark section — instantly, only on change
-      const ld = darkAt(geo.logo - x), nd = darkAt(geo.nav - x);
+      // Logo and each menu item switch to light colours over a dark area — instantly, only on change
+      const ld = darkAt(geo.logo - x);
       if (ld !== logoDark) logoLink.classList.toggle('on-dark', logoDark = ld);
-      if (nd !== navDark) nav.classList.toggle('on-dark', navDark = nd);
+      navItems.forEach((el, i) => {
+        const d = darkAt(geo.nav[i] - x);
+        if (d !== navDark[i]) el.classList.toggle('on-dark', navDark[i] = d);
+      });
     }
 
     // The only ScrollTrigger: pins the page and scrubs the track. Its tween's onUpdate also runs while
@@ -144,18 +160,18 @@
     hTween = gsap.to(track, {
       x: () => -distance(),
       ease: 'none',
-      onUpdate() { onTrack(this.progress()); },
+      onUpdate: onTrack,
       scrollTrigger: {
         trigger: scroller,
         pin: true,
         scrub: 1,
         end: () => '+=' + distance(),
         invalidateOnRefresh: true,
-        onRefresh: self => { measure(); onTrack(self.animation ? self.animation.progress() : 0); }
+        onRefresh: () => { measure(); onTrack(); }
       }
     });
     measure();
-    onTrack(0);
+    onTrack();
 
     // Trackpad: horizontal swipe moves the page too. Passive, so the browser never waits for this
     // handler before scrolling (sideways overscroll is off in CSS, nothing to prevent).
@@ -282,6 +298,26 @@
       watch();
       matchMedia('(min-width: 640px)').addEventListener('change', watch); // header height changes here
     }
+  }
+
+  /* ---------- Contact form popup ---------- */
+  // Native <dialog>: Esc closes it and keeps focus inside. A click on the dark area outside the box closes it too.
+  const modal = $('#contact-modal');
+  if (modal && modal.showModal) {
+    const open = () => { modal.showModal(); root.classList.add('modal-open'); };
+    const close = () => modal.close();
+    $$('[data-modal-open]').forEach(b => b.addEventListener('click', open));
+    $$('[data-modal-close]', modal).forEach(b => b.addEventListener('click', close));
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    modal.addEventListener('close', () => root.classList.remove('modal-open'));
+    // the page behind must not scroll (no overflow:hidden — hiding the scrollbar would shift the horizontal track)
+    const block = e => {
+      if (!root.classList.contains('modal-open')) return;
+      const box = e.target.closest('.modal__box, textarea'); // these scroll themselves (contained in CSS)
+      if (!box || box.scrollHeight <= box.clientHeight) e.preventDefault();
+    };
+    addEventListener('wheel', block, { passive: false });
+    addEventListener('touchmove', block, { passive: false });
   }
 
   /* ---------- Contact form ---------- */
