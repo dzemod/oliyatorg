@@ -5,35 +5,36 @@
    ========================================================================= */
 
 :root {
-  /* palette — cream base, sage green second colour, gold only for small details */
-  --cream: #F3ECDF;
-  --paper: #FAF6EE;
-  --sand: #E5D8C1;
-  --stone: #ECE4D4;
-  --line: rgba(34, 31, 26, .14);
-  --ink: #221F1A;
-  --ink-2: #5C554A;
-  --sage: #91A183;          /* background of the product photos */
-  --sage-light: #C9D4BC;    /* green accents on dark (≥ 6.5:1) */
-  --green: #3F6332;         /* labels, numbers, lines, hovers on cream (5.9:1) */
-  --green-deep: #2F3F29;    /* footer; large accents on sage */
-  --on-sage: #1F2A1A;       /* small text on sage (5.4:1) */
-  --line-sage: rgba(31, 42, 26, .24);
-  --gold: #C08A2D;
-  --gold-deep: #8A5E13;
-  --gold-light: #E7BC63;
-  --dark: #1C1813;
-  --dark-2: #29221A;
-  --light-2: rgba(250, 246, 238, .74);
+  /* palette "Olive oil & stone" — the ONE place for colours; everything else uses these variables.
+     Contrast (WCAG): graphite on stone 12.2:1 · graphite 70% 5.0:1 · stone on olive 7.6:1 · stone 75% on olive 5.2:1.
+     The accent #B8913A is only 2.5:1 on stone, so it is used for non-text marks (label dots, lines, active underlines);
+     gold TEXT uses the same hue darker on stone and lighter on olive. */
+  --stone: #EFECE6;                    /* main background; light text on olive */
+  --graphite: #2B2A27;                 /* text */
+  --graphite-70: rgb(43 42 39 / .7);   /* secondary text (5.0:1 on stone) */
+  --olive: #4A4A3A;                    /* dark blocks, dark sections, footer, photo tints */
+  --gold: #B8913A;                     /* accent marks: label dots, thin accent lines, active tab / step */
+  --gold-text: #9C7B31;                /* large gold text on stone — heading italics (3.4:1) */
+  --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
+  --gold-light: #D4BD89;               /* gold text on olive and over photos (4.9:1 on olive) */
+  --stone-75: rgb(239 236 230 / .75);  /* secondary light text on olive (5.2:1) */
+  --white: #FFFFFF;                    /* buttons on dark blocks, form fields */
+  --line: rgb(43 42 39 / .15);         /* lines and borders on stone */
+  --line-light: rgb(239 236 230 / .25);/* lines on olive */
+  --tint: 74 74 58;                    /* olive as RGB channels for photo tints: rgb(var(--tint) / a) */
+  --error: #A53C27;                    /* form errors only */
 
-  /* tone tokens — what text, lines and backgrounds read. :root = cream tone;
-     each section sets its own solid tone via [data-tone] (end of file). */
-  --bg: var(--cream);
-  --fg: var(--ink);
-  --fg-2: var(--ink-2);
-  --label: var(--green);
-  --em: var(--gold-deep);
-  --num: var(--green);
+  /* tone tokens — what text, lines and backgrounds read. :root = the light (stone) tone;
+     dark blocks set the olive tone via [data-tone] (end of file). */
+  --bg: var(--stone);
+  --fg: var(--graphite);
+  --fg-2: var(--graphite-70);
+  --label: var(--gold);
+  --em: var(--gold-text);
+  --num: var(--gold-ink);
+  --btn-bg: var(--stone);
+  --btn-hover-line: var(--olive);   /* button border on hover */
+  --hover: var(--gold-ink);         /* link hover colour */
 
   --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --sans: "Manrope", "Segoe UI", Arial, sans-serif;
@@ -83,11 +84,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 ul, ol, dl, dd { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3, p { margin: 0; }
 em { font-style: italic; }
-:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+/* focus: a subtle thin outline for keyboard navigation only (main.js sets data-input="mouse" on pointer use,
+   so a click never leaves a frame, even where a browser would otherwise show :focus-visible) */
+:focus-visible { outline: 1px solid var(--focus, rgb(43 42 39 / .5)); outline-offset: 4px; }
+[data-input="mouse"] :focus-visible { outline: none; }
+[data-tone="dark"], [data-tone="photo"], .on-dark { --focus: rgb(239 236 230 / .65); }
+
+/* no orphans: headings and labels balance their lines, running text avoids a lone last word */
+h1, h2, h3, dt, .eyebrow, .pill, .caption, .card__meta { text-wrap: balance; }
+p, li, dd, figcaption, label { text-wrap: pretty; }
 
 .skip {
   position: fixed; left: 12px; top: -60px; z-index: 200; padding: 10px 16px;
-  background: var(--ink); color: var(--paper); font-size: 14px;
+  background: var(--graphite); color: var(--stone); font-size: 14px;
 }
 .skip:focus { top: 12px; }
 
@@ -99,7 +108,7 @@ em { font-style: italic; }
 }
 .eyebrow::before, .pill::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--label); }
 /* over photos and dark sections the 25% line is too faint for a frame */
-[data-tone="dark"] :is(.eyebrow, .pill), [data-tone="photo"] :is(.eyebrow, .pill) { border-color: rgba(250, 246, 238, .45); }
+[data-tone="dark"] :is(.eyebrow, .pill), [data-tone="photo"] :is(.eyebrow, .pill) { border-color: rgb(239 236 230 / .45); }
 
 .h2 {
   font-family: var(--serif); font-weight: 400;
@@ -122,12 +131,10 @@ em { font-style: italic; }
 }
 .btn__arrow, .link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform .4s var(--ease); }
 .btn:hover .btn__arrow, .link:hover svg { transform: translateX(4px); }
-.btn--light { border: 1px solid rgba(250, 246, 238, .55); color: var(--paper); background: rgba(250, 246, 238, .08); }
-.btn--light:hover { background: var(--paper); color: var(--ink); }
-.btn--sage { background: var(--sage); color: var(--ink); }
-.btn--sage:hover { background: var(--sage-light); }
-.btn--dark { background: var(--ink); color: var(--paper); }
-.btn--dark:hover { background: var(--green); }
+.btn--light { border: 1px solid rgb(239 236 230 / .55); color: var(--stone); background: rgb(239 236 230 / .08); }
+.btn--light:hover { background: var(--stone); color: var(--graphite); }
+.btn--dark { background: var(--graphite); color: var(--stone); }
+.btn--dark:hover { background: var(--graphite-70); }
 
 .link {
   display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 18px;
@@ -145,10 +152,10 @@ em { font-style: italic; }
 .header {
   position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 0 var(--pad); color: var(--ink);
+  padding: 0 var(--pad); color: var(--graphite);
 }
-.header.on-dark { color: var(--paper); }
-.header.is-solid { background: var(--cream); box-shadow: 0 1px 0 var(--line); color: var(--ink); }
+.header.on-dark { color: var(--stone); }
+.header.is-solid { background: var(--stone); box-shadow: 0 1px 0 var(--line); color: var(--graphite); }
 .header.is-solid .logo--color { display: block; }
 .header.is-solid .logo--white { display: none; }
 .header__logo { display: flex; align-items: center; min-height: 44px; position: relative; z-index: 2; }
@@ -179,7 +186,7 @@ em { font-style: italic; }
 @media (max-width: 1023px) {
   .nav {
     position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center;
-    padding: calc(var(--header-h) + 20px) 28px 40px; background: var(--cream); color: var(--ink);
+    padding: calc(var(--header-h) + 20px) 28px 40px; background: var(--stone); color: var(--graphite);
     opacity: 0; visibility: hidden; transition: opacity .4s var(--ease), visibility 0s .4s;
   }
   .nav.is-open { opacity: 1; visibility: visible; transition: opacity .4s var(--ease); }
@@ -188,7 +195,7 @@ em { font-style: italic; }
   .nav__list a::after { display: none; }
   .nav .lang { margin-top: 28px; font-size: 16px; }
   .nav .lang__btn { min-width: 52px; min-height: 48px; }
-  .menu-open .header { color: var(--ink); background: transparent; box-shadow: none; }
+  .menu-open .header { color: var(--graphite); background: transparent; box-shadow: none; }
   .menu-open .header .logo--color { display: block; }
   .menu-open .header .logo--white { display: none; }
   .menu-open { overflow: hidden; }
@@ -201,107 +208,117 @@ em { font-style: italic; }
 /* 1. Hero */
 .hero {
   min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end;
-  padding-top: calc(var(--header-h) + 40px); padding-bottom: 48px; color: var(--paper); overflow: hidden; background: var(--bg);
+  padding-top: calc(var(--header-h) + 40px); padding-bottom: 48px; color: var(--stone); overflow: hidden; background: var(--bg);
 }
 .hero__media { position: absolute; inset: 0; }
 .hero__media img, .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero__video { opacity: 0; transition: opacity 1.2s var(--ease); }
 .hero__video.is-ready { opacity: 1; }
 /* flat tint keeps the white text readable on any video frame */
-.hero__media::after { content: ""; position: absolute; inset: 0; background: rgba(28, 22, 14, .5); }
+.hero__media::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .6); }
 .hero__inner { position: relative; z-index: 1; }
-.hero__title { margin: 18px 0 20px; font: 400 clamp(40px, 11.5vw, 60px)/1.02 var(--serif); letter-spacing: -.012em; }
+/* size capped so the longest phrase ("Відповідальне виробництво." ≈ 11.2em) fits the column */
+.hero__title { margin: 18px 0 20px; font: 400 min(clamp(40px, 11.5vw, 60px), calc((100vw - 2 * var(--pad)) / 11.4))/1.02 var(--serif); letter-spacing: -.012em; }
 .hero__title .line { display: block; overflow: hidden; padding-bottom: .06em; }
-.hero__title .line > * { display: inline-block; }
+.hero__title .line > * { display: inline-block; white-space: nowrap; }   /* each phrase on one line: no lone word */
 .hero__title em { color: var(--gold-light); }
-.hero__lead { max-width: 30em; margin-bottom: 28px; font-size: 16px; line-height: 1.6; color: var(--light-2); }
+.hero__lead { max-width: 30em; margin-bottom: 28px; font-size: 16px; line-height: 1.6; color: var(--stone); }   /* full stone: readable over any video frame */
 .hero__hint { display: none; }
 
-/* 2. About */
-/* After the Wright's Ferry reference. The art is one box (the reference's 1242 × 1080 area) and every piece
-   sits in % of it, so the composition is the same on phones (full-width box on top) and on the horizontal page
-   (left of the text): a sage panel, the main photo reaching past its edge, a second layer behind the photo
-   (solid block, seeds photo in its lower half) offset up and to the right, a small vertical photo. */
-.about { padding-top: 0; }
-.about__art { position: relative; margin: 0 calc(var(--pad) * -1); aspect-ratio: 1242 / 1080; container-type: inline-size; }
-/* pieces in units of the art's own width (cqi); vertical positions are measured from the art's centre with
-   --ah (the reference height at this width), so in a taller box — the full screen height on the horizontal
-   page — the composition stays centred and undistorted while the panel runs from top to bottom */
-.about__art > * { position: absolute; --ah: calc(100cqi / 1.15); }
-.about__panel { top: 0; bottom: 0; left: 0; width: 58.6cqi; background: var(--sage); }
-.about__layer { left: 40.7cqi; top: calc(50% - var(--ah) * .328); width: 34.9cqi; height: calc(var(--ah) * .655); overflow: hidden; }
-.about__photo { left: 7.25cqi; top: calc(50% - var(--ah) * .292); width: 63.8cqi; height: calc(var(--ah) * .583); overflow: hidden; }
-.about__small { left: 83.5cqi; top: calc(50% - var(--ah) * .127); width: 16.5cqi; height: calc(var(--ah) * .254); overflow: hidden; }
-.about__layer img, .about__photo img, .about__small img { width: 100%; height: 100%; object-fit: cover; }
-/* text: label and heading centred, the paragraphs and the button in a narrow left-aligned column under them */
-.about__text { margin-top: 56px; text-align: center; }
-.about__text .eyebrow { margin: 0 auto; }
-.about__title { text-transform: uppercase; letter-spacing: .01em; line-height: 1; }
-.about__body { max-width: 31em; margin: 0 auto; text-align: left; }
-.about__body .btn { margin-top: 28px; }
+/* 2. About — after the Veltom reference: one large photo, then the text column (label, heading, short text,
+   button) with the values tabs at its bottom. Phones: the photo on top, the column under it. */
+.about__photo { overflow: hidden; aspect-ratio: 4 / 3; }
+.about__photo img { width: 100%; height: 100%; object-fit: cover; }
+/* text: label, heading, paragraph, button and tabs all start on one left line */
+.about__text { margin-top: 48px; }
+.about .h2.about__title { margin: 22px 0 30px; font-size: clamp(31px, 8.4vw, 52px); line-height: 1.12; }
+.about__body { max-width: 29em; }
+.about__body .btn { margin-top: 38px; }
+
+/* values tabs (after the Veltom reference): titles spread across the column (first on the left line, last on the
+   right edge) over a thin line; the active one gets the gold dot. The texts share one grid cell (the block keeps
+   the tallest text's height, nothing jumps) and cross-fade. */
+.about__tabs { margin-top: 56px; }
+.tabs__list { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
+.tabs__tab {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding-bottom: 6px;
+  font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); transition: color .3s ease;
+}
+.tabs__tab::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: 0; transition: opacity .3s ease; }
+.tabs__tab:hover, .tabs__tab[aria-selected="true"] { color: var(--fg); }
+.tabs__tab[aria-selected="true"]::before { opacity: 1; }
+.tabs__panels { display: grid; margin-top: 20px; }
+.tabs__panel {
+  grid-area: 1 / 1; font-size: 16px; line-height: 1.6; color: var(--fg-2);
+  opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility 0s .45s;
+}
+.tabs__panel.is-active { opacity: 1; visibility: visible; transition: opacity .45s var(--ease) .1s; }
 
 /* 3. Numbers */
 .numbers { color: var(--fg); overflow: hidden; }
 .numbers__bg { position: absolute; inset: 0; }
 .numbers__bg img { width: 100%; height: 100%; object-fit: cover; }
-.numbers__bg::after { content: ""; position: absolute; inset: 0; background: rgba(28, 22, 14, .8); }
+.numbers__bg::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .88); }
 .numbers__inner { position: relative; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 20px; margin-top: 40px; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
 .stat { padding-top: 16px; border-top: 1px solid var(--line); }
 .stat__value { font: 400 clamp(52px, 15vw, 72px)/1 var(--serif); color: var(--num); }
-.stat__label { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--fg-2); }
+.stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg-2); }
 
-/* 4. Products — after the Verdantix reference: label, two-line heading with the intro on the right,
-   then three equal photos across the full width. The top row and the cards share one 3-column grid. */
-.products { --cards-gap: 24px; }
+/* 4. Products — after the Interos "blog" layout: label and two-line heading on the left, the "all products"
+   button on the right on the heading's bottom line (its right edge = the third card's right edge), then three
+   equal 4:3 photos (<name>-card-*, built by tools/optimize_media.mjs) with a meta line and the title under each. */
+.products { --cards-gap: var(--gap); }
 .products .products__title { margin: 22px 0 0; }
 .products__title em { display: block; }
-.products__intro { margin-top: 20px; }
-.products__intro .link { margin-top: 14px; }
-.cards { display: grid; gap: 40px; margin-top: 44px; }
+.products__all { margin-top: 32px; }
+.cards { display: grid; gap: 48px; margin-top: 48px; }
 .card__link { display: block; }
-.card__media { overflow: hidden; aspect-ratio: 5 / 6; }
-.card__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; transition: transform 1.2s var(--ease); }
+.card__media { overflow: hidden; aspect-ratio: 4 / 3; }
+.card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
 .card__link:hover .card__media img { transform: scale(1.04); }
-.card__title { margin-top: 20px; font: 400 30px/1.12 var(--serif); }
-.card__text { margin-top: 8px; font-size: 15px; line-height: 1.6; color: var(--fg-2); max-width: 30em; }
+.card__meta { margin-top: 20px; }
+.card__title { margin-top: 8px; font: 400 30px/1.12 var(--serif); }
 
 @media (min-width: 640px) {
-  /* same columns and gap as the cards: heading over cards 1–2, intro starts at card 3's left edge, level with the heading's top */
-  .products__head { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--cards-gap); align-items: start; }
+  .products__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
   .pill { grid-column: 1; justify-self: start; margin-bottom: 22px; }
-  .products .products__title { grid-column: 1 / 3; grid-row: 2; margin: 0; }
-  .products__intro { grid-column: 3; grid-row: 2; margin-top: 4px; }
+  .products .products__title { grid-column: 1; grid-row: 2; margin: 0; }
+  .products__all { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
 }
 
-/* 5. Production */
-.steps { margin-top: 40px; border-top: 1px solid var(--line); }
-.step { padding: 22px 0 28px; border-bottom: 1px solid var(--line); }
-.step__head { display: flex; align-items: baseline; gap: 18px; width: 100%; text-align: left; cursor: default; }
-.step__num { font: 500 16px var(--serif); color: var(--num); min-width: 26px; }
-.step__title { font: 400 28px/1.15 var(--serif); }
-.step__body { padding-left: 44px; }
-.step__body p { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
-.step__media { margin-top: 18px; overflow: hidden; aspect-ratio: 16 / 10; }
-.step__media img { width: 100%; height: 100%; object-fit: cover; }
+/* 5. Production — after the Envagyte reference: a large photo, then the text column (label, heading, button) and the
+   four steps. Phones: an accordion — each row is a button (number, title, arrow); the open step shows its photo and
+   text under it. The active row gets a darker, thicker underline and a straight arrow (→); the others ↗. */
+.production__photo { overflow: hidden; aspect-ratio: 4 / 3; }
+.production__photo img, .process__media img { width: 100%; height: 100%; object-fit: cover; }
+.production__text { margin-top: 48px; }
+.production__title em { display: block; }   /* "Чотири кроки" / "до бездоганної олії" */
+.production__text .btn { margin-top: 8px; }
+.process { margin-top: 48px; }
+.process__head {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 20px 0; text-align: left;
+  border-bottom: 1px solid var(--line); transition: border-color .3s ease, box-shadow .3s ease;
+}
+.process__num { flex: none; min-width: 24px; font: 500 15px var(--serif); color: var(--num); }
+.process__title { flex: 1; font: 400 24px/1.2 var(--serif); }
+.process__arrow { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.4; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
+/* thicker without moving the row: the border turns dark and an inset shadow adds a second pixel */
+.process__step.is-active .process__head { border-bottom-color: var(--gold); box-shadow: inset 0 -1px 0 var(--gold); }
+.process__step.is-active .process__arrow { transform: none; }
+.process__panel { display: none; padding: 20px 0 28px; }
+.process__step.is-active .process__panel { display: block; }
+.process__media { overflow: hidden; aspect-ratio: 3 / 2; }
+.process__text { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
 
-/* 6. Values */
-.values__media { margin-top: 40px; overflow: hidden; aspect-ratio: 4 / 5; }
-.values__media img { width: 100%; height: 100%; object-fit: cover; }
-.values__list { margin-top: 36px; }
-.value { display: grid; grid-template-columns: 52px 1fr; gap: 8px; padding: 26px 0; border-top: 1px solid var(--line); }
-.value__num { font: italic 400 26px/1.1 var(--serif); color: var(--num); }
-.value__title { font: 400 28px/1.15 var(--serif); }
-.value__text { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
-
-/* 7. Export & partnership — after the Veltom reference: label, heading, two benefit rows (outline icon in its
+/* 6. Export & partnership — after the Veltom reference: label, heading, two benefit rows (outline icon in its
    own cell, thin lines around), the button; a tall port photo with the trucks photo overlapping its lower left
    corner inside a frame of the section colour. Phones: text first, then the collage. */
 .export__title em { display: block; }
 .benefits { display: grid; grid-auto-rows: 1fr; margin-top: 32px; border-bottom: 1px solid var(--line); }   /* rows of equal height */
-.benefit { display: grid; grid-template-columns: 76px 1fr; border-top: 1px solid var(--line); }
+.benefit { display: grid; grid-template-columns: 76px minmax(0, 1fr); border-top: 1px solid var(--line); }
 .benefit__icon { display: grid; place-items: center; border-right: 1px solid var(--line); }
-.benefit__icon svg { width: 40px; height: 40px; fill: none; stroke: var(--green); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.benefit__icon svg { width: 40px; height: 40px; fill: none; stroke: var(--gold-ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .benefit__icon svg * { vector-effect: non-scaling-stroke; }   /* the same 1.4px line in both icons at any size */
 .benefit__body { padding: 22px 0 24px 20px; }
 .benefit__title { font: 600 14px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fg); }
@@ -313,25 +330,25 @@ em { font-style: italic; }
 .export__inset { grid-column: 1 / 9; grid-row: 1; align-self: end; z-index: 1; padding: 10px 10px 0 0; background: var(--bg); }
 .export__inset img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; }
 
-/* 8. Contacts + footer: the screen itself is styled at the end of the file; the form lives in the popup */
-.form { display: grid; gap: 6px 24px; margin-top: 48px; padding: 28px 22px; background: var(--paper); }
+/* 7. Contacts + footer: the screen itself is styled at the end of the file; the form lives in the popup */
+.form { display: grid; gap: 6px 24px; margin-top: 48px; padding: 28px 22px; background: var(--white); }
 .field { position: relative; }
 .field input, .field textarea {
   width: 100%; padding: 26px 0 10px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
-  background: transparent; color: var(--ink); font: 400 17px/1.4 var(--sans); outline: none; resize: vertical;
+  background: transparent; color: var(--graphite); font: 400 17px/1.4 var(--sans); outline: none; resize: vertical;
 }
 .field textarea { min-height: 96px; }
-.field input:focus, .field textarea:focus { border-color: var(--green); }
+.field input:focus, .field textarea:focus { border-color: var(--graphite); }
 .field label {
-  position: absolute; left: 0; top: 26px; font-size: 16px; color: var(--ink-2); pointer-events: none;
+  position: absolute; left: 0; top: 26px; font-size: 16px; color: var(--graphite-70); pointer-events: none;
   transform-origin: left top; transition: transform .3s var(--ease);
 }
 .field input:focus + label, .field input:not(:placeholder-shown) + label,
-.field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-20px) scale(.78); color: var(--green); }
-.field.is-invalid input { border-color: #B4442D; }
+.field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-20px) scale(.78); color: var(--gold-ink); }
+.field.is-invalid input { border-color: var(--error); }
 .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 22px; }
-.form__status { font-size: 14px; color: var(--ink-2); }
-.form__status.is-error { color: #A53C27; }
+.form__status { font-size: 14px; color: var(--graphite-70); }
+.form__status.is-error { color: var(--error); }
 
 /* ---------- Reveal (JS adds .is-in) ---------- */
 .js [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
@@ -343,11 +360,10 @@ em { font-style: italic; }
 @media (min-width: 640px) {
   :root { --header-h: 80px; }
   .hero { padding-bottom: 64px; }
-  .stats { grid-template-columns: repeat(4, 1fr); }
-  .cards { grid-template-columns: repeat(3, 1fr); gap: var(--cards-gap); }
-  .card__title { font-size: 26px; }
-  .values__media { aspect-ratio: 16 / 9; }
-  .form { grid-template-columns: 1fr 1fr; padding: 40px; }
+  .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cards-gap); }
+  .card__title { font-size: 24px; }   /* "Шрот соняшниковий" (kept together) fits a tablet card */
+  .form { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 40px; }
   .field--wide, .form__foot { grid-column: 1 / -1; }
 }
 
@@ -366,10 +382,12 @@ em { font-style: italic; }
   .h2 { font-size: clamp(48px, 4.6vw, 80px); }
 
   /* reduced-motion desktop keeps a calm vertical layout */
-  html:not(.is-h) .about { display: grid; grid-template-columns: 7fr 5fr; gap: 4vw; align-items: center; padding-top: var(--sec-top); }
-  html:not(.is-h) .about__art { margin: 0 0 0 calc(var(--pad) * -1); }
+  html:not(.is-h) .about { display: grid; grid-template-columns: 5fr 7fr; gap: 6vw; align-items: center; }
+  html:not(.is-h) .about__photo { aspect-ratio: 4 / 5; }
   html:not(.is-h) .about__text { margin-top: 0; }
-  html:not(.is-h) .production, html:not(.is-h) .values { display: grid; grid-template-columns: 4fr 8fr; gap: 6vw; }
+  html:not(.is-h) .production { display: grid; grid-template-columns: 5fr 7fr; gap: 6vw; align-items: start; }
+  html:not(.is-h) .production__photo { aspect-ratio: 4 / 5; }
+  html:not(.is-h) .production__text { margin-top: 0; }
   html:not(.is-h) .export { display: grid; grid-template-columns: 5fr 6fr; gap: 6vw; align-items: center; }
   html:not(.is-h) .export__collage { margin-top: 0; }
 }
@@ -401,36 +419,41 @@ em { font-style: italic; }
 
   /* 1. Hero — full-screen video; the content keeps its bottom-anchored composition on the bottom line */
   .is-h .hero { width: 100vw; display: block; }
-  .is-h .hero__inner { position: absolute; left: var(--pad); bottom: var(--bottom); max-width: min(54vw, 980px); }
+  .is-h .hero__inner { position: absolute; left: var(--pad); bottom: var(--bottom); max-width: min(72vw, 1300px); }
   .is-h .hero__title { font-size: clamp(56px, 9vh, 120px); margin: 2.6vh 0 3vh; }
   .is-h .hero__lead { font-size: clamp(16px, 2vh, 21px); margin-bottom: 4vh; max-width: 34em; }
   /* same bottom as the hero button (last child of .hero__inner) → text baseline and line sit on its bottom border */
   .is-h .hero__hint {
     position: absolute; right: var(--pad); bottom: var(--bottom); z-index: 1; display: flex; align-items: flex-end; gap: 14px; line-height: 1;
-    font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--paper);
-    text-shadow: 0 1px 12px rgba(0, 0, 0, .55);
+    font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--stone);
+    text-shadow: 0 1px 12px rgb(var(--tint) / .8);
   }
   .is-h .hero__hint span { position: relative; top: 2px; } /* drops the 12px font's descent so the letters' bottom meets the border's bottom */
-  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgba(250, 246, 238, .55); overflow: hidden; box-shadow: 0 0 8px rgba(0, 0, 0, .4); }
+  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; box-shadow: 0 0 8px rgb(var(--tint) / .6); }
   .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--gold-light); animation: hint 2.4s var(--ease) infinite; }
   @keyframes hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
-  /* 2. About — the art (an exception from the grid) fills the full height from the screen's left edge;
-     the text column follows it: label on the top line, the button above the bottom line */
-  /* exactly one screen wide: the text column ends on the right margin, the art fills the rest from the left
-     edge (at most the reference size, 115vh), with at least 9vh between them */
-  .is-h .panel.about { display: block; position: relative; width: 100vw; padding: 0; --about-text: min(54.4vh, 34vw); }
-  .is-h .about__art { position: absolute; top: 0; left: 0; width: min(115vh, calc(100vw - var(--pad) - var(--about-text) - 9vh)); height: 100vh; margin: 0; aspect-ratio: auto; }
-  .is-h .about__text { position: absolute; top: var(--top); right: var(--pad); width: var(--about-text); margin: 0; }
-  .is-h .about .h2.about__title { margin: 3vh 0 3.4vh; font-size: clamp(56px, 8.4vh, 112px); }
-  .is-h .about__body { width: 38vh; max-width: none; }
-  .is-h .about__body .btn { margin-top: 4vh; }
+  /* 2. About — one screen on the shared 12-column grid: photo (cols 1–5) and text column (cols 7–12),
+     both from the top line to the bottom line */
+  .is-h .panel.about { width: 100vw; grid-template-columns: repeat(12, var(--col)); --about-h2: clamp(44px, 6.2vh, 84px); }
+  /* photo: columns 1–5 (≈40% of the content width), from the top line to the bottom line; column 6 is the gap */
+  .is-h .about__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; }
+  /* the column runs from the top line to the bottom line; the tabs block sits on the bottom line */
+  .is-h .about__text { grid-column: 7 / 13; align-self: stretch; margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .is-h .about__tabs { align-self: stretch; margin-top: auto; padding-top: 4vh; }
+  .is-h .tabs__tab { min-height: clamp(40px, 5vh, 56px); padding-bottom: .8vh; font-size: clamp(11px, 1.3vh, 14px); }
+  .is-h .tabs__panels { margin-top: 2.4vh; }
+  .is-h .tabs__panel { font-size: clamp(15px, 1.75vh, 19px); }
+  .is-h .about .h2.about__title { margin: 3.4vh 0 4.6vh; font-size: var(--about-h2); white-space: nowrap; }
+  .is-h .about__body { width: 100%; max-width: none; }
+  .is-h .about__body .btn > span { white-space: nowrap; }
+  .is-h .about__body .btn { margin-top: 5.4vh; }
 
   /* 3. Numbers — full-screen photo; label/heading from the top line, figures end on the bottom line */
   .is-h .panel.numbers { width: 100vw; display: block; }   /* .panel.numbers outranks the shared section grid */
   .is-h .numbers__inner { position: absolute; inset: var(--top) var(--pad) var(--bottom); display: flex; flex-direction: column; justify-content: space-between; }
   .is-h .numbers .h2 { font-size: clamp(52px, 9vh, 120px); max-width: 12em; }
-  .is-h .stats { grid-template-columns: repeat(4, 1fr); gap: var(--gap); margin: 0; }
+  .is-h .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin: 0; }
   .is-h .stat { padding-top: 2.4vh; }
   .is-h .stat__value { font-size: clamp(64px, 15vh, 190px); }
   .is-h .stat__label { margin-top: 1.4vh; font-size: clamp(14px, 1.7vh, 18px); max-width: 16em; }
@@ -439,57 +462,50 @@ em { font-style: italic; }
   .is-h .panel.products { width: 100vw; display: flex; flex-direction: column; --cards-gap: var(--gap); }   /* outranks the shared section grid */
   .is-h .pill { margin-bottom: 3.2vh; }
   .is-h .products .products__title { margin: 0; font-size: clamp(40px, 6.4vh, 88px); }
-  .is-h .products__intro { margin-top: .6vh; }
-  /* one row grid shared by all cards (subgrid): equal photos, titles and descriptions on the same lines */
-  .is-h .products .cards { flex: 1; min-height: 0; grid-template-columns: repeat(3, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; gap: 0 var(--cards-gap); margin: 6.5vh 0 0; }
+  .is-h .products__head { align-self: stretch; }   /* full width, so the button ends on the third card's right edge */
+  /* three equal cards fill the height left under the heading row, so the titles end on the bottom line on any
+     screen height: the photo row takes what remains (the 2:1 card images keep the product whole from ~1:1 to 2:1) */
+  .is-h .products .cards { flex: 1; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto auto; gap: 0 var(--cards-gap); margin: 6vh 0 0; }
   .is-h .card { display: grid; grid-row: span 3; grid-template-rows: subgrid; min-height: 0; }
   .is-h .card__link { display: grid; grid-row: 1 / -1; grid-template-rows: subgrid; min-height: 0; }
   .is-h .card__media { aspect-ratio: auto; min-height: 0; }
-  .is-h .card__title { margin-top: 2.6vh; font-size: clamp(24px, 3.1vh, 40px); }
-  .is-h .card__text { margin-top: 1vh; font-size: clamp(14px, 1.7vh, 18px); }
+  .is-h .card__meta { margin-top: 3vh; font-size: clamp(11px, 1.25vh, 14px); }
+  .is-h .card__title { margin-top: 1.2vh; font-size: clamp(24px, 3.1vh, 40px); }
 
-  /* 5. Production — head (4 cols) · step list (4 cols) + photo stage (7 cols) between the two lines */
-  .is-h .production { grid-template-columns: repeat(16, var(--col)); }
-  .is-h .steps {
-    grid-column: 6 / 17; align-self: stretch; position: relative; margin: 0; border-top: 0;
-    padding-right: calc(7 * var(--col) + 7 * var(--gap));
+  /* 5. Production — one screen on the shared 12-column grid, like About: photo (cols 1–5) line to line; text column
+     (cols 7–12): label on the top line, heading, button; at its bottom the step list (≈52%) and, beside it, the active
+     step's photo and text — the panel stretches to the list's height, so the photo starts level with the first row
+     and the text ends on the bottom line. */
+  .is-h .production { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
+  .is-h .production__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; }
+  .is-h .production__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; margin: 0; }
+  .is-h .production__text .btn { margin-top: 1.4vh; }
+  .is-h .process { position: relative; align-self: stretch; margin-top: auto; padding: 4vh 0 0; padding-right: calc(48% + var(--gap)); }
+  .is-h .process__head { padding: 2.4vh 0; cursor: pointer; }
+  .is-h .process__num { font-size: clamp(13px, 1.5vh, 17px); }
+  .is-h .process__title { font-size: clamp(17px, 2.3vh, 28px); line-height: 1.2; white-space: nowrap; }
+  /* the panel spans the list's height (list top → bottom line) and is sized from the screen height: the text keeps a
+     fixed 3-line area at the bottom (its last line on the bottom line), the photo takes the rest at 3:2 (top level
+     with the list); the image is out of flow, so its own shape never changes these sizes */
+  .is-h .process__step .process__panel {   /* as specific as the phone rule that shows the open step */
+    --pt: clamp(14px, 1.7vh, 18px);
+    position: absolute; top: 4vh; right: 0; bottom: 0; width: 48%; padding: 0;
+    display: grid; grid-template-rows: minmax(0, 1fr) calc(2vh + 4.8 * var(--pt)); justify-items: start;
+    opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s;
   }
-  .is-h .step { padding: 0; border-bottom: 1px solid var(--line); }
-  .is-h .step:first-child { border-top: 1px solid var(--line); }
-  .is-h .step__head { padding: 2.6vh 0; cursor: pointer; align-items: center; }
-  .is-h .step__num { font-size: clamp(14px, 1.6vh, 17px); }
-  .is-h .step__title { font-size: clamp(24px, 3.4vh, 40px); color: var(--fg-2); }
-  .is-h .step.is-active .step__title, .is-h .step__head:hover .step__title { color: var(--fg); }
-  /* the open step's text appears at once (no height animation) and fades in */
-  .is-h .step__body { display: grid; grid-template-rows: 0fr; }
-  .is-h .step__body > p { overflow: hidden; margin: 0; font-size: clamp(14px, 1.7vh, 18px); opacity: 0; transition: opacity .5s var(--ease); }
-  .is-h .step.is-active .step__body { grid-template-rows: 1fr; }
-  .is-h .step.is-active .step__body > p { padding-bottom: 3vh; opacity: 1; }
-  .is-h .step__media {
-    position: absolute; top: 0; right: 0; width: calc(7 * var(--col) + 6 * var(--gap)); height: 100%; margin: 0; aspect-ratio: auto;
-    opacity: 0; transform: scale(1.03); transition: opacity .9s var(--ease), transform 1.4s var(--ease); pointer-events: none;
-  }
-  .is-h .step.is-active .step__media { opacity: 1; transform: none; }
+  .is-h .process__step.is-active .process__panel { opacity: 1; visibility: visible; transition: opacity .5s var(--ease) .05s; }
+  .is-h .process__media { position: relative; height: 100%; min-height: 0; max-width: 100%; aspect-ratio: 3 / 2; }
+  .is-h .process__media img { position: absolute; inset: 0; }
+  .is-h .process__text { align-self: end; margin: 0; font-size: var(--pt); line-height: 1.6; }
 
-  /* 6. Values — head (4 cols) · photo (4 cols, line to line) · list (5 cols) */
-  .is-h .values { grid-template-columns: repeat(15, var(--col)); }
-  .is-h .values__media { grid-column: 6 / 10; align-self: stretch; margin: 0; aspect-ratio: auto; }
-  .is-h .values__list { grid-column: 11 / 16; margin: 0; }
-  .is-h .value { grid-template-columns: 8vh 1fr; padding: 3.4vh 0; }
-  .is-h .value:first-child { padding-top: 0; border-top: 0; }   /* the list starts on the top line */
-  .is-h .value:last-child { border-bottom: 1px solid var(--line); }
-  .is-h .value__num { font-size: clamp(24px, 3.6vh, 40px); }
-  .is-h .value__title { font-size: clamp(26px, 3.8vh, 44px); }
-  .is-h .value__text { font-size: clamp(14px, 1.75vh, 18px); max-width: 30em; }
-
-  /* 7. Export — text (cols 1–5): label on the top line, button on the bottom line · collage (cols 7–12):
+  /* 6. Export — text (cols 1–5): label on the top line, button on the bottom line · collage (cols 7–12):
      port photo (cols 8–12) line to line, framed trucks photo (cols 7–10) over its lower left, bottom on the line */
   .is-h .export { grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__text { grid-column: 1 / 6; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   /* two lines in five columns: the size follows the screen width as well as its height */
   .is-h .export .export__title { margin-bottom: 0; font-size: clamp(34px, min(6.4vh, 3vw), 80px); }
   .is-h .benefits { align-self: stretch; margin: auto 0; }   /* centred between the heading and the button */
-  .is-h .benefit { grid-template-columns: var(--col) 1fr; }
+  .is-h .benefit { grid-template-columns: var(--col) minmax(0, 1fr); }
   .is-h .benefit__icon svg { width: clamp(34px, 4.4vh, 52px); height: clamp(34px, 4.4vh, 52px); }
   .is-h .benefit__body { padding: 3vh 0 3.4vh 1.6vw; }
   .is-h .benefit__title { font-size: clamp(13px, 1.75vh, 19px); }
@@ -506,9 +522,14 @@ em { font-style: italic; }
 
 /* Short desktop screens (e.g. 1280×720 laptops) */
 @media (min-width: 1024px) and (max-height: 760px) {
-  .is-h .about .h2, .is-h .h2 { font-size: 46px; }
+  .is-h .h2 { font-size: 46px; }
+  .is-h .panel.about { --about-h2: 40px; }
+  .is-h .about .h2.about__title { margin-bottom: 3vh; }
+  .is-h .about__body .btn { margin-top: 3.5vh; }
+  .is-h .about__tabs { padding-top: 2.5vh; }
+  .is-h .products .cards { margin-top: 4vh; }
   .is-h .text { font-size: 15px; }
-  .is-h .about .text--muted, .is-h .section-head .text { display: none; }
+  .is-h .section-head .text { display: none; }
 }
 
 /* =========================================================================
@@ -525,12 +546,9 @@ em { font-style: italic; }
 /* own layer: moving it never repaints the long track around it */
 .has-parallax img { width: 108%; max-width: none; margin-left: -4%; will-change: transform; }
 /* the horizontal page colours the logo and each menu item on its own (main.js) */
-.header__logo.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { color: var(--paper); }
-@media (min-width: 1024px) { .header.on-dark { color: var(--paper); } }
+.header__logo.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { color: var(--stone); }
+@media (min-width: 1024px) { .header.on-dark { color: var(--stone); } }
 
-@media (min-width: 1024px) {
-  html:not(.is-h) .step__media { max-width: 640px; margin-left: 44px; }
-}
 
 /* =========================================================================
    Refinements after the Heckfield Place reference
@@ -540,25 +558,15 @@ em { font-style: italic; }
 
 
 /* sharp edges on every photo and panel, like printed photographs */
-.step__media, .values__media,
 .form { border-radius: 0; }
 
 .caption { letter-spacing: .2em; font-size: 11px; }
 
 /* buttons and links: rectangular, thin, small tracked capitals */
 .btn { border-radius: 0; min-height: 54px; padding: 0 30px; gap: 16px; font-size: 12.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
-.btn--light { background: rgba(250, 246, 238, .04); }
+.btn--light { background: rgb(239 236 230 / .04); }
 .link { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; padding-bottom: 2px; }
 
-/* section titles set on the photo itself */
-.values__media { position: relative; }
-.photo-title {
-  position: absolute; left: 0; right: 0; top: 50%; z-index: 2; transform: translateY(-50%);
-  padding: 0 8%; text-align: center; pointer-events: none;
-  color: var(--paper); font: 500 clamp(13px, 3.6vw, 17px)/1.4 var(--sans); letter-spacing: .42em; text-transform: uppercase;
-  text-shadow: 0 1px 18px rgba(28, 22, 14, .35);
-}
-.values__media::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(28, 22, 14, .16); pointer-events: none; }
 
 
 
@@ -567,7 +575,6 @@ em { font-style: italic; }
 
 @media (min-width: 1024px) {
   .nav__list a { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
-  .photo-title { font-size: clamp(14px, 1.7vh, 20px); }
 
 }
 
@@ -575,27 +582,24 @@ em { font-style: italic; }
    Section tones — one solid colour per section, straight edges between them
    ========================================================================= */
 [data-tone="stone"] { --bg: var(--stone); }
-[data-tone="sage"] {
-  --bg: var(--sage); --fg-2: var(--on-sage); --label: var(--on-sage); --em: var(--green-deep); --num: var(--green-deep); --line: var(--line-sage);
-}
 [data-tone="dark"], [data-tone="photo"] {
-  --bg: var(--dark); --fg: var(--paper); --fg-2: var(--light-2); --label: var(--sage-light); --em: var(--gold-light); --num: var(--sage-light);
-  --line: rgba(250, 246, 238, .25);
+  --bg: var(--olive); --fg: var(--stone); --fg-2: var(--stone-75); --label: var(--gold); --em: var(--gold-light); --num: var(--gold-light);
+  --line: var(--line-light); --btn-bg: var(--white); --btn-hover-line: var(--stone); --hover: var(--gold-light);
 }
-.panel { background-color: var(--bg); }
+.panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
 /* header parts over a dark section switch to light colours at once (main.js sets .on-dark) */
-.on-dark { --fg: var(--paper); --fg-2: var(--light-2); }
+.on-dark { --fg: var(--stone); --fg-2: var(--stone-75); }
 @media (max-width: 1023px) {
-  .nav { --fg: var(--ink); --fg-2: var(--ink-2); --line: rgba(34, 31, 26, .14); }
+  .nav { --fg: var(--graphite); --fg-2: var(--graphite-70); --line: rgb(43 42 39 / .15); }
 }
 
-/* menu highlight: active/hovered item and active language turn green —
-   deep green on cream, light sage over the hero video and dark sections */
-.header { --nav-accent: var(--green); }
-.header.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { --nav-accent: var(--sage-light); }
+/* menu highlight: active/hovered item and active language turn gold —
+   dark gold on stone, light gold over the hero video, photos and olive blocks */
+.header { --nav-accent: var(--gold-ink); }
+.header.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { --nav-accent: var(--gold-light); }
 @media (max-width: 1023px) {
-  .nav, .nav .on-dark { --nav-accent: var(--green); } /* burger menu is always on cream */
+  .nav, .nav .on-dark { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
 }
 .nav__list a, .nav .lang__btn { transition: color .2s ease; }
 .nav__list a:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
@@ -605,19 +609,19 @@ em { font-style: italic; }
 .is-h, .is-h body { overscroll-behavior-x: none; }
 
 /* =========================================================================
-   Buttons: white with a thin sage border, filling with sage on hover;
+   Buttons: stone (white on dark blocks) with a thin graphite border, filling with olive (light text and arrow) on hover;
    a separate square arrow box, 2px apart (every button). On hover the arrow
    rotates in place from ↗ to →.
    ========================================================================= */
-.btn, .btn--light, .btn--sage, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
+.btn, .btn--light, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
 .btn > span, .btn .btn__arrow {
-  height: 54px; background: #fff; color: var(--ink); border: 1px solid var(--sage);
-  transition: background-color .3s ease, border-color .3s ease;
+  height: 54px; background: var(--btn-bg); color: var(--graphite); border: 1px solid var(--graphite);
+  transition: background-color .3s ease, border-color .3s ease, color .3s ease;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
 /* the viewBox (62.4 units around the 24-unit arrow) fills the box, keeping the arrow 20px and centred */
 .btn .btn__arrow { order: -1; flex: none; width: 54px; padding: 0; overflow: hidden; }
-.btn:hover > span, .btn:hover .btn__arrow { background: var(--sage); }
+.btn:hover > span, .btn:hover .btn__arrow { background: var(--olive); border-color: var(--btn-hover-line); color: var(--stone); }
 .btn:hover .btn__arrow { transform: none; }
 .btn .btn__arrow path { transform-box: fill-box; transform-origin: center; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
 .btn:hover .btn__arrow path { transform: rotate(0deg); }
@@ -633,25 +637,26 @@ em { font-style: italic; }
 .contacts { padding: 0; }
 
 /* photo half */
-.contacts__cta { position: relative; display: flex; align-items: flex-start; overflow: hidden; color: var(--paper); background: var(--dark); }
+.contacts__cta { position: relative; display: flex; align-items: flex-start; overflow: hidden; color: var(--stone); background: var(--olive); }
 .contacts__photo { position: absolute; inset: 0; }
 .contacts__photo img { width: 100%; height: 100%; object-fit: cover; }
 /* soft flat tint keeps the white heading readable (no gradient) */
-.contacts__photo::after { content: ""; position: absolute; inset: 0; background: rgba(28, 22, 14, .5); }
+.contacts__photo::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .6); }
 .contacts__cta-inner { position: relative; z-index: 1; padding: var(--sec-top) var(--pad) 56px; }  /* label at the same top as every section */
 .contacts__title {
-  margin: 18px 0 32px; max-width: 9.5em; color: var(--paper); text-wrap: balance;
-  font: 400 clamp(40px, 11.4vw, 56px)/1.02 var(--serif); letter-spacing: .01em; text-transform: uppercase;
+  margin: 18px 0 32px; max-width: 11.5em; color: var(--stone); text-wrap: balance;
+  /* capped so the last line "нашим партнером?" (≈ 10.9em, kept together) fits the column */
+  font: 400 min(clamp(40px, 11.4vw, 56px), calc((100vw - 2 * var(--pad)) / 11.2))/1.02 var(--serif); letter-spacing: .01em; text-transform: uppercase;
 }
 
 /* contact rows */
 .contacts__side { display: flex; flex-direction: column; padding: 48px var(--pad) 32px; }
 .contact-rows { border-bottom: 1px solid var(--line); }
-.contact-row { display: grid; grid-template-columns: 92px 1fr; gap: 16px; padding: 18px 0 20px; border-top: 1px solid var(--line); }
+.contact-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 16px; padding: 18px 0 20px; border-top: 1px solid var(--line); }
 .contact-row dt { padding-top: .6em; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); }
 .contact-row dd { font: 400 clamp(22px, 6.4vw, 28px)/1.12 var(--serif); }
 .contact-row a, .contact-row__cta { color: var(--fg); transition: color .2s ease; }
-.contact-row a:hover, .contact-row__cta:hover { color: var(--green); }
+.contact-row a:hover, .contact-row__cta:hover { color: var(--hover); }
 .contact-row__cta { display: inline-flex; align-items: center; gap: .3em; text-align: left; font: inherit; }
 .contact-row__cta svg { flex: none; width: .62em; height: .62em; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform .3s var(--ease); }
 .contact-row__cta:hover svg { transform: translateX(.18em); }
@@ -660,7 +665,7 @@ em { font-style: italic; }
 .foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
 .foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
-.foot__nav a:hover { color: var(--green); }
+.foot__nav a:hover { color: var(--hover); }
 .foot .lang { grid-area: lang; }
 /* "UA" starts exactly on the column's left edge (no centred 40px box): text-width buttons with even spacing */
 .foot .lang__btn { min-width: 0; padding: 0 10px; }
@@ -680,10 +685,10 @@ em { font-style: italic; }
   /* inside the photo: label on the global top line, button on the global bottom line, left edge = the page margin */
   .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: var(--top) 8cqi var(--bottom) var(--pad); }
   .contacts__cta-inner .eyebrow { margin-bottom: auto; }
-  .contacts__title { margin: 2.6vh 0 4.6vh; font-size: clamp(36px, min(7.6vh, 9.2cqi), 104px); }
+  .contacts__title { margin: 2.6vh 0 4.6vh; font-size: clamp(30px, min(7.6vh, 9.2cqi, calc((92cqi - var(--pad)) / 11.2)), 104px); }
 
   .contacts__side { grid-column: 1 / -1; align-self: stretch; margin-left: calc(var(--nav-left, 50vw) - var(--pad)); padding: 0; }
-  .contact-row { grid-template-columns: minmax(110px, 30%) 1fr; padding: 2.2vh 0 2.8vh; }
+  .contact-row { grid-template-columns: minmax(110px, 30%) minmax(0, 1fr); padding: 2.2vh 0 2.8vh; }
   .contact-row dt { font-size: clamp(11px, 1.15vh, 13px); }
   .contact-row dd { font-size: clamp(26px, min(4.6vh, 2.8vw), 58px); line-height: 1.06; }
 
@@ -695,14 +700,14 @@ em { font-style: italic; }
 }
 
 /* ---------- Contact form popup (native <dialog>) ---------- */
-.modal { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: none; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible; }
-.modal::backdrop { background: rgba(28, 22, 14, .6); }
+.modal { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: none; padding: 0; border: 0; background: transparent; color: var(--graphite); overflow: visible; }
+.modal::backdrop { background: rgb(var(--tint) / .75); }
 .modal__box {
   position: relative; max-height: calc(100svh - 32px); overflow: auto; overscroll-behavior: contain;
-  padding: clamp(32px, 5vw, 56px) clamp(22px, 5vw, 56px) clamp(28px, 4vw, 48px); background: var(--paper);
+  padding: clamp(32px, 5vw, 56px) clamp(22px, 5vw, 56px) clamp(28px, 4vw, 48px); background: var(--stone);
 }
-.modal__close { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 48px; height: 48px; color: var(--ink); transition: color .2s ease; }
-.modal__close:hover { color: var(--green); }
+.modal__close { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 48px; height: 48px; color: var(--graphite); transition: color .2s ease; }
+.modal__close:hover { color: var(--gold-ink); }
 .modal__close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 .modal .h2.modal__title { margin: 14px 0 0; padding-right: 32px; font-size: clamp(34px, 6vw, 52px); }
 .modal .form { margin: 18px 0 0; padding: 0; background: none; }

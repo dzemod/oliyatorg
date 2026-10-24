@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="meta.title">Оліяторг — соняшникова олія з України</title>
   <meta name="description" data-i18n-attr="content:meta.desc" content="Оліяторг — український виробник і експортер соняшникової олії. Натуральна переробка, подвійне пресування, принципи ESG.">
-  <meta name="theme-color" content="#F3ECDF">
+  <meta name="theme-color" content="#EFECE6">
   <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/brand/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
@@ -16,7 +16,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=39">
+  <link rel="stylesheet" href="assets/css/style.css?v=54">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -95,42 +95,41 @@
         </p>
       </section>
 
-      <!-- 2. ABOUT — after the Wright's Ferry reference: a sage panel with the main photo reaching past its edge,
-           a second layer behind it (solid block + seeds photo), a small vertical photo, then the centred text column -->
+      <!-- 2. ABOUT — after the Veltom reference: one large photo on the left (top line to bottom line),
+           the text column on the right with the values tabs on the bottom line -->
       <!-- TODO: confirm about text with the client (brief.txt for Oliyatorg was not in the project) -->
-      <section class="panel about" id="about" data-tone="cream" aria-labelledby="about-title">
-        <div class="about__art">
-          <span class="about__panel" aria-hidden="true"></span>
-          <div class="about__layer" aria-hidden="true">
-            <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 40vh, 35vw" srcset="assets/img/about-texture-700.webp 700w, assets/img/about-texture-1200.webp 1200w">
-              <img src="assets/img/about-texture-700.jpg" sizes="(min-width: 1024px) 40vh, 35vw" srcset="assets/img/about-texture-700.jpg 700w, assets/img/about-texture-1200.jpg 1200w" alt="" width="700" height="938" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <figure class="about__photo">
-            <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 74vh, 64vw" srcset="assets/img/about-main-800.webp 800w, assets/img/about-main-1400.webp 1400w, assets/img/about-main-2400.webp 2400w">
-              <img src="assets/img/about-main-1400.jpg" sizes="(min-width: 1024px) 74vh, 64vw" srcset="assets/img/about-main-800.jpg 800w, assets/img/about-main-1400.jpg 1400w, assets/img/about-main-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="1045" loading="lazy" decoding="async">
-            </picture>
-          </figure>
-          <figure class="about__small">
-            <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 19vh, 17vw" srcset="assets/img/about-detail-700.webp 700w, assets/img/about-detail-1200.webp 1200w">
-              <img src="assets/img/about-detail-700.jpg" sizes="(min-width: 1024px) 19vh, 17vw" srcset="assets/img/about-detail-700.jpg 700w, assets/img/about-detail-1200.jpg 1200w" alt="Квітка соняшнику крупним планом" data-i18n-attr="alt:alt.detail" width="700" height="938" loading="lazy" decoding="async">
-            </picture>
-          </figure>
-        </div>
+      <section class="panel about" id="about" data-tone="light" aria-labelledby="about-title">
+        <figure class="about__photo">
+          <picture>
+            <source type="image/webp" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/about-main-800.webp 800w, assets/img/about-main-1400.webp 1400w, assets/img/about-main-2400.webp 2400w">
+            <img src="assets/img/about-main-1400.jpg" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/about-main-800.jpg 800w, assets/img/about-main-1400.jpg 1400w, assets/img/about-main-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="1045" loading="lazy" decoding="async">
+          </picture>
+        </figure>
 
         <div class="about__text">
           <p class="eyebrow" data-reveal><span data-i18n="about.eyebrow">Про компанію</span></p>
-          <h2 class="h2 about__title" id="about-title" data-reveal data-i18n="about.title">Від поля<br>до&nbsp;пляшки</h2>
+          <h2 class="h2 about__title" id="about-title" data-reveal data-i18n="about.title">Від поля до&nbsp;пляшки —<br><em>з&nbsp;повагою до&nbsp;природи</em></h2>
           <div class="about__body">
-            <p class="text" data-reveal data-i18n="about.p1">Оліяторг переробляє соняшник, вирощений на родючих землях України. Ми поєднуємо сучасне обладнання з природною технологією подвійного пресування, щоб зберегти смак, колір і цінні властивості олії.</p>
-            <p class="text text--muted" data-reveal data-i18n="about.p2">Працюємо прозоро й відповідально — від приймання насіння до відвантаження партнерам в Україні та за кордоном.</p>
+            <p class="text" data-reveal data-i18n="about.p1">Оліяторг переробляє соняшник із родючих земель України подвійним пресуванням, що зберігає смак, колір і цінні властивості олії.</p>
             <a class="btn" href="about.html" data-reveal>
               <span data-i18n="about.cta">Про компанію</span>
               <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
             </a>
+          </div>
+
+          <!-- values tabs (after the Veltom reference): three tabs over a line, one short text under it.
+               main.js switches them (click / tap, ← → Home End); the texts share one grid cell and cross-fade. -->
+          <div class="tabs about__tabs" data-tabs data-reveal>
+            <div class="tabs__list" role="tablist" aria-label="Наші цінності" data-i18n-attr="aria-label:about.tabs">
+              <button class="tabs__tab" type="button" role="tab" id="about-tab-1" aria-controls="about-panel-1" aria-selected="true" data-i18n="about.t1">Природа</button>
+              <button class="tabs__tab" type="button" role="tab" id="about-tab-2" aria-controls="about-panel-2" aria-selected="false" tabindex="-1" data-i18n="about.t2">Люди</button>
+              <button class="tabs__tab" type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1" data-i18n="about.t3">Якість</button>
+            </div>
+            <div class="tabs__panels">
+              <p class="tabs__panel is-active" role="tabpanel" id="about-panel-1" aria-labelledby="about-tab-1" data-i18n="about.v1">Механічне пресування без зайвої хімії — бережемо ґрунти й довкілля.</p>
+              <p class="tabs__panel" role="tabpanel" id="about-panel-2" aria-labelledby="about-tab-2" data-i18n="about.v2">Підтримуємо команду й громади та ведемо бізнес чесно.</p>
+              <p class="tabs__panel" role="tabpanel" id="about-panel-3" aria-labelledby="about-tab-3" data-i18n="about.v3">Лабораторний контроль на кожному етапі — від насіння до відвантаження.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -160,17 +159,14 @@
 
       <!-- 4. PRODUCTS -->
       <!-- TODO: confirm products (names, short descriptions, photos) -->
-      <section class="panel products" id="products" data-tone="cream" aria-labelledby="products-title">
+      <section class="panel products" id="products" data-tone="light" aria-labelledby="products-title">
         <header class="products__head">
           <p class="pill" data-reveal><span data-i18n="products.eyebrow">Продукція</span></p>
           <h2 class="h2 products__title" id="products-title" data-reveal data-i18n="products.title">Чесний продукт <em>із&nbsp;соняшнику</em></h2>
-          <div class="products__intro" data-reveal>
-            <p class="text text--muted" data-i18n="products.intro">Три продукти — одна культура якості. Кожна партія проходить лабораторний контроль.</p>
-            <a class="link" href="products.html">
-              <span data-i18n="products.all">Вся продукція</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
-            </a>
-          </div>
+          <a class="btn products__all" href="products.html" data-reveal>
+            <span data-i18n="products.all">Вся продукція</span>
+            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
         </header>
 
         <ul class="cards">
@@ -178,162 +174,133 @@
             <a class="card__link" href="products.html#unrefined">
               <figure class="card__media">
                 <picture>
-                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-unrefined-700.webp 700w, assets/img/product-oil-unrefined-1200.webp 1200w, assets/img/product-oil-unrefined-1800.webp 1800w">
-                  <img src="assets/img/product-oil-unrefined-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-unrefined-700.jpg 700w, assets/img/product-oil-unrefined-1200.jpg 1200w, assets/img/product-oil-unrefined-1800.jpg 1800w" alt="Пляшка і скляна мисочка нерафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.unrefined" width="700" height="869" loading="lazy" decoding="async">
+                  <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-unrefined-card-800.webp 800w, assets/img/product-oil-unrefined-card-1400.webp 1400w, assets/img/product-oil-unrefined-card-2000.webp 2000w">
+                  <img src="assets/img/product-oil-unrefined-card-800.jpg" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-unrefined-card-800.jpg 800w, assets/img/product-oil-unrefined-card-1400.jpg 1400w, assets/img/product-oil-unrefined-card-2000.jpg 2000w" alt="Пляшка і скляна мисочка нерафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.unrefined" width="800" height="400" loading="lazy" decoding="async">
                 </picture>
               </figure>
+              <p class="caption card__meta" data-i18n="products.c1.meta">Олія / подвійне пресування</p>
               <h3 class="card__title" data-i18n="products.c1.title">Олія нерафінована</h3>
-              <p class="card__text" data-i18n="products.c1.text">Насичений смак і аромат насіння. Подвійне пресування без хімічної обробки.</p>
             </a>
           </li>
           <li class="card" data-reveal>
             <a class="card__link" href="products.html#refined">
               <figure class="card__media">
                 <picture>
-                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-refined-700.webp 700w, assets/img/product-oil-refined-1200.webp 1200w, assets/img/product-oil-refined-1800.webp 1800w">
-                  <img src="assets/img/product-oil-refined-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-oil-refined-700.jpg 700w, assets/img/product-oil-refined-1200.jpg 1200w, assets/img/product-oil-refined-1800.jpg 1800w" alt="Пляшка і скляна мисочка рафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.refined" width="700" height="869" loading="lazy" decoding="async">
+                  <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-refined-card-800.webp 800w, assets/img/product-oil-refined-card-1400.webp 1400w, assets/img/product-oil-refined-card-2000.webp 2000w">
+                  <img src="assets/img/product-oil-refined-card-800.jpg" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-refined-card-800.jpg 800w, assets/img/product-oil-refined-card-1400.jpg 1400w, assets/img/product-oil-refined-card-2000.jpg 2000w" alt="Пляшка і скляна мисочка рафінованої соняшникової олії з насінням" data-i18n-attr="alt:alt.refined" width="800" height="400" loading="lazy" decoding="async">
                 </picture>
               </figure>
+              <p class="caption card__meta" data-i18n="products.c2.meta">Олія / для харчової промисловості</p>
               <h3 class="card__title" data-i18n="products.c2.title">Олія рафінована</h3>
-              <p class="card__text" data-i18n="products.c2.text">Чиста, легка, без запаху. Для кулінарії та харчової промисловості.</p>
             </a>
           </li>
           <li class="card" data-reveal>
             <a class="card__link" href="products.html#meal">
               <figure class="card__media">
                 <picture>
-                  <source type="image/webp" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-meal-700.webp 700w, assets/img/product-meal-1200.webp 1200w, assets/img/product-meal-1800.webp 1800w">
-                  <img src="assets/img/product-meal-700.jpg" sizes="(min-width: 1024px) 40vh, (min-width: 640px) 33vw, 100vw" srcset="assets/img/product-meal-700.jpg 700w, assets/img/product-meal-1200.jpg 1200w, assets/img/product-meal-1800.jpg 1800w" alt="Соняшниковий шрот у керамічній мисці" data-i18n-attr="alt:alt.meal" width="700" height="869" loading="lazy" decoding="async">
+                  <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-meal-card-800.webp 800w, assets/img/product-meal-card-1400.webp 1400w, assets/img/product-meal-card-2000.webp 2000w">
+                  <img src="assets/img/product-meal-card-800.jpg" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-meal-card-800.jpg 800w, assets/img/product-meal-card-1400.jpg 1400w, assets/img/product-meal-card-2000.jpg 2000w" alt="Соняшниковий шрот у керамічній мисці" data-i18n-attr="alt:alt.meal" width="800" height="400" loading="lazy" decoding="async">
                 </picture>
               </figure>
+              <p class="caption card__meta" data-i18n="products.c3.meta">Шрот / для комбікормів</p>
               <h3 class="card__title" data-i18n="products.c3.title">Шрот соняшниковий</h3>
-              <p class="card__text" data-i18n="products.c3.text">Цінний білковий компонент для комбікормів і тваринництва.</p>
             </a>
           </li>
         </ul>
       </section>
 
-      <!-- 5. PRODUCTION -->
+      <!-- 5. PRODUCTION — after the Envagyte reference: a large photo on the left (top line to bottom line); on the right
+           the label, heading and button on top, and at the bottom the 4 steps (list) next to the active step's photo and text.
+           main.js switches the steps (hover / click / keyboard); phones: an accordion with the photo and text in the open step. -->
       <!-- TODO: client production process — check the 4 steps, texts and photos -->
       <section class="panel production" id="production" data-tone="stone" aria-labelledby="production-title">
-        <header class="section-head">
-          <p class="eyebrow" data-reveal><span data-i18n="production.eyebrow">Виробництво</span></p>
-          <h2 class="h2" id="production-title" data-reveal data-i18n="production.title">Чотири кроки <em>до&nbsp;бездоганної олії</em></h2>
-          <p class="text text--muted" data-reveal data-i18n="production.intro">Сучасна лінія, механічне пресування і контроль на кожному етапі.</p>
-          <a class="link" href="production.html" data-reveal>
-            <span data-i18n="production.more">Про виробництво</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
-          </a>
-        </header>
-
-        <ol class="steps" data-reveal>
-          <li class="step is-active">
-            <button class="step__head" type="button" aria-expanded="true" aria-controls="step-1">
-              <span class="step__num">01</span>
-              <span class="step__title" data-i18n="production.s1.title">Приймання сировини</span>
-            </button>
-            <div class="step__body" id="step-1">
-              <p data-i18n="production.s1.text">Перевіряємо кожну партію насіння на вологість, олійність і чистоту ще до розвантаження.</p>
-            </div>
-            <figure class="step__media">
-              <picture>
-                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
-                <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
-              </picture>
-            </figure>
-          </li>
-          <li class="step">
-            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-2">
-              <span class="step__num">02</span>
-              <span class="step__title" data-i18n="production.s2.title">Очищення</span>
-            </button>
-            <div class="step__body" id="step-2">
-              <p data-i18n="production.s2.text">Багатоступеневе очищення від домішок і пилу — у роботу йде лише відбірне насіння.</p>
-            </div>
-            <figure class="step__media">
-              <picture>
-                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/numbers-seeds-macro-800.webp 800w, assets/img/numbers-seeds-macro-1400.webp 1400w">
-                <img src="assets/img/numbers-seeds-macro-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/numbers-seeds-macro-800.jpg 800w, assets/img/numbers-seeds-macro-1400.jpg 1400w" alt="Очищене насіння соняшнику крупним планом" data-i18n-attr="alt:alt.clean" width="1400" height="1050" loading="lazy" decoding="async">
-              </picture>
-            </figure>
-          </li>
-          <li class="step">
-            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-3">
-              <span class="step__num">03</span>
-              <span class="step__title" data-i18n="production.s3.title">Подвійне пресування</span>
-            </button>
-            <div class="step__body" id="step-3">
-              <p data-i18n="production.s3.text">Два етапи механічного віджиму дають більше олії та зберігають її природні властивості.</p>
-            </div>
-            <figure class="step__media">
-              <picture>
-                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-interior-800.webp 800w, assets/img/production-interior-1400.webp 1400w, assets/img/production-interior-2400.webp 2400w">
-                <img src="assets/img/production-interior-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-interior-800.jpg 800w, assets/img/production-interior-1400.jpg 1400w, assets/img/production-interior-2400.jpg 2400w" alt="Цех пресування з сучасним обладнанням" data-i18n-attr="alt:alt.press" width="1400" height="781" loading="lazy" decoding="async">
-              </picture>
-            </figure>
-          </li>
-          <li class="step">
-            <button class="step__head" type="button" aria-expanded="false" aria-controls="step-4">
-              <span class="step__num">04</span>
-              <span class="step__title" data-i18n="production.s4.title">Контроль якості та&nbsp;зберігання</span>
-            </button>
-            <div class="step__body" id="step-4">
-              <p data-i18n="production.s4.text">Лабораторія перевіряє кожну партію, а готова олія зберігається в резервуарах із контрольованими умовами.</p>
-            </div>
-            <figure class="step__media">
-              <picture>
-                <source type="image/webp" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-lab-800.webp 800w, assets/img/production-lab-1400.webp 1400w, assets/img/production-lab-2400.webp 2400w">
-                <img src="assets/img/production-lab-1400.jpg" sizes="(min-width: 1024px) 92vh, 100vw" srcset="assets/img/production-lab-800.jpg 800w, assets/img/production-lab-1400.jpg 1400w, assets/img/production-lab-2400.jpg 2400w" alt="Лаборант перевіряє зразки олії" data-i18n-attr="alt:alt.lab" width="1400" height="781" loading="lazy" decoding="async">
-              </picture>
-            </figure>
-          </li>
-        </ol>
-      </section>
-
-      <!-- 6. VALUES / ESG -->
-      <section class="panel values" id="values" data-tone="sage" aria-labelledby="values-title">
-        <header class="section-head">
-          <p class="eyebrow" data-reveal><span data-i18n="values.eyebrow">Цінності · ESG</span></p>
-          <h2 class="h2" id="values-title" data-reveal data-i18n="values.title">Те, у&nbsp;що <em>ми&nbsp;віримо</em></h2>
-          <p class="text text--muted" data-reveal data-i18n="values.intro">Ми працюємо за принципами ESG: бережемо довкілля, підтримуємо людей і ведемо бізнес чесно.</p>
-        </header>
-
-        <figure class="values__media" data-reveal data-parallax>
+        <figure class="production__photo">
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 48vh, 100vw" srcset="assets/img/about-field-aerial-800.webp 800w, assets/img/about-field-aerial-1400.webp 1400w, assets/img/about-field-aerial-2400.webp 2400w">
-            <img src="assets/img/about-field-aerial-1400.jpg" sizes="(min-width: 1024px) 48vh, 100vw" srcset="assets/img/about-field-aerial-800.jpg 800w, assets/img/about-field-aerial-1400.jpg 1400w, assets/img/about-field-aerial-2400.jpg 2400w" alt="Соняшникове поле з висоти пташиного польоту" data-i18n-attr="alt:alt.aerial2" width="1400" height="933" loading="lazy" decoding="async">
+            <source type="image/webp" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
+            <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
           </picture>
-          <span class="photo-title" aria-hidden="true" data-i18n="photo.values">Земля і люди</span>
         </figure>
 
-        <ul class="values__list">
-          <li class="value" data-reveal>
-            <span class="value__num">I</span>
-            <div>
-              <h3 class="value__title" data-i18n="values.v1.title">Натуральна переробка</h3>
-              <p class="value__text" data-i18n="values.v1.text">Механічне пресування без зайвої хімії. Олія зберігає все, що дала природа.</p>
-            </div>
-          </li>
-          <li class="value" data-reveal>
-            <span class="value__num">II</span>
-            <div>
-              <h3 class="value__title" data-i18n="values.v2.title">Відповідальне виробництво</h3>
-              <p class="value__text" data-i18n="values.v2.text">Ощадливо використовуємо ресурси й дбаємо про людей та громади, де працюємо.</p>
-            </div>
-          </li>
-          <li class="value" data-reveal>
-            <span class="value__num">III</span>
-            <div>
-              <h3 class="value__title" data-i18n="values.v3.title">Виняткова якість</h3>
-              <p class="value__text" data-i18n="values.v3.text">Лабораторний контроль на кожному етапі та відповідність міжнародним стандартам.</p>
-            </div>
-          </li>
-        </ul>
+        <div class="production__text">
+          <p class="eyebrow" data-reveal><span data-i18n="production.eyebrow">Виробництво</span></p>
+          <h2 class="h2 production__title" id="production-title" data-reveal data-i18n="production.title">Чотири кроки <em>до&nbsp;бездоганної олії</em></h2>
+          <a class="btn" href="production.html" data-reveal>
+            <span data-i18n="production.more">Про виробництво</span>
+            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+          </a>
+
+          <ol class="process" data-process data-reveal>
+            <li class="process__step is-active">
+              <button class="process__head" type="button" id="step-1-head" aria-expanded="true" aria-controls="step-1">
+                <span class="process__num">01</span>
+                <span class="process__title" data-i18n="production.s1.title">Приймання сировини</span>
+                <svg class="process__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12m-5-5 5 5-5 5"/></svg>
+              </button>
+              <div class="process__panel" id="step-1" role="region" aria-labelledby="step-1-head">
+                <figure class="process__media">
+                  <picture>
+                    <source type="image/webp" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/export-trucks-800.webp 800w, assets/img/export-trucks-1400.webp 1400w">
+                    <img src="assets/img/export-trucks-800.jpg" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/export-trucks-800.jpg 800w, assets/img/export-trucks-1400.jpg 1400w" alt="Автоцистерни з олією на дорозі серед соняшникових полів" data-i18n-attr="alt:alt.trucks" width="800" height="447" loading="lazy" decoding="async">
+                  </picture>
+                </figure>
+                <p class="process__text" data-i18n="production.s1.text">Приймаємо насіння від перевірених аграріїв і контролюємо його якість ще на вході.</p>
+              </div>
+            </li>
+            <li class="process__step">
+              <button class="process__head" type="button" id="step-2-head" aria-expanded="false" aria-controls="step-2">
+                <span class="process__num">02</span>
+                <span class="process__title" data-i18n="production.s2.title">Очищення</span>
+                <svg class="process__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12m-5-5 5 5-5 5"/></svg>
+              </button>
+              <div class="process__panel" id="step-2" role="region" aria-labelledby="step-2-head">
+                <figure class="process__media">
+                  <picture>
+                    <source type="image/webp" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/about-texture-700.webp 700w, assets/img/about-texture-1200.webp 1200w">
+                    <img src="assets/img/about-texture-700.jpg" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/about-texture-700.jpg 700w, assets/img/about-texture-1200.jpg 1200w" alt="Очищене насіння соняшнику крупним планом" data-i18n-attr="alt:alt.clean" width="700" height="938" loading="lazy" decoding="async">
+                  </picture>
+                </figure>
+                <p class="process__text" data-i18n="production.s2.text">Очищуємо й сушимо насіння, щоб у пресування потрапляла лише чиста сировина.</p>
+              </div>
+            </li>
+            <li class="process__step">
+              <button class="process__head" type="button" id="step-3-head" aria-expanded="false" aria-controls="step-3">
+                <span class="process__num">03</span>
+                <span class="process__title" data-i18n="production.s3.title">Подвійне пресування</span>
+                <svg class="process__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12m-5-5 5 5-5 5"/></svg>
+              </button>
+              <div class="process__panel" id="step-3" role="region" aria-labelledby="step-3-head">
+                <figure class="process__media">
+                  <picture>
+                    <source type="image/webp" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/production-interior-800.webp 800w, assets/img/production-interior-1400.webp 1400w">
+                    <img src="assets/img/production-interior-800.jpg" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/production-interior-800.jpg 800w, assets/img/production-interior-1400.jpg 1400w" alt="Цех пресування з сучасним обладнанням" data-i18n-attr="alt:alt.press" width="800" height="446" loading="lazy" decoding="async">
+                  </picture>
+                </figure>
+                <p class="process__text" data-i18n="production.s3.text">Подвійне механічне пресування зберігає смак, колір і цінні властивості олії.</p>
+              </div>
+            </li>
+            <li class="process__step">
+              <button class="process__head" type="button" id="step-4-head" aria-expanded="false" aria-controls="step-4">
+                <span class="process__num">04</span>
+                <span class="process__title" data-i18n="production.s4.title">Контроль якості та&nbsp;зберігання</span>
+                <svg class="process__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12m-5-5 5 5-5 5"/></svg>
+              </button>
+              <div class="process__panel" id="step-4" role="region" aria-labelledby="step-4-head">
+                <figure class="process__media">
+                  <picture>
+                    <source type="image/webp" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/production-lab-800.webp 800w, assets/img/production-lab-1400.webp 1400w">
+                    <img src="assets/img/production-lab-800.jpg" sizes="(min-width: 1024px) 26vw, 100vw" srcset="assets/img/production-lab-800.jpg 800w, assets/img/production-lab-1400.jpg 1400w" alt="Лаборант перевіряє зразки олії" data-i18n-attr="alt:alt.lab" width="800" height="446" loading="lazy" decoding="async">
+                  </picture>
+                </figure>
+                <p class="process__text" data-i18n="production.s4.text">Лабораторія перевіряє кожну партію, а олія зберігається в резервуарах із контрольованими умовами.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
       </section>
 
-      <!-- 7. EXPORT & PARTNERSHIP — after the Veltom reference: label, heading, two benefit rows, button;
+      <!-- 6. EXPORT & PARTNERSHIP — after the Veltom reference: label, heading, two benefit rows, button;
            a tall port photo with the trucks photo overlapping its lower left corner in a cream frame -->
-      <section class="panel export" id="export" data-tone="cream" aria-labelledby="export-title">
+      <section class="panel export" id="export" data-tone="light" aria-labelledby="export-title">
         <div class="export__text">
           <p class="eyebrow" data-reveal><span data-i18n="export.eyebrow">Експорт і партнерство</span></p>
           <h2 class="h2 export__title" id="export-title" data-reveal data-i18n="export.title">Українська олія — <em>для партнерів у&nbsp;всьому світі</em></h2>
@@ -381,8 +348,8 @@
         </div>
       </section>
 
-      <!-- 8. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
-      <section class="panel contacts" id="contacts" data-tone="cream" aria-labelledby="contacts-title">
+      <!-- 7. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
+      <section class="panel contacts" id="contacts" data-tone="dark" data-theme="dark" aria-labelledby="contacts-title">
         <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it).
              data-theme="dark": the header logo over it turns white -->
         <div class="contacts__cta" data-theme="dark" data-tone="photo">
@@ -467,9 +434,9 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=11"></script>
+  <script src="assets/js/i18n.js?v=18"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="assets/js/main.js?v=12" defer></script>
+  <script src="assets/js/main.js?v=17" defer></script>
 </body>
 </html>

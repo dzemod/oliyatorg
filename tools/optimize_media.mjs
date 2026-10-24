@@ -5,6 +5,7 @@
 //
 // Photos  images/<name>.jpg  ->  site/assets/img/<name>-{800,1400,2400}.{webp,jpg}
 //         (portrait photos: 700/1200/1800). Double extensions like .jpg.jpg are handled.
+// Cards   product photos listed in CARDS -> site/assets/img/<name>-card-{800,1400,2000}.{webp,jpg} (2:1)
 // Video   images/hero-video.mp4 -> site/assets/img/hero-1920.mp4 (< 4 MB) and hero-960.mp4 (light)
 // Poster  images/hero-poster.jpg if present, otherwise a frame from the video
 //         -> site/assets/img/hero-poster-{960,1920}.{webp,jpg}
@@ -38,6 +39,41 @@ async function photo(file, name) {
     await img.clone().jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(jpg);
     await img.clone().webp({ quality: 74 }).toFile(webp);
     console.log(`${name}-${w}: jpg ${kb(jpg)}, webp ${kb(webp)}`);
+  }
+}
+
+// 2:1 card crops for the home page product cards. The card box takes the height left on the screen, so it runs
+// from about 1:1 (tall screens) to 2:1 (short laptops); the page crops the centre with object-fit: cover, and the
+// product stays whole at any of those proportions (a 4:3 box shows exactly the band below).
+// The sources are portrait and the product (cork to seeds) is taller than a plain crop allows, so the
+// crop takes the product band [top, bottom] (fractions of the source height) and, when that band is too tall
+// for the width, widens the plain studio backdrop by repeating its edge columns ('copy' — 'mirror' doubles shadows).
+const RATIO = 2;
+const CARDS = {
+  'product-oil-unrefined': [.1667, .932],
+  'product-oil-refined': [.1667, .932],
+  'product-meal': [.24, .98],    // taller band: the bowl + pellets are wide and must fit a ~1:1 box
+};
+
+async function card(file, name) {
+  const [t, b] = CARDS[name];
+  const src = path.join(SRC, file);
+  const { width: W, height: H } = await sharp(src).metadata();
+  const top = Math.round(t * H);
+  const h = Math.max(Math.round(b * H) - top, Math.round(W / RATIO));
+  const side = Math.max(0, Math.round(h * RATIO) - W);
+  for (const w of [800, 1400, 2000]) {
+    const jpg = path.join(OUT, `${name}-card-${w}.jpg`);
+    const webp = path.join(OUT, `${name}-card-${w}.webp`);
+    if (fresh(jpg) && fresh(webp)) continue;
+    const buf = await sharp(src).rotate()
+      .extract({ left: 0, top, width: W, height: Math.min(h, H - top) })
+      .extend({ left: Math.floor(side / 2), right: Math.ceil(side / 2), extendWith: 'copy' })
+      .toBuffer();
+    const img = sharp(buf).resize({ width: w, height: Math.round(w / RATIO), fit: 'cover' });
+    await img.clone().jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(jpg);
+    await img.clone().webp({ quality: 74 }).toFile(webp);
+    console.log(`${name}-card-${w}: jpg ${kb(jpg)}, webp ${kb(webp)}`);
   }
 }
 
@@ -82,6 +118,7 @@ const files = fs.readdirSync(SRC);
 for (const f of files) {
   const name = baseName(f);
   if (/\.(jpe?g|png)$/i.test(f) && name !== 'hero-poster') await photo(f, name);
+  if (/\.(jpe?g|png)$/i.test(f) && CARDS[name]) await card(f, name);
 }
 const vid = files.find(f => /\.mp4$/i.test(f) && baseName(f).startsWith('hero'));
 if (vid) { video(vid); await poster(vid); } else console.log('No hero video found in images/');

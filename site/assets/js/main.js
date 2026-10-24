@@ -21,7 +21,45 @@
       const v = n.nodeValue.replace(SHORT[lang], '$1$2 ').replace(SHORT[lang], '$1$2 ').replace(/ —/g, ' —');
       if (v !== n.nodeValue) n.nodeValue = v;
     }
+    tieLastWords();
   }
+
+  /* No orphans: tie the last two words of every text block, so a single word never ends up alone on the last line.
+     Layout-aware: where the tied pair is wider than its box (very narrow columns), the tie is undone — overflow is
+     worse than an orphan. Re-run on resize and language change. */
+  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, dt, dd, li > a, figcaption, label, .btn > span, .process__title, .tabs__tab';
+  let ties = [];
+  function tieLastWords() {
+    ties.forEach(({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); });
+    ties = [];
+    $$(ORPHAN_BLOCKS).forEach(el => {
+      const tie = tieLast(el);
+      if (tie && el.scrollWidth > el.clientWidth + 1) {
+        tie.node.nodeValue = tie.node.nodeValue.slice(0, tie.i) + ' ' + tie.node.nodeValue.slice(tie.i + 1);
+      } else if (tie) ties.push(tie);
+    });
+  }
+  function tieLast(el) {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    let word = false;
+    for (let k = nodes.length - 1; k >= 0; k--) {
+      const node = nodes[k], v = node.nodeValue;
+      for (let i = v.length - 1; i >= 0; i--) {
+        if (v[i] === ' ') return null;         // already tied by the short-word rule
+        if (!/\s/.test(v[i])) { word = true; continue; }
+        if (word) { node.nodeValue = v.slice(0, i) + ' ' + v.slice(i + 1); return { node, i }; }
+      }
+    }
+    return null;
+  }
+  let tieTimer;
+  addEventListener('resize', () => { clearTimeout(tieTimer); tieTimer = setTimeout(tieLastWords, 150); });
+
+  /* ---------- Input modality: focus outlines only for keyboard navigation ---------- */
+  addEventListener('pointerdown', () => { root.dataset.input = 'mouse'; }, true);
+  addEventListener('keydown', e => { if (e.key === 'Tab' || e.key.startsWith('Arrow') || e.key === 'Home' || e.key === 'End') root.dataset.input = 'key'; }, true);
 
   /* ---------- Language (UA in HTML, EN in i18n.js) ---------- */
   const dict = { uk: { ...(window.I18N && window.I18N.ukExtra) }, en: (window.I18N && window.I18N.en) || {} };
@@ -59,6 +97,7 @@
   let saved = null;
   try { saved = localStorage.getItem('lang'); } catch (e) { /* storage blocked */ }
   if (saved === 'en') setLang('en'); else typo(document.body, 'uk');
+  document.fonts && document.fonts.ready.then(tieLastWords);   // widths are only final with the web fonts
 
   $$('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 
@@ -259,25 +298,57 @@
     gsap.from('.hero__eyebrow, .hero__lead, .hero .btn, .hero__hint', { y: 24, opacity: 0, duration: 1.1, ease: 'power3.out', stagger: .1, delay: .55 });
   }
 
-  /* ---------- Production steps (tabs on desktop, plain list on mobile) ---------- */
-  const steps = $$('.step');
+  /* ---------- Production steps ----------
+     Desktop (horizontal page): one step is always active; hover (mouse), click or keyboard switches it and its photo
+     and text fade in beside the list. Phones / tablets: an accordion — tapping a step opens it (and closes the
+     others), tapping the open step closes it. ↑ ↓ Home End move between the step buttons. */
+  const steps = $$('.process__step');
+  const heads = steps.map(s => $('.process__head', s));
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
   function activate(step) {
     steps.forEach(s => {
       const on = s === step;
       s.classList.toggle('is-active', on);
-      $('.step__head', s).setAttribute('aria-expanded', String(on));
+      $('.process__head', s).setAttribute('aria-expanded', String(on));
     });
   }
-  steps.forEach(s => {
-    const head = $('.step__head', s);
-    head.addEventListener('click', () => { if (horizontal) activate(s); });
-    head.addEventListener('mouseenter', () => { if (horizontal) activate(s); });
+  steps.forEach((s, i) => {
+    heads[i].addEventListener('click', () => activate(!horizontal && s.classList.contains('is-active') ? null : s));
+    heads[i].addEventListener('mouseenter', () => { if (horizontal && canHover) activate(s); });
+    heads[i].addEventListener('focus', () => { if (horizontal && root.dataset.input === 'key') activate(s); });
+    heads[i].addEventListener('keydown', e => {
+      const to = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: heads.length - 1 }[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      heads[(to + heads.length) % heads.length].focus();
+    });
   });
-  // Vertical layout shows every step open
-  if (!horizontal) $$('.step__head').forEach(h => h.setAttribute('aria-expanded', 'true'));
+
+  /* ---------- Tabs (About values): click / tap, ← → Home End; roving tabindex ---------- */
+  $$('[data-tabs]').forEach(box => {
+    const tabs = $$('[role="tab"]', box);
+    const select = (tab, focus) => {
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        $('#' + t.getAttribute('aria-controls')).classList.toggle('is-active', on);
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', e => {
+        const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (to === undefined) return;
+        e.preventDefault();
+        select(tabs[(to + tabs.length) % tabs.length], true);
+      });
+    });
+  });
 
   /* ---------- Header colours (vertical page) ---------- */
-  // Light text over the hero, solid cream bar once the hero has scrolled under the header.
+  // Light text over the hero, solid stone bar once the hero has scrolled under the header.
   // (The horizontal page switches the logo and menu per section in onTrack above.)
   if (!horizontal) {
     const header = $('#header');
