@@ -35,9 +35,9 @@ window.I18N = {
     'about.t1': 'Nature',
     'about.t2': 'People',
     'about.t3': 'Quality',
-    'about.v1': 'Pressing without chemical solvents, our own 1.8 MW solar power plant and husks as fuel.',
-    'about.v2': 'We support sport, culture and local initiatives, and run our business transparently.',
-    'about.v3': 'Quality control at every stage — from incoming raw materials to the finished product.',
+    'about.v1': 'No chemical solvents, our own 1.8&nbsp;MW solar power plant.',
+    'about.v2': 'We support sport, culture and local initiatives.',
+    'about.v3': 'Quality control at every stage — from raw materials to finished product.',
     'about.cta': 'About us',
 
     'numbers.eyebrow': 'Oliyatorg in numbers',

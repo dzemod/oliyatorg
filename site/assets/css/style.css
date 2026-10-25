@@ -516,6 +516,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .tabs__tab { min-height: clamp(40px, 5vh, 56px); padding-bottom: .8vh; font-size: clamp(11px, 1.3vh, 14px); }
   .is-h .tabs__panels { margin-top: 2.4vh; }
   .is-h .tabs__panel { font-size: clamp(15px, 1.75vh, 19px); }
+  /* rule: on desktop every tab text is ONE line across the full tabs row (so switching never changes the height);
+     keep the texts short enough — the ellipsis is only a safety net */
+  .tabs__panel { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .is-h .about .h2.about__title { font-size: var(--h2-size); white-space: nowrap; }
   .is-h .about__body { width: 100%; max-width: none; margin-top: var(--content-gap); }   /* on the content line */
   .is-h .about__body .btn > span { white-space: nowrap; }
