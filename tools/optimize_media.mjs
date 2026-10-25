@@ -48,14 +48,47 @@ async function photo(file, name) {
 // The sources are portrait and the product (cork to seeds) is taller than a plain crop allows, so the
 // crop takes the product band [top, bottom] (fractions of the source height) and, when that band is too tall
 // for the width, widens the plain studio backdrop by repeating its edge columns ('copy' — 'mirror' doubles shadows).
+// A landscape source lists instead { box: [left, top, right, bottom] of the product, crop: right edge to keep }
+// (fractions) and optionally fill: the card is centred on the product, which takes that share of its width (default
+// FILL; it stays whole in a box down to 2 × fill : 1),
+// and the backdrop is widened on every side that needs it.
 const RATIO = 2;
+const FILL = .53;
 const CARDS = {
   'product-oil-unrefined': [.1667, .932],
   'product-oil-refined': [.1667, .932],
   'product-meal': [.24, .98],    // taller band: the bowl + pellets are wide and must fit a ~1:1 box
+  'product-cake': { box: [.139, .29, .80, .968], crop: .915, fill: .46 },   // grey strip on the right; whole down to ~0.92:1
 };
 
+async function cardFromBox(file, name) {
+  const { box: [l, t, r, b], crop, fill = FILL } = CARDS[name];
+  const src = path.join(SRC, file);
+  const { width: W, height: H } = await sharp(src).metadata();
+  const keepW = Math.round(crop * W);
+  const cw = Math.round((r - l) * W / fill), ch = Math.round(cw / RATIO);
+  const cx = Math.round((l + r) / 2 * W);
+  const left = cx - Math.round(cw / 2), right = left + cw;
+  const below = Math.round(.02 * ch);                              // a little backdrop under the product
+  const top = Math.round(b * H) + below - ch, bottom = top + ch;
+  for (const w of [800, 1400, 2000]) {
+    const jpg = path.join(OUT, `${name}-card-${w}.jpg`);
+    const webp = path.join(OUT, `${name}-card-${w}.webp`);
+    if (fresh(jpg) && fresh(webp)) continue;
+    const x0 = Math.max(0, left), y0 = Math.max(0, top);
+    const buf = await sharp(src).rotate()
+      .extract({ left: x0, top: y0, width: Math.min(keepW, right) - x0, height: Math.min(H, bottom) - y0 })
+      .extend({ left: x0 - left, right: Math.max(0, right - keepW), top: y0 - top, bottom: Math.max(0, bottom - H), extendWith: 'copy' })
+      .toBuffer();
+    const img = sharp(buf).resize({ width: w, height: Math.round(w / RATIO), fit: 'cover' });
+    await img.clone().jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(jpg);
+    await img.clone().webp({ quality: 74 }).toFile(webp);
+    console.log(`${name}-card-${w}: jpg ${kb(jpg)}, webp ${kb(webp)}`);
+  }
+}
+
 async function card(file, name) {
+  if (!Array.isArray(CARDS[name])) return cardFromBox(file, name);
   const [t, b] = CARDS[name];
   const src = path.join(SRC, file);
   const { width: W, height: H } = await sharp(src).metadata();

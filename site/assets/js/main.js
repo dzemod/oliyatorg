@@ -258,6 +258,32 @@
     blocks.forEach(el => io.observe(el));
   }
 
+  /* ---------- Key numbers: count up once ----------
+     When the section comes into view (horizontal page: a ScrollTrigger on the track tween via containerAnimation;
+     vertical page: a normal one), each line grows from the left and its number counts up to the value in the HTML
+     (from data-from, else 0), one after another. Only text and a transform change. Reduced motion or no GSAP:
+     the final numbers stay as they are. Screen readers read the .sr-only copy, never the counting digits. */
+  const stats = $$('.stat');
+  if (stats.length && hasGsap && !reduceMotion) {
+    gsap.registerPlugin(ScrollTrigger);
+    const nums = stats.map(s => {
+      const el = $('.stat__num', s);
+      return { el, to: +el.textContent, from: +(el.dataset.from || 0) };
+    });
+    nums.forEach(n => { n.el.textContent = n.from; });
+    gsap.set(stats, { '--grow': 0 });
+    const tl = gsap.timeline({ paused: true });
+    nums.forEach((n, i) => {
+      const at = i * .15;
+      tl.to(stats[i], { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
+      const o = { v: n.from };
+      tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + .25);
+    });
+    ScrollTrigger.create(horizontal
+      ? { trigger: '.numbers', containerAnimation: hTween, start: 'left 60%', once: true, onEnter: () => tl.play() }
+      : { trigger: '.stats', start: 'top 85%', once: true, onEnter: () => tl.play() });
+  }
+
   /* ---------- Anchor links (work in both modes) ---------- */
   function scrollToTarget(id) {
     const target = id === 'top' ? null : document.getElementById(id);
