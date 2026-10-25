@@ -825,7 +825,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* two light sections in a row share one gap instead of adding two paddings */
   .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { padding-top: 0; }
   /* anchors and focus never land under the fixed header */
-  [id] { scroll-margin-top: calc(var(--header-h) + 16px); }
+  html { scroll-padding-top: 0; }   /* sections land at the very top: their 120px top padding keeps the label clear of the header */
+  [id]:not(section) { scroll-margin-top: calc(var(--header-h) + 16px); }   /* smaller targets land just under the header */
+  /* a light section right after another one has no top padding (they share one gap): it lands 120px lower instead */
+  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { scroll-margin-top: var(--sec-top); }
 
   /* inside sections: label → heading 24 · heading → text 28 · text → button 40 · button (or heading) → content 56 */
   .panel :is(.eyebrow, .pill) { margin: 0 0 24px; }
