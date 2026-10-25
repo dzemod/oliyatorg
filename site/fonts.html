@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Оліяторг — варіанти шрифтів</title>
+  <link rel="icon" href="assets/brand/mark-01.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- every family below has a Cyrillic subset with Ukrainian і ї є ґ; Google serves the subsets by unicode-range -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&family=Prata&family=Onest:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400;1,7..72,500&family=Golos+Text:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --stone: #EFECE6; --graphite: #2B2A27; --graphite-70: rgb(43 42 39 / .7); --olive: #4A4A3A;
+      --gold: #B8913A; --gold-text: #9C7B31; --gold-ink: #816629; --gold-light: #D4BD89;
+      --stone-75: rgb(239 236 230 / .75); --line: rgb(43 42 39 / .15); --line-light: rgb(239 236 230 / .3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #E4E0D8; color: var(--graphite); font: 400 16px/1.5 "Manrope", system-ui, sans-serif; }
+    img { display: block; }
+
+    .page { max-width: 1440px; margin: 0 auto; padding: 48px 16px 80px; }
+    .intro { max-width: 760px; margin-bottom: 40px; }
+    .intro h1 { font: 500 34px/1.1 "Manrope", sans-serif; letter-spacing: -.02em; }
+    .intro p { margin-top: 12px; color: var(--graphite-70); }
+    .jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .jump a { padding: 6px 14px; border: 1px solid var(--line); color: inherit; text-decoration: none; font-size: 14px; }
+    .jump a:hover { border-color: var(--graphite); }
+
+    /* one option = a tag line + two mini sites (UA / EN) */
+    .opt { margin-top: 56px; scroll-margin-top: 16px; }
+    .opt__tag { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--graphite); margin-bottom: 18px; }
+    .opt__letter { font: 600 40px/1 "Manrope", sans-serif; }
+    .opt__names { font: 500 20px/1.3 "Manrope", sans-serif; }
+    .opt__note { font-size: 13px; color: var(--graphite-70); }
+    .opt__pair { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 1100px) { .opt__pair { grid-template-columns: 1fr 1fr; } }
+
+    /* ---------- mini site: our real design, scaled down ---------- */
+    .mini { font-family: var(--b); background: var(--stone); color: var(--graphite); overflow: hidden; box-shadow: 0 1px 0 var(--line); }
+    .mini em { font-style: italic; }
+    .m-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: var(--olive); color: var(--stone); }
+    .m-head img { height: 34px; width: auto; }
+    .m-nav { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: flex-end; }
+    .m-nav ul { display: flex; gap: 18px; list-style: none; flex-wrap: wrap; }
+    .m-nav li { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; opacity: .55; }
+    .m-nav li.is-on { opacity: 1; color: var(--gold-light); }
+    .m-lang { font-size: 11px; font-weight: 600; letter-spacing: .08em; }
+    .m-lang b { color: var(--gold-light); font-weight: 800; }
+
+    .m-hero { padding: 40px 24px 44px; background: linear-gradient(160deg, #5a5946, var(--olive) 70%); color: var(--stone); }
+    .label { display: flex; width: fit-content; align-items: center; gap: 10px; height: 34px; padding: 0 16px; border: 1px solid var(--line); font-size: 13px; font-weight: 500; }
+    .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .m-hero .label { border-color: rgb(239 236 230 / .45); }
+    .m-h1 { margin: 18px 0 16px; font-family: var(--h); font-weight: var(--hw, 400); font-size: calc(46px * var(--hs, 1)); line-height: 1.04; letter-spacing: var(--hl, -.012em); }
+    .m-h1 span { display: block; }
+    .m-h1 em { color: var(--gold-light); }
+    .m-lead { max-width: 30em; font-size: 15px; line-height: 1.65; color: var(--stone-75); }
+
+    .btn { display: inline-flex; gap: 2px; margin-top: 22px; }
+    .btn > span, .btn svg { height: 48px; background: var(--stone); color: var(--graphite); border: 1px solid var(--graphite); }
+    .btn > span { display: flex; align-items: center; padding: 0 24px; font-size: 11.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+    .btn svg { order: -1; width: 48px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+    .btn svg path { transform-box: fill-box; transform-origin: center; transform: rotate(-45deg); }
+
+    .m-body { display: grid; grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 40px; }
+    @media (min-width: 640px) { .m-body { grid-template-columns: 1.25fr 1fr; } }
+    .m-h2 { margin: 16px 0 14px; font-family: var(--h); font-weight: var(--hw, 400); font-size: calc(34px * var(--hs, 1)); line-height: 1.06; letter-spacing: var(--hl, -.01em); }
+    .m-h2 em { display: block; color: var(--gold-text); }
+    .m-text { font-size: 15px; line-height: 1.7; }
+    .m-card__img { aspect-ratio: 2 / 1; background: linear-gradient(135deg, #d9c48f, #b8913a 55%, #8a6a2a); }
+    .caption { margin-top: 12px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--graphite-70); }
+    .m-card__title { margin-top: 6px; font-family: var(--h); font-weight: var(--hw2, 500); font-size: calc(26px * var(--hs, 1)); line-height: 1.12; letter-spacing: var(--hl, 0); }
+
+    .m-stat { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; padding: 26px 24px 30px; border-top: 1px solid var(--line); }
+    .m-stat__num { font-family: var(--h); font-weight: var(--hw, 400); font-size: calc(96px * var(--hs, 1)); line-height: .9; color: var(--gold-ink); letter-spacing: var(--hl, -.01em); font-variant-numeric: lining-nums; }
+    .m-stat__label { padding-bottom: 8px; font-size: 14px; color: var(--graphite-70); }
+    .m-abc { margin-left: auto; padding-bottom: 8px; font-family: var(--h); font-size: 22px; color: var(--graphite); }
+
+    /* the six pairs; --hs evens out the visual size (Cormorant runs small), --hw heading weight */
+    #a { --h: "Cormorant Garamond", serif; --b: "Manrope", sans-serif; --hs: 1.12; }
+    #b { --h: "Playfair Display", serif;   --b: "Inter", sans-serif;   --hs: .9; }
+    #c { --h: "Prata", serif;              --b: "Onest", sans-serif;   --hs: .86; --hw2: 400; }
+    #d { --h: "Lora", serif;               --b: "Montserrat", sans-serif; --hs: .92; }
+    #e { --h: "Literata", serif;           --b: "Golos Text", sans-serif; --hs: .9; }
+    #f { --h: "Onest", sans-serif;         --b: "Inter", sans-serif;   --hs: .88; --hw: 500; --hw2: 500; --hl: -.025em; }
+
+    @media (max-width: 600px) {
+      .m-head { flex-direction: column; align-items: flex-start; padding: 14px 16px; }
+      .m-nav { justify-content: flex-start; }
+      .m-hero, .m-body, .m-stat { padding-left: 16px; padding-right: 16px; }
+      .m-h1 { font-size: calc(34px * var(--hs, 1)); }
+      .m-stat__num { font-size: calc(72px * var(--hs, 1)); }
+      .m-abc { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="intro">
+      <h1>Оліяторг — варіанти шрифтової пари</h1>
+      <p>Шість варіантів на нашому дизайні та палітрі, українською та англійською. Усі шрифти повністю підтримують кирилицю, зокрема і, ї, є, ґ. Сайт поки не змінено — це лише сторінка для вибору.</p>
+      <nav class="jump" aria-label="Варіанти">
+        <a href="#a">A</a><a href="#b">B</a><a href="#c">C</a><a href="#d">D</a><a href="#e">E</a><a href="#f">F</a>
+      </nav>
+    </header>
+
+    <div id="options"></div>
+  </main>
+
+  <template id="mini">
+    <article class="mini">
+      <div class="m-head">
+        <img src="assets/brand/logo-01-white.svg" alt="Оліяторг" width="400" height="340">
+        <div class="m-nav"><ul data-k="nav"></ul><span class="m-lang" data-k="lang"></span></div>
+      </div>
+      <div class="m-hero">
+        <p class="label" data-k="eyebrow"></p>
+        <h2 class="m-h1"><span data-k="l1"></span><span data-k="l2"></span><span><em data-k="l3"></em></span></h2>
+        <p class="m-lead" data-k="lead"></p>
+        <a class="btn"><span data-k="cta"></span><svg viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
+      </div>
+      <div class="m-body">
+        <div>
+          <p class="label" data-k="pill"></p>
+          <h3 class="m-h2" data-k="h2"></h3>
+          <p class="m-text" data-k="p"></p>
+        </div>
+        <div class="m-card">
+          <div class="m-card__img" aria-hidden="true"></div>
+          <p class="caption" data-k="meta"></p>
+          <h4 class="m-card__title" data-k="title"></h4>
+        </div>
+      </div>
+      <div class="m-stat">
+        <span class="m-stat__num">1991</span>
+        <span class="m-stat__label" data-k="year"></span>
+        <span class="m-abc" data-k="abc"></span>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const OPTIONS = [
+      ['a', 'A', 'Cormorant Garamond + Manrope', 'Поточна пара'],
+      ['b', 'B', 'Playfair Display + Inter', ''],
+      ['c', 'C', 'Prata + Onest', 'Prata не має курсиву — браузер нахиляє його сам'],
+      ['d', 'D', 'Lora + Montserrat', ''],
+      ['e', 'E', 'Literata + Golos Text', ''],
+      ['f', 'F', 'Onest (заголовки) + Inter (текст)', 'Лише гротески. Onest не має курсиву — браузер нахиляє його сам']
+    ];
+    const TEXT = {
+      uk: {
+        nav: ['Головна', 'Продукція', 'Виробництво', 'Сертифікати', 'Контакти'], lang: '<b>UA</b> / EN',
+        eyebrow: 'Соняшникова олія з України',
+        l1: 'Натуральна переробка.', l2: 'Відповідальне виробництво.', l3: 'Виняткова якість.',
+        lead: 'Оліяторг — український виробник і експортер соняшникової олії подвійного пресування.',
+        cta: 'Дізнатися більше', pill: 'Продукція', h2: 'Натуральний продукт <em>із соняшнику</em>',
+        p: 'Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини.',
+        meta: 'Олія / подвійне пресування', title: 'Олія нерафінована', year: 'рік заснування', abc: 'і ї є ґ — Їжак, Ґанок, Єдність'
+      },
+      en: {
+        nav: ['Home', 'Products', 'Production', 'Certificates', 'Contacts'], lang: 'UA / <b>EN</b>',
+        eyebrow: 'Sunflower oil from Ukraine',
+        l1: 'Natural processing.', l2: 'Responsible production.', l3: 'Exceptional quality.',
+        lead: 'Oliyatorg is a Ukrainian producer and exporter of double-pressed sunflower oil.',
+        cta: 'Learn more', pill: 'Products', h2: 'A natural product <em>from sunflower</em>',
+        p: 'Oliyatorg processes sunflower seeds from Ukrainian farmers with double pressing technology — no chemical solvents, keeping the natural properties of the raw material.',
+        meta: 'Oil / double pressed', title: 'Unrefined oil', year: 'year founded', abc: 'Aa Gg Rr — 0123456789'
+      }
+    };
+    const tpl = document.getElementById('mini');
+    const out = document.getElementById('options');
+    function mini(lang) {
+      const node = tpl.content.firstElementChild.cloneNode(true);
+      node.lang = lang;
+      const t = TEXT[lang];
+      node.querySelectorAll('[data-k]').forEach(el => {
+        const k = el.dataset.k;
+        if (k === 'nav') el.innerHTML = t.nav.map((n, i) => `<li${i ? '' : ' class="is-on"'}>${n}</li>`).join('');
+        else el.innerHTML = t[k];
+      });
+      return node;
+    }
+    OPTIONS.forEach(([id, letter, names, note]) => {
+      const sec = document.createElement('section');
+      sec.className = 'opt'; sec.id = id;
+      sec.innerHTML = `<div class="opt__tag"><span class="opt__letter">${letter}</span><span class="opt__names">${names}</span>${note ? `<span class="opt__note">${note}</span>` : ''}</div><div class="opt__pair"></div>`;
+      sec.querySelector('.opt__pair').append(mini('uk'), mini('en'));
+      out.append(sec);
+    });
+  </script>
+</body>
+</html>

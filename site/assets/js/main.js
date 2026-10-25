@@ -112,7 +112,7 @@
     burger.setAttribute('aria-label', t(open ? 'ui.closeMenu' : 'ui.openMenu'));
   }
   burger.addEventListener('click', () => menu(burger.getAttribute('aria-expanded') !== 'true'));
-  nav.addEventListener('click', e => { if (e.target.closest('a')) menu(false); });
+  nav.addEventListener('click', e => { if (e.target.closest('a[href]')) menu(false); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && nav.classList.contains('is-open')) { menu(false); burger.focus(); }
   });

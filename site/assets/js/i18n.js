@@ -13,6 +13,7 @@ window.I18N = {
     'ui.lang': 'Site language',
     'ui.openMenu': 'Open menu',
     'ui.closeMenu': 'Close menu',
+    'ui.soon': 'Page coming soon',
 
     'nav.home': 'Home',
     'nav.products': 'Products',

@@ -203,7 +203,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor;
   transform: scaleX(0); transform-origin: right; transition: transform .45s var(--ease);
 }
-.nav__list a:hover::after, .nav__list a[aria-current]::after { transform: scaleX(1); transform-origin: left; }
+.nav__list a[href]:hover::after, .nav__list a[aria-current]::after { transform: scaleX(1); transform-origin: left; }
 
 .lang { display: flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 600; letter-spacing: .08em; }
 .lang__btn { min-width: 40px; min-height: 40px; color: var(--fg-2); }
@@ -686,7 +686,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .nav, .nav .on-dark { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
 }
 .nav__list a, .nav .lang__btn { transition: color .2s ease; }
-.nav__list a:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
+.nav__list a[href]:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
 .nav .lang__btn[aria-pressed="true"] { color: var(--nav-accent); }
 
 /* sideways trackpad swipes scroll the page instead of triggering browser back/forward */
@@ -758,7 +758,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
 .foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
-.foot__nav a:hover { color: var(--hover); }
+.foot__nav a[href]:hover { color: var(--hover); }
+/* pages still in development: listed in the menus, but not links yet (no href) */
+.nav__list a[aria-disabled="true"], .foot__nav a[aria-disabled="true"] { opacity: .55; cursor: default; }
 .foot .lang { grid-area: lang; }
 /* "UA" starts exactly on the column's left edge (no centred 40px box): text-width buttons with even spacing */
 .foot .lang__btn { min-width: 0; padding: 0 10px; }
