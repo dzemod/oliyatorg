@@ -84,7 +84,7 @@ window.I18N = {
     'contacts.partner': 'Become a partner',
     'contacts.phone': 'Phone',
     'contacts.address': 'Address',
-    'contacts.addressValue': '5&nbsp;Symona Petliury St., Kyiv, Ukraine',
+    'contacts.addressValue': '5&nbsp;Symona&nbsp;Petliury St., Kyiv, Ukraine',
     'modal.title': 'Let’s talk <em>about cooperation</em>',
     'ui.close': 'Close',
 

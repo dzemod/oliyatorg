@@ -594,20 +594,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .export__caption { margin-top: 1.4vh; font-size: clamp(15px, 1.8vh, 20px); }
 }
 
-/* Phones and tablets (vertical page) — one rhythm and comfortable sizes */
-@media (max-width: 1023px) {
-  /* two light sections in a row share one gap (96px phones / 130px tablets) instead of adding two paddings */
-  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { padding-top: 0; }
-  /* body text at least 16px, captions 15px */
-  .feature__text { font-size: 16px; }
-  .stat__label { font-size: 15px; }
-  .foot .foot__nav a { padding: 12px 0; font-size: 15px; }   /* 44px tap height */
-  .foot .foot__copy { font-size: 14px; }
-  .foot .lang__btn { min-height: 44px; }
-  .contact-row a, .contact-row__cta { display: inline-block; padding: 9px 0; margin: -9px 0; }   /* 44px tap height, same layout */
-  .contacts .contacts__side { padding: 64px var(--pad) 40px; }
-}
-
 /* Short desktop screens (e.g. 1280×720 laptops) */
 @media (min-width: 1024px) and (max-height: 760px) {
   :root { --h2-size: 46px; --content-gap: 4vh; }
@@ -812,3 +798,66 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .modal[open]::backdrop { animation: modal-fade .4s ease; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(18px); } }
 @keyframes modal-fade { from { opacity: 0; } }
+
+/* =========================================================================
+   Phones and tablets (vertical page, below 1024px) — one rhythm, more air.
+   Last in the file, so it wins over the section rules above; the desktop page never sees it.
+   ========================================================================= */
+@media (max-width: 1023px) {
+  :root { --sec-top: 120px; --sec-bottom: 120px; }   /* the same 120px gap between all sections */
+  /* two light sections in a row share one gap instead of adding two paddings */
+  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { padding-top: 0; }
+  /* anchors and focus never land under the fixed header */
+  [id] { scroll-margin-top: calc(var(--header-h) + 16px); }
+
+  /* inside sections: label → heading 24 · heading → text 28 · text → button 40 · button (or heading) → content 56 */
+  .panel :is(.eyebrow, .pill) { margin: 0 0 24px; }
+  .hero .hero__title, .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
+  .export .export__title, .contacts .contacts__title { margin: 0; }
+  .hero .hero__lead, .about .about__body .text { margin: 28px 0 0; }
+  .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
+  .products .cards, .production .process, .about .about__tabs, .numbers .stats, .export .features, .export .export__stat { margin-top: 56px; }
+
+  /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
+  .products .cards { gap: 64px; }
+  .card .card__meta { margin-top: 20px; }
+  .card .card__title { margin-top: 12px; }
+
+  /* rows: more air in each */
+  .process .process__head { padding: 32px 0; }
+  .export .features { gap: 64px; }
+  .contacts .contact-row { padding: 32px 0; }
+
+  /* Partnership: a full-screen photo like the hero — label and heading at the top, the button at the bottom */
+  .contacts .contacts__cta { min-height: 100svh; }
+  .contacts .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-height: 100svh;
+    padding: calc(var(--header-h) + 48px) var(--pad) 48px; }
+  .contacts .contacts__cta-inner .btn { margin-top: auto; }
+  .contacts .contacts__title { text-transform: none; letter-spacing: -.012em;   /* normal case, sized like the hero heading */
+    font-size: min(clamp(40px, 11.5vw, 60px), calc((100vw - 2 * var(--pad)) / 11.4)); line-height: 1.02; }
+
+  /* footer: more air between the rows, the menu (≈20px between items) and the copyright */
+  .contacts .contacts__side { padding: 64px var(--pad) 48px; }
+  .contacts .foot { margin-top: 64px; gap: 40px; }
+  .foot .foot__nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 0; font-size: 15px; }
+  .foot .foot__copy { font-size: 14px; }
+  .foot .lang__btn { min-height: 44px; }
+  .contact-row a, .contact-row__cta { padding: 9px 0; margin: -9px 0; }   /* 44px tap height, same layout */
+  .contact-row a { display: inline-block; }
+
+  /* body text at least 16px, captions 15px */
+  .feature__text { font-size: 16px; }
+  .stat__label { font-size: 15px; }
+}
+@media (max-width: 639px) {
+  :root { --pad: 24px; }   /* 24px side margins on phones */
+  /* key numbers: one column, each with its line, number and caption */
+  .numbers .stats { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .numbers .stat { padding-top: 20px; }
+  /* contact rows: the label above the value, so the value gets the full width */
+  .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .contacts .contact-row dt { padding-top: 0; }
+  /* "для міжнародних партнерів" (≈10.5em) stays on one line — no single word on the last line */
+  .export .export__title { font-size: min(clamp(38px, 10vw, 56px), calc((100vw - 2 * var(--pad)) / 10.7)); }
+  .products .products__all, .production .production__more { margin-top: 40px; }
+}
