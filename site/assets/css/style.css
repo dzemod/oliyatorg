@@ -172,7 +172,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   font-size: 15px; font-weight: 500; letter-spacing: .02em;
 }
 .btn__arrow, .link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform .4s var(--ease); }
-.btn:hover .btn__arrow, .link:hover svg { transform: translateX(4px); }
+.link:hover svg { transform: translateX(4px); }
 .btn--light { border: 1px solid rgb(239 236 230 / .55); color: var(--stone); background: rgb(239 236 230 / .08); }
 .btn--light:hover { background: var(--stone); color: var(--graphite); }
 .btn--dark { background: var(--graphite); color: var(--stone); }
@@ -319,9 +319,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 .numbers__inner { position: relative; }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
-/* the line over each number is a pseudo-element, so main.js can grow it from the left (--grow, a scaleX) */
+/* the line over each number */
 .stat { position: relative; padding-top: 16px; }
-.stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); transform: scaleX(var(--grow, 1)); transform-origin: left center; }
+.stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
 /* lining, tabular figures: every number sits on the baseline (no hanging 9s) and keeps its width while counting */
 .stat__value { font: 400 clamp(52px, 15vw, 72px)/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
@@ -413,16 +413,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .form__status.is-error { color: var(--error); }
 
 /* ---------- Motion (main.js) ----------
-   html.anim (set in <head>) hides the animated elements only until main.js has given them their start states;
-   without JS, GSAP or motion they are simply visible. */
-.anim.is-h [data-hero], .anim :is([data-reveal], .h2, .contacts__title, .about__photo, .export__photo, .contacts__photo,
-  .process__head, .process__media, .contact-rows, .tabs__list, .foot) { visibility: hidden; }
-/* phones and tablets: a short CSS fade up as each block comes into view (main.js adds .rv, .in and html.fade) */
-.fade .rv { transition: opacity .6s ease-out var(--d, 0s), transform .6s ease-out var(--d, 0s); }
-.fade .rv:not(.in) { opacity: 0; transform: translateY(16px); }
-/* heading words while they rise from their mask (the padding keeps descenders and italic overhangs whole) */
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .1em .16em; margin: 0 -.1em -.16em; }
-.w__in { display: inline-block; }
+   One marker for every animated block: [data-reveal] (the hero: [data-hero]). html.anim (set in <head>) hides them
+   only until main.js has given them their start states; without JS, GSAP or motion they are simply visible.
+   main.js adds .rv (with its --d delay in the section's order) and html.fade, and .in to each section as it enters;
+   the blocks then fade in with a CSS transition (compositor only): desktop with a 16px rise, phones and tablets opacity only. */
+.anim :is([data-hero], [data-reveal]) { visibility: hidden; }
+.fade .rv { transition: opacity .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s); }   /* cubic-bezier(.33, 1, .68, 1) = power2.out */
+.fade .panel:not(.in) .rv { opacity: 0; }
+.fade.is-h .rv { transition: opacity .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s), transform .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s); }
+.fade.is-h .panel:not(.in) .rv { transform: translateY(16px); }
 
 /* =========================================================================
    Tablet (vertical)
@@ -515,6 +514,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .hero__hint span { position: relative; top: 2px; } /* drops the 12px font's descent so the letters' bottom meets the border's bottom */
   .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; }
   .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--gold-light); animation: hint 2.4s var(--ease) infinite; }
+  .is-h .hero.is-away .hero__hint i::after { animation: none; }   /* main.js: the hero is off screen */
   @keyframes hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
   /* 2. About — one screen on the shared 12-column grid: photo (cols 1–5) and text column (cols 7–12),
@@ -697,19 +697,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    rotates in place from ↗ to →.
    ========================================================================= */
 .btn, .btn--light, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
-.btn > span, .btn .btn__arrow {
+.btn > span {
   height: 54px; background: var(--btn-bg); color: var(--graphite); border: 1px solid var(--graphite);
   transition: background-color .3s ease, border-color .3s ease, color .3s ease;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
-/* the viewBox (62.4 units around the 24-unit arrow) fills the box, keeping the arrow 20px and centred */
-.btn .btn__arrow { order: -1; flex: none; width: 54px; padding: 0; overflow: hidden; }
-.btn:hover > span, .btn:hover .btn__arrow { background: var(--olive); border-color: var(--btn-hover-line); color: var(--stone); }
-.btn:hover .btn__arrow { transform: none; }
-.btn .btn__arrow path { transform-box: fill-box; transform-origin: center; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
-.btn:hover .btn__arrow path { transform: rotate(0deg); }
+/* the arrow box: a square flex box, the 20px icon centred in it by flexbox (independent of the font and line box);
+   the icon's arrow is drawn centred on (12, 12), so rotating the whole svg turns it around the arrow's own centre */
+.btn > .btn__box { order: -1; flex: none; width: 54px; padding: 0; justify-content: center; }
+.btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
+.btn:hover > span { background: var(--olive); border-color: var(--btn-hover-line); color: var(--stone); }
+.btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
-  .btn:hover .btn__arrow path { transform: rotate(-45deg); }
+  .btn:hover .btn__arrow { transform: rotate(-45deg); }
 }
 
 /* =========================================================================

@@ -29,16 +29,15 @@
      worse than an orphan. Re-run on resize and language change. */
   const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, dt, dd, li > a, figcaption, label, .btn > span, .process__title, .tabs__tab';
   let ties = [];
+  const untie = ({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); };
   function tieLastWords() {
-    ties.forEach(({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); });
+    ties.forEach(untie);
+    // all writes first, then all reads, then the few undos: one layout for the whole page, not one per block
+    const tied = $$(ORPHAN_BLOCKS).map(el => ({ el, tie: tieLast(el) })).filter(x => x.tie);
+    // wider than its box — or, for an inline-block (hero lines), wider than its parent
+    const over = tied.map(({ el }) => el.scrollWidth > el.clientWidth + 1 || el.getBoundingClientRect().width > el.parentElement.clientWidth + 1);
     ties = [];
-    $$(ORPHAN_BLOCKS).forEach(el => {
-      const tie = tieLast(el);
-      // wider than its box — or, for an inline-block (hero lines), wider than its parent
-      if (tie && (el.scrollWidth > el.clientWidth + 1 || el.getBoundingClientRect().width > el.parentElement.clientWidth + 1)) {
-        tie.node.nodeValue = tie.node.nodeValue.slice(0, tie.i) + ' ' + tie.node.nodeValue.slice(tie.i + 1);
-      } else if (tie) ties.push(tie);
-    });
+    tied.forEach((x, k) => over[k] ? untie(x.tie) : ties.push(x.tie));
   }
   function tieLast(el) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -150,7 +149,7 @@
   /* ---------- Scroll mode ---------- */
   const track = $('#track');
   const scroller = $('.scroller');
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both (phones load GSAP after this file)
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both (phones don't load GSAP)
   // No GSAP (CDN blocked) → fall back to the normal vertical page.
   if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h');
   const horizontal = root.classList.contains('is-h');
@@ -265,140 +264,89 @@
     document.addEventListener('langchange', () => ScrollTrigger.refresh());
   }
 
-  /* ---------- Motion: calm, once, on first view ----------
-     The inline script in <head> adds html.anim when motion is allowed; CSS hides the animated elements only while
-     that class is on, so nothing flashes before this runs. Here the start states are set, then html.anim comes off —
-     if GSAP is missing or anything below throws, everything is simply visible.
-     Desktop (horizontal page): one ScrollTrigger per section (containerAnimation on the track tween) plays the
-     section's timeline once, then the trigger and the timeline are killed. Only transform, opacity and clip-path move:
-       · hero, on load: the video scales 1.05 → 1, label, heading line by line (from a mask), then text and button
-       · headings line by line from a mask (the markup is restored afterwards); photos: a clip-path wipe from the
-         bottom (no scaling inside); rows and the tab line: drawn from the left; the rest: a soft fade up, in turn
-     Phones and tablets (vertical page): no GSAP at all — each block gets .rv and fades up 16px with a CSS transition
-     when an IntersectionObserver sees it (nothing runs while scrolling). */
+  /* ---------- Motion: one calm sequence per section, once ----------
+     Every animated block carries [data-reveal] (the hero's: [data-hero]). The inline script in <head> adds html.anim
+     when motion is allowed and CSS hides those blocks only while it is on; here the start states are set, then
+     html.anim comes off — if anything below throws, everything is simply visible.
+     Each section has ONE trigger. When it enters, the section gets .in and its blocks play in reading order — label →
+     heading → text → button → content, each role left to right, top to bottom — staggered 0.08 s, 0.6 s each
+     (power2.out). The motion itself is a CSS transition of opacity (+ a 16px rise on desktop), so the compositor runs
+     it and no script works per frame. The section's numbers count up from the same trigger. Everything is built once
+     (never again on resize or language change) and each trigger is removed after it fires.
+       · desktop (horizontal page): the trigger is a ScrollTrigger on the track tween (containerAnimation)
+       · phones and tablets (vertical page): an IntersectionObserver; opacity only, no movement
+       · hero: the same sequence on load · reduced motion: none of this, the final state at once */
   const animOn = root.classList.contains('anim');
   const endAnim = () => { root.classList.remove('anim'); window.__anim = true; };
-  const touched = [];
+  const STAGGER = .08;
+  const role = el => el.matches('.eyebrow, .pill') ? 0 : el.matches('h1, h2') ? 1 : el.matches('.text, .hero__lead') ? 2 : el.matches('.btn, .hero__hint') ? 3 : 4;
+  // the section's blocks in reading order (left to right in 40px bands, then top to bottom)
+  function ordered(sec) {
+    const box = $$('[data-reveal], [data-hero]', sec).map(el => { const r = el.getBoundingClientRect(); return { el, role: role(el), x: Math.round(r.left / 40), y: r.top }; });
+    return box.sort((a, b) => a.role - b.role || a.x - b.x || a.y - b.y).map(b => b.el);
+  }
+  // numbers count up to the values in the HTML (from data-from, else 0), one after another; screen readers read the
+  // .sr-only copy. Only the digits' text changes (tabular figures, so nothing around them moves).
+  function counter(sec) {
+    const nums = $$('.stat__num', sec).map(el => ({ el, to: +el.textContent, from: +(el.dataset.from || 0) }));
+    if (!nums.length) return null;
+    nums.forEach(n => { n.el.textContent = n.from; });
+    return delay => {
+      const t0 = performance.now() + delay * 1000, dur = 1400;
+      const tick = now => {
+        let busy = false;
+        nums.forEach((n, i) => {
+          const p = Math.min(1, Math.max(0, (now - t0 - i * STAGGER * 1000) / dur));
+          n.el.textContent = Math.round(n.from + (n.to - n.from) * (1 - (1 - p) ** 2));   // power2.out
+          if (p < 1) busy = true;
+        });
+        if (busy) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+  }
+  const sections = $$('.panel');
+  const restore = () => $$('.stat__num').forEach(el => { const s = el.parentNode.querySelector('.sr-only'); if (s) el.textContent = s.textContent; });
   try {
-    if (!animOn || reduceMotion) endAnim();
-    else if (!horizontal) {
-      // ---- vertical page: CSS fades ----
-      const items = [];
-      const add = (els, step = 0) => els.forEach((el, i) => { if (el && !items.includes(el)) { el.classList.add('rv'); if (step) el.style.setProperty('--d', (i * step).toFixed(2) + 's'); items.push(el); } });
-      // the hero text is the first screen (and the LCP): it shows at once, no fade
-      $$('.panel:not(.hero)').forEach(sec => {
-        add($$('.eyebrow, .pill, .h2, .contacts__title', sec));
-        add($$('.card, .feature, .stat, .process__step, .contact-row', sec), .06);
-        add($$('[data-reveal], .about__photo, .export__photo, .tabs__panels, .foot', sec));
+    const canTrigger = horizontal ? hasGsap : 'IntersectionObserver' in window;
+    if (!animOn || reduceMotion || !canTrigger) endAnim();
+    else {
+      // every section's order is read before anything is written: one layout, no thrashing
+      const orders = sections.map(ordered);
+      const plays = sections.map((sec, k) => {
+        orders[k].forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i * STAGGER).toFixed(2) + 's'); });
+        const count = counter(sec);
+        return () => { sec.classList.add('in'); if (count) count(.2); };
       });
-      if ('IntersectionObserver' in window) {
+      root.classList.add('fade');
+      if (horizontal) {
+        sections.forEach((sec, k) => {
+          if (!sec.classList.contains('hero')) ScrollTrigger.create({ trigger: sec, containerAnimation: hTween, start: 'left 70%', onEnter: self => { self.kill(); plays[k](); } });
+        });
+      } else {
         const io = new IntersectionObserver(entries => entries.forEach(en => {
-          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-        }), { rootMargin: '0px 0px -6% 0px' });
-        items.forEach(el => io.observe(el));
-        root.classList.add('fade');
+          if (!en.isIntersecting) return;
+          io.unobserve(en.target);
+          plays[sections.indexOf(en.target)]();
+        }), { rootMargin: '0px 0px -15% 0px' });
+        sections.forEach(sec => { if (!sec.classList.contains('hero')) io.observe(sec); });
       }
       endAnim();
-    } else if (!hasGsap) endAnim();
-    else {
-      // ---- horizontal page: GSAP, one trigger per section ----
-      gsap.registerPlugin(ScrollTrigger);
-      const EASE = 'power3.out';
-      const mark = (...els) => els.flat().filter(Boolean).forEach(e => touched.push(e));
-      const fade = (tl, els, at, each = .1) => { els = els.filter(Boolean); if (!els.length) return; mark(els);
-        tl.fromTo(els, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: each, clearProps: 'opacity,transform' }, at); };
-      const wipe = (tl, figs, at, each = .1) => { figs = figs.filter(Boolean); if (!figs.length) return; mark(figs);
-        tl.fromTo(figs, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.out', stagger: each, clearProps: 'clipPath' }, at); };
-      const draw = (tl, rows, at, each = .1) => { rows = rows.filter(Boolean); if (!rows.length) return; mark(rows);
-        tl.fromTo(rows, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: EASE, stagger: each, clearProps: 'clipPath' }, at); };
-      // heading → word masks; words on one line share a delay, so each line slides up as one piece
-      const lines = (tl, h, at) => {
-        if (!h) return; mark(h);
-        const html = h.innerHTML;
-        const wrap = node => [...node.childNodes].forEach(n => {
-          if (n.nodeType === 1 && n.nodeName !== 'BR') return wrap(n);
-          if (n.nodeType !== 3 || !n.textContent.trim()) return;
-          const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach(part => {
-            if (!part) return;
-            if (/^\s+$/.test(part)) return frag.append(part);
-            const w = document.createElement('span'); w.className = 'w';
-            const i = document.createElement('span'); i.className = 'w__in'; i.textContent = part;
-            w.append(i); frag.append(w);
-          });
-          n.replaceWith(frag);
-        });
-        wrap(h);
-        const ins = $$('.w__in', h);
-        const tops = ins.map(i => Math.round(i.parentNode.getBoundingClientRect().top));
-        const rows = [...new Set(tops)].sort((a, b) => a - b);
-        tl.fromTo(ins, { yPercent: 112 }, { yPercent: 0, duration: 1.1, ease: EASE, stagger: i => rows.indexOf(tops[i]) * .12,
-          onComplete: () => { if (h.querySelector('.w')) h.innerHTML = html; } }, at);
-      };
-      const section = (sec, build, start = 'left 55%') => {
-        if (!sec) return;
-        const tl = gsap.timeline({ paused: true, onComplete: () => tl.kill() });
-        build(tl);
-        ScrollTrigger.create({ trigger: sec, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() });
-      };
-      const head = (tl, sec) => { fade(tl, [$('.eyebrow, .pill', sec)], 0); lines(tl, $('.h2, .contacts__title', sec), .1); };
-
-      // hero, on load
-      mark($$('[data-hero]'));
-      const heroTl = gsap.timeline({ delay: .1, onComplete: () => heroTl.kill() });
-      heroTl.fromTo('.hero__media', { scale: 1.05 }, { scale: 1, duration: 2.6, ease: 'power2.out', clearProps: 'scale' }, 0)
-        .fromTo('.hero__eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, clearProps: 'opacity,transform' }, .15)
-        .fromTo('.hero__title .line > *', { yPercent: 108 }, { yPercent: 0, duration: 1.2, ease: EASE, stagger: .12, clearProps: 'transform' }, .3)
-        .fromTo('.hero__lead, .hero .btn, .hero__hint', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: .1, clearProps: 'opacity,transform' }, .85);
-
-      section($('.about'), tl => { wipe(tl, [$('.about__photo')], 0); head(tl, $('.about')); fade(tl, [$('.about .text'), $('.about__body .btn')], .4); draw(tl, [$('.tabs__list')], .5); fade(tl, [$('.tabs__panels')], .7); }, 'left 70%');
-      section($('.numbers'), tl => { head(tl, $('.numbers')); fade(tl, $$('.stat'), .3); });
-      section($('#products'), tl => { head(tl, $('#products')); fade(tl, [$('.products__all')], .45); wipe(tl, $$('.card__media'), .3); fade(tl, $$('.card__meta, .card__title'), .65, .06); });
-      section($('#production'), tl => { head(tl, $('#production')); fade(tl, [$('.production__more')], .45); draw(tl, $$('.process__head'), .3); wipe(tl, $$('.process__media'), .5, 0); });
-      section($('#export'), tl => { wipe(tl, [$('.export__photo')], 0); head(tl, $('#export')); fade(tl, $('.feature'), .35); }, 'left 70%');
-      section($('#contacts'), tl => { wipe(tl, [$('.contacts__photo')], 0); head(tl, $('.contacts__cta')); fade(tl, [$('.contacts__cta .btn')], .45); draw(tl, [$('.contact-rows'), ...$$('.contact-row')], .3, .08); fade(tl, [$('.foot')], .7); }, 'left 70%');
-      endAnim();
+      // hero: on load, once its start state has painted
+      const heroPlay = plays[sections.findIndex(s => s.classList.contains('hero'))];
+      if (heroPlay) requestAnimationFrame(() => requestAnimationFrame(heroPlay));
     }
   } catch (err) {
     // never leave anything hidden
-    if (window.gsap) gsap.set(touched.flatMap(el => [el, ...$$('*', el)]), { clearProps: 'opacity,transform,clipPath,scale' });
     root.classList.remove('fade');
+    restore();
     endAnim();
     console.error(err);
   }
 
-  /* ---------- Numbers: count up once ----------
-     When a group comes into view (horizontal page: a ScrollTrigger on the track tween via containerAnimation;
-     vertical page: a normal one), its numbers count up to the values in the HTML (from data-from, else 0), one after
-     another; in the key numbers each line also grows from the left just before its number. Only text and a transform
-     change. Reduced motion or no GSAP: the final numbers stay as they are. Screen readers read the .sr-only copy,
-     never the counting digits. */
-  function countUp(box, lines, start) {
-    const nums = $$('.stat__num', box).map(el => ({ el, line: lines ? el.closest('.stat') : null, to: +el.textContent, from: +(el.dataset.from || 0) }));
-    nums.forEach(n => { n.el.textContent = n.from; if (n.line) n.line.style.setProperty('--grow', 0); });
-    const play = () => {
-      if (!window.gsap) {   // GSAP never arrived: just show the final values
-        nums.forEach(n => { n.el.textContent = n.to; if (n.line) n.line.style.removeProperty('--grow'); });
-        return;
-      }
-      const tl = gsap.timeline({ onComplete: () => tl.kill() });
-      nums.forEach((n, i) => {
-        const at = i * .15;
-        if (n.line) tl.to(n.line, { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
-        const o = { v: n.from };
-        tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + (n.line ? .25 : 0));
-      });
-    };
-    if (horizontal) ScrollTrigger.create({ trigger: box, containerAnimation: hTween, start, once: true, onEnter: play });
-    else {   // vertical page: no ScrollTrigger at all (it would listen to every scroll), an IntersectionObserver instead
-      const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { play(); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' });
-      io.observe(box);
-    }
-  }
-  if (!reduceMotion && (horizontal ? hasGsap : 'IntersectionObserver' in window)) {
-    // key numbers: when the section is 60% in
-    if ($('.stats')) countUp(horizontal ? $('.numbers') : $('.stats'), true, 'left 60%');
-  }
+  // the hero's scroll hint loops only while the hero is on screen (an endless animation would restyle every frame)
+  const hero = $('.hero');
+  if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
 
   /* ---------- Anchor links (work in both modes) ---------- */
   function scrollToTarget(id) {

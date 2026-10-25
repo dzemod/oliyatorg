@@ -25,13 +25,19 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
 
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); the two faces of the first screen load first -->
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-400-normal.woff2" crossorigin>
+  <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); every face of the first screen is preloaded, so the
+       text never swaps after it has painted (the heading is Literata 400 on desktop, 500 on phones and tablets) -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-400-normal.woff2" crossorigin media="(min-width: 1024px)">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-400-italic.woff2" crossorigin media="(min-width: 1024px)">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-500-normal.woff2" crossorigin media="(max-width: 1023px)">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-500-italic.woff2" crossorigin media="(max-width: 1023px)">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-400-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-600-normal.woff2" crossorigin>
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=100">
+  <link rel="stylesheet" href="assets/css/style.css?v=102">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -97,15 +103,15 @@
 
         <div class="hero__inner photo-text">
           <p class="eyebrow eyebrow--light hero__eyebrow" data-hero data-i18n="hero.eyebrow">Соняшникова олія з України</p>
-          <h1 class="hero__title" id="hero-title">
-            <span class="line" data-hero><span data-i18n="hero.l1">Натуральна переробка.</span></span>
-            <span class="line" data-hero><span data-i18n="hero.l2">Відповідальне виробництво.</span></span>
-            <span class="line" data-hero><em data-i18n="hero.l3">Виняткова якість.</em></span>
+          <h1 class="hero__title" id="hero-title" data-hero>
+            <span class="line"><span data-i18n="hero.l1">Натуральна переробка.</span></span>
+            <span class="line"><span data-i18n="hero.l2">Відповідальне виробництво.</span></span>
+            <span class="line"><em data-i18n="hero.l3">Виняткова якість.</em></span>
           </h1>
           <p class="hero__lead" data-hero data-i18n="hero.lead">Оліяторг — український виробник і експортер соняшникової олії подвійного пресування.</p>
           <a class="btn btn--light" href="#about" data-hero>
             <span data-i18n="hero.cta">Дізнатися більше</span>
-            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+            <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
           </a>
         </div>
 
@@ -118,7 +124,7 @@
            the text column on the right with the values tabs on the bottom line -->
       <!-- About texts: from brief.txt (ESG, double pressing without solvents, quality at every stage, community support) -->
       <section class="panel about" id="about" data-tone="light" aria-labelledby="about-title">
-        <figure class="about__photo">
+        <figure class="about__photo" data-reveal>
           <picture>
             <source type="image/webp" sizes="(min-width: 1024px) 125vh, 100vw" srcset="assets/img/about-main-800.webp 800w, assets/img/about-main-1400.webp 1400w, assets/img/about-main-2400.webp 2400w">
             <img src="assets/img/about-main-1400.jpg" sizes="(min-width: 1024px) 125vh, 100vw" srcset="assets/img/about-main-800.jpg 800w, assets/img/about-main-1400.jpg 1400w, assets/img/about-main-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="1045" loading="lazy" decoding="async">
@@ -132,7 +138,7 @@
             <p class="text" data-reveal data-i18n="about.p1">Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини.</p>
             <!-- TODO: about.html when the page is built --><a class="btn" href="#contacts" data-reveal>
               <span data-i18n="about.cta">Про компанію</span>
-              <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+              <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
             </a>
           </div>
 
@@ -185,7 +191,7 @@
           <h2 class="h2 products__title" id="products-title" data-reveal data-i18n="products.title">Натуральний продукт <em>із&nbsp;соняшнику</em></h2>
           <!-- TODO: products.html when the page is built --><a class="btn products__all" href="#contacts" data-reveal>
             <span data-i18n="products.all">Вся продукція</span>
-            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+            <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
           </a>
         </header>
 
@@ -241,7 +247,7 @@
           <h2 class="h2 production__title" id="production-title" data-reveal data-i18n="production.title">Чотири кроки <em>до&nbsp;якісної олії</em></h2>
           <!-- TODO: production.html when the page is built --><a class="btn production__more" href="#contacts" data-reveal>
             <span data-i18n="production.more">Про виробництво</span>
-            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+            <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
           </a>
         </header>
 
@@ -318,7 +324,7 @@
            and a big number with its caption at the bottom right. Phones: photo, heading, features, number. -->
       <section class="panel export" id="export" data-tone="light" aria-labelledby="export-title">
         <!-- the plant photo (not a port or trucks): no delivery method is confirmed -->
-        <figure class="export__photo" data-parallax>
+        <figure class="export__photo" data-parallax data-reveal>
           <picture>
             <source type="image/webp" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
             <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
@@ -364,20 +370,20 @@
             <h2 class="contacts__title" id="contacts-title" data-reveal data-i18n="contacts.title">Хочете стати нашим партнером?</h2>
             <button class="btn" type="button" data-modal-open data-reveal>
               <span data-i18n="contacts.cta">Написати нам</span>
-              <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+              <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
             </button>
           </div>
         </div>
 
         <div class="contacts__side">
           <dl class="contact-rows">
-            <div class="contact-row"><dt data-i18n="contacts.address">Адреса</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query=%D0%B2%D1%83%D0%BB.+%D0%A1%D0%B8%D0%BC%D0%BE%D0%BD%D0%B0+%D0%9F%D0%B5%D1%82%D0%BB%D1%8E%D1%80%D0%B8%2C+5%2C+%D0%9A%D0%B8%D1%97%D0%B2" target="_blank" rel="noopener" data-i18n="contacts.addressValue">м.&nbsp;Київ, вул.&nbsp;Симона&nbsp;Петлюри,&nbsp;5</a></dd></div>
-            <div class="contact-row"><dt data-i18n="contacts.phone">Телефон</dt><dd><a href="tel:+380442281197">+38&nbsp;044&nbsp;228&nbsp;11&nbsp;97</a></dd></div>
-            <div class="contact-row"><dt>E-mail</dt><dd><a href="mailto:office@oliyatorg.ua">office@oliyatorg.ua</a></dd></div>
-            <div class="contact-row"><dt data-i18n="contacts.eyebrow">Співпраця</dt><dd><button class="contact-row__cta" type="button" data-modal-open><span data-i18n="contacts.partner">Стати партнером</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button></dd></div>
+            <div class="contact-row" data-reveal><dt data-i18n="contacts.address">Адреса</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query=%D0%B2%D1%83%D0%BB.+%D0%A1%D0%B8%D0%BC%D0%BE%D0%BD%D0%B0+%D0%9F%D0%B5%D1%82%D0%BB%D1%8E%D1%80%D0%B8%2C+5%2C+%D0%9A%D0%B8%D1%97%D0%B2" target="_blank" rel="noopener" data-i18n="contacts.addressValue">м.&nbsp;Київ, вул.&nbsp;Симона&nbsp;Петлюри,&nbsp;5</a></dd></div>
+            <div class="contact-row" data-reveal><dt data-i18n="contacts.phone">Телефон</dt><dd><a href="tel:+380442281197">+38&nbsp;044&nbsp;228&nbsp;11&nbsp;97</a></dd></div>
+            <div class="contact-row" data-reveal><dt>E-mail</dt><dd><a href="mailto:office@oliyatorg.ua">office@oliyatorg.ua</a></dd></div>
+            <div class="contact-row" data-reveal><dt data-i18n="contacts.eyebrow">Співпраця</dt><dd><button class="contact-row__cta" type="button" data-modal-open><span data-i18n="contacts.partner">Стати партнером</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button></dd></div>
           </dl>
 
-          <footer class="foot">
+          <footer class="foot" data-reveal>
             <ul class="foot__nav">
               <li><a href="#top" data-i18n="nav.home">Головна</a></li>
               <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.products">Продукція</a></li>
@@ -426,7 +432,7 @@
         <div class="form__foot">
           <button class="btn" type="submit">
             <span data-i18n="form.send">Надіслати</span>
-            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+            <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
           </button>
           <p class="form__status" role="status" aria-live="polite"></p>
         </div>
@@ -435,14 +441,14 @@
   </dialog>
 
   <script src="assets/js/i18n.js?v=27"></script>
-  <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones: main.js first (it shows the page and
-       sets up the fades), then GSAP for the number count-up — no ScrollTrigger (it would run on every scroll).
+  <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are
+       CSS transitions and the count-up is a few requestAnimationFrame steps, so no GSAP there.
        Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=30';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=32';
     (document.documentElement.classList.contains('is-h')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
-      : [mainSrc, gsapSrc + 'gsap.min.js']).forEach(function (src) {
+      : [mainSrc]).forEach(function (src) {
       var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s);
     });
   </script>
