@@ -6,9 +6,10 @@
   <title data-i18n="meta.title">Оліяторг — соняшникова олія з України</title>
   <meta name="description" data-i18n-attr="content:meta.desc" content="Оліяторг — український виробник і експортер соняшникової олії. Натуральна переробка, подвійне пресування, принципи ESG.">
   <meta name="theme-color" content="#EFECE6">
-  <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="assets/brand/favicon-192.png" sizes="192x192" type="image/png">
-  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <link rel="icon" href="assets/brand/mark-01.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/brand/favicon-01-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/brand/favicon-01-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
 
   <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); the two faces of the first screen load first -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cormorant-garamond-cyrillic-400-normal.woff2" crossorigin>
@@ -16,7 +17,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=87">
+  <link rel="stylesheet" href="assets/css/style.css?v=88">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -36,10 +37,10 @@
   <!-- ============ HEADER ============ -->
   <header class="header" id="header">
     <a class="header__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
-      <!-- LOGO: assets/brand/logo.png (client's original) + logo-white.png (for dark sections / video).
-           Both are built by tools/make_logo_assets.mjs; CSS shows the right one. -->
-      <picture><source type="image/webp" srcset="assets/brand/logo-128.webp"><img class="logo logo--color" src="assets/brand/logo.png" alt="Оліяторг" width="200" height="200"></picture>
-      <picture><source type="image/webp" srcset="assets/brand/logo-white-128.webp"><img class="logo logo--white" src="assets/brand/logo-white.png" alt="" width="200" height="200" aria-hidden="true"></picture>
+      <!-- LOGO: option 01 in our palette — logo-01.svg (gold + graphite) on light sections, logo-01-white.svg (light gold +
+           stone) over the video, photos and dark sections; CSS shows the right one. The original PNGs stay in assets/brand, unused. -->
+      <img class="logo logo--color" src="assets/brand/logo-01.svg" alt="Оліяторг" width="400" height="340">
+      <img class="logo logo--white" src="assets/brand/logo-01-white.svg" alt="" width="400" height="340" aria-hidden="true">
     </a>
 
     <nav class="nav" id="nav" aria-label="Головне меню" data-i18n-attr="aria-label:ui.menu">

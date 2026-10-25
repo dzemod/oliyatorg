@@ -171,7 +171,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 
 /* ---------- Logo (one file; white variant via filter) ---------- */
-.logo { width: auto; height: 52px; }
+.logo { width: auto; height: 56px; }   /* logo 01 (400×340): the band wordmark stays legible */
 .logo--white { display: none; }
 .on-dark .logo--color { display: none; }
 .on-dark .logo--white { display: block; }
@@ -434,7 +434,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .burger { display: none; }
   .nav { display: flex; align-items: center; gap: 44px; }
   .nav__list { display: flex; gap: 34px; }
-  .logo { height: 64px; }
+  .logo { height: 76px; }
 
   .hero__title { font-size: clamp(56px, 6.2vw, 104px); }
   .hero__lead { font-size: 18px; }
