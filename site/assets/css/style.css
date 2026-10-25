@@ -846,6 +846,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     padding: calc(var(--header-h) + 48px) var(--pad) 48px; }
   .contacts .contacts__cta-inner .btn { margin-top: auto; }
   .contacts .contacts__title { text-transform: none; letter-spacing: -.012em; }   /* normal case, like the hero heading */
+  .contacts .contacts__cta .contacts__title { font-size: min(clamp(40px, 11.7vw, 64px), calc((100vw - 2 * var(--pad)) / 7.7)); }   /* "нашим партнером?" (≈7.6em in 500) always fits */
 
   /* footer: more air between the rows, the menu (≈20px between items) and the copyright */
   .contacts .contacts__side { padding: 64px var(--pad) 48px; }
