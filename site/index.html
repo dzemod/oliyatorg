@@ -16,7 +16,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=63">
+  <link rel="stylesheet" href="assets/css/style.css?v=64">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -159,7 +159,6 @@
       </section>
 
       <!-- 4. PRODUCTS -->
-      <!-- TODO: confirm products (names, short descriptions, photos) -->
       <section class="panel products" id="products" data-tone="light" aria-labelledby="products-title">
         <header class="products__head">
           <p class="pill" data-reveal><span data-i18n="products.eyebrow">Продукція</span></p>
@@ -214,7 +213,7 @@
            bottom line; below, two equal columns: the 4 steps (list) and the active step's photo with its text under it.
            main.js switches the steps (hover / click / keyboard); phones: an accordion with the photo and text in the open step. -->
       <!-- Steps: from brief.txt (incoming control, two-stage mechanical pressing without solvents, oil + press cake for feed) and the website (certified lab, oil tanks) -->
-      <!-- TODO: confirm with client --> <!-- exact production steps (cleaning / drying? stages of the pressing) and real photos -->
+      <!-- TODO: confirm with client --> <!-- exact production steps (cleaning / drying? stages of the pressing) -->
       <section class="panel production" id="production" data-tone="stone" aria-labelledby="production-title">
         <header class="production__head">
           <p class="eyebrow" data-reveal><span data-i18n="production.eyebrow">Виробництво</span></p>
@@ -328,12 +327,12 @@
           </button>
         </div>
 
-        <!-- TODO: confirm with client --> <!-- the sea-port photo suggests shipping by sea: keep it only if sea delivery is confirmed -->
+        <!-- the plant photo (not a port): sea delivery is not confirmed -->
         <div class="export__collage">
           <figure class="export__media" data-parallax>
             <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 36vw, 85vw" srcset="assets/img/export-port-700.webp 700w, assets/img/export-port-1200.webp 1200w, assets/img/export-port-1800.webp 1800w">
-              <img src="assets/img/export-port-1200.jpg" sizes="(min-width: 1024px) 36vw, 85vw" srcset="assets/img/export-port-700.jpg 700w, assets/img/export-port-1200.jpg 1200w, assets/img/export-port-1800.jpg 1800w" alt="Контейнеровоз під завантаженням у морському порту" data-i18n-attr="alt:alt.port" width="1200" height="1800" loading="lazy" decoding="async">
+              <source type="image/webp" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
+              <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
             </picture>
           </figure>
           <figure class="export__inset" data-reveal>

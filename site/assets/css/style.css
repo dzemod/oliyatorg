@@ -350,7 +350,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .export__text .btn { margin-top: 32px; }
 .export__collage { display: grid; grid-template-columns: repeat(12, 1fr); margin-top: 48px; }
 .export__media { grid-column: 3 / -1; grid-row: 1; overflow: hidden; aspect-ratio: 4 / 5; }
-.export__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.export__media img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
 .export__inset { grid-column: 1 / 9; grid-row: 1; align-self: end; z-index: 1; padding: 10px 10px 0 0; background: var(--bg); }
 .export__inset img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; }
 
