@@ -782,7 +782,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* normal case like the hero: up to its size (9vh), and "нашим партнером?" (≈7.45em) always fits the photo */
   .contacts__title { text-transform: none; letter-spacing: -.012em; font-size: clamp(30px, min(9vh, calc((92cqi - var(--pad)) / 7.6)), 120px); }
 
-  .contacts__side { grid-column: 1 / -1; align-self: stretch; margin-left: calc(var(--nav-left, 50vw) - var(--pad)); padding: calc(var(--content) - var(--top)) 0 0; }   /* rows on the content line */
+  .contacts__side { grid-column: 1 / -1; align-self: stretch; margin-left: calc(var(--nav-left, 50vw) - var(--pad)); padding: calc(var(--contacts-line, var(--content)) - var(--top)) 0 0; }   /* the first row's top line level with the heading's cap top (main.js) */
   /* rows from the content line, the footer on the bottom line: compact enough to fit between them */
   /* the four rows share the height from the content line to the footer (each at least its padding), so they spread
      over the column on any screen height; the value scales with the height, the small label is centred on it */
@@ -794,7 +794,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .foot { margin-top: clamp(40px, 7.4vh, 80px); padding-top: 0; grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "lang copy"; align-items: end; row-gap: 1.6vh; }
   .foot__nav { display: flex; flex-wrap: wrap; gap: 0 clamp(20px, 2vw, 40px); }   /* the menu in one row */
   .foot__nav a { padding: .5vh 0; font-size: clamp(13px, 1.45vh, 16px); }
-  .foot__copy { align-self: center; text-align: right; }
+  /* UA / EN and the copyright: no extra button height, so their text (not a taller box) ends on the bottom line, level with the button */
+  .foot .lang { line-height: 1; }
+  .foot .lang__btn { min-height: 0; }
+  .foot__copy { align-self: end; text-align: right; line-height: 1; }
 
   .is-h .contacts { width: 100vw; height: 100vh; }
 }

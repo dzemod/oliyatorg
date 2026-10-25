@@ -120,9 +120,28 @@
 
   /* ---------- Contacts screen: the photo ends before the header menu starts ---------- */
   // CSS reads --nav-left (desktop only) and keeps a gap, so no menu item ever meets the photo at any width.
+  // It also reads --contacts-line: the cap top of the heading's first line, from the section top, so the first
+  // contact row's top border sits level with "Хочете…" (the heading's size follows the photo's width).
+  // Offsets, not getBoundingClientRect, so the reveal animation's transforms don't count.
   // Runs before the scroll set-up below, so every later ScrollTrigger refresh measures the final layout.
   const navList = $('.nav__list');
-  const fitContacts = () => root.style.setProperty('--nav-left', Math.round(navList.getBoundingClientRect().left) + 'px');
+  const contactsSec = $('#contacts');
+  const contactsTitle = $('.contacts__title');
+  const pageTop = el => { let y = 0; for (; el; el = el.offsetParent) y += el.offsetTop; return y; };
+  const ctx = document.createElement('canvas').getContext('2d');
+  const wideMq = matchMedia('(min-width: 1024px)');
+  const fitContacts = () => {
+    root.style.setProperty('--nav-left', Math.round(navList.getBoundingClientRect().left) + 'px');
+    if (!contactsTitle || !wideMq.matches) return;
+    const cs = getComputedStyle(contactsTitle);
+    const size = parseFloat(cs.fontSize);
+    const lh = parseFloat(cs.lineHeight) || size * 1.2;
+    ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+    const m = ctx.measureText('Х');   // a flat-topped capital: its top is the cap height
+    const half = (lh - m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2;   // half-leading above the glyphs
+    const cap = pageTop(contactsTitle) - pageTop(contactsSec) + half + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
+    root.style.setProperty('--contacts-line', cap.toFixed(1) + 'px');
+  };
   fitContacts();
   addEventListener('resize', fitContacts);
   document.addEventListener('langchange', fitContacts);
