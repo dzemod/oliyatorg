@@ -578,19 +578,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
-     then the two features as one compact block on the left, ending on the bottom line, and the big number
-     with its caption at the bottom right (the caption on the bottom line) */
+     then from the content line the two features as one compact block on the left and the big number with its
+     caption at the right, its top level with the first feature (the caption ends on the right margin) */
   .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
   .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   .is-h .export .export__title { font-size: var(--h2-size); }
   .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--gap); margin-top: var(--content-gap); }
-  .is-h .features { display: flex; flex-direction: column; justify-content: flex-end; gap: clamp(36px, 5vh, 56px); margin: 0; }   /* one compact block on the bottom line */
+  .is-h .features { display: flex; flex-direction: column; justify-content: flex-start; gap: clamp(36px, 5vh, 56px); margin: 0; }   /* one compact block from the content line */
   .is-h .feature__icon { width: clamp(30px, 3.6vh, 44px); height: clamp(30px, 3.6vh, 44px); }
   .is-h .feature__title { margin-top: 2.2vh; font-size: clamp(16px, 2vh, 22px); }
   .is-h .feature__text { margin-top: 1.2vh; font-size: clamp(14px, 1.7vh, 18px); max-width: 24em; }
-  .is-h .export__stat { align-self: end; margin: 0; }
-  .is-h .export__num { font-size: clamp(96px, 17vh, 210px); }
+  .is-h .export__stat { align-self: start; margin: 0; }   /* top level with the first feature */
+  .is-h .export__num { margin-top: -.113em; font-size: clamp(96px, 17vh, 210px); }   /* the glyph's ink (not its line box) on the icon's top */
   .is-h .export__caption { margin-top: 1.4vh; font-size: clamp(15px, 1.8vh, 20px); }
 }
 
