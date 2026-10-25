@@ -245,43 +245,158 @@
     document.addEventListener('langchange', () => ScrollTrigger.refresh());
   }
 
-  /* ---------- Reveal on enter (both modes) ---------- */
-  // IntersectionObserver sees the track's transform, so it also works for the horizontal page
-  // without a ScrollTrigger per block.
-  const blocks = $$('[data-reveal]');
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    blocks.forEach(el => el.classList.add('is-in'));
-  } else {
-    const io = new IntersectionObserver(entries => entries.forEach(en => {
-      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
-    }), { rootMargin: horizontal ? '0px -8% 0px 0px' : '0px 0px -8% 0px' });
-    blocks.forEach(el => io.observe(el));
+  /* ---------- Motion: calm, once, on first view (both modes) ----------
+     The inline script in <head> adds html.anim when motion is allowed; CSS hides the animated elements only while
+     that class is on, so nothing flashes before this runs. Here every element gets its start state from GSAP, then
+     html.anim comes off — so if GSAP is missing, or anything below throws, everything is simply visible.
+     Each block plays once when it enters (horizontal page: ScrollTrigger on the track tween via containerAnimation;
+     vertical page: a normal trigger). Only transform, opacity and clip-path are animated.
+       · hero, on load: the video scales 1.05 → 1, label, heading line by line (from a mask), then text and button
+       · headings: line by line from a mask (words of one line share a delay, the markup is restored afterwards)
+       · photos: a clip-path wipe from the bottom while the image scales 1.1 → 1
+       · step rows, contact rows, the tab line: drawn from the left (clip-path wipe), one after another
+       · cards, features, numbers: one after another; labels, text, buttons: a soft fade up after the heading */
+  const animOn = root.classList.contains('anim');
+  const endAnim = () => { root.classList.remove('anim'); window.__anim = true; };
+  if (!animOn || !hasGsap || reduceMotion) endAnim();
+  else {
+    const touched = [];
+    try {
+      gsap.registerPlugin(ScrollTrigger);
+      const EASE = 'power3.out';
+      const done = new Set();
+      const track = (...els) => { els.flat().forEach(e => { done.add(e); touched.push(e); }); };
+      const onView = (el, play) => ScrollTrigger.create(horizontal
+        ? { trigger: el, containerAnimation: hTween, start: 'left 88%', once: true, onEnter: play }
+        : { trigger: el, start: 'top 88%', once: true, onEnter: play });
+      const fadeIn = (els, delay = 0, each = .1) => gsap.fromTo(els, { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1, ease: EASE, delay, stagger: each, paused: true, clearProps: 'opacity,transform' });
+      const wipeUp = (figs, delay = 0, each = .1) => {
+        const tl = gsap.timeline({ paused: true, delay });
+        figs.forEach((f, i) => {
+          tl.fromTo(f, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.out', clearProps: 'clipPath' }, i * each);
+          const img = $('img', f);
+          if (img) tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: 1.2, ease: EASE, clearProps: 'scale' }, i * each);
+        });
+        return tl;
+      };
+      const drawIn = (rows, delay = 0, each = .1) => gsap.fromTo(rows, { clipPath: 'inset(0% 100% 0% 0%)' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: EASE, delay, stagger: each, paused: true, clearProps: 'clipPath' });
+
+      // heading → word masks; words on one line share a delay, so each line slides up as one piece
+      function lines(h, delay = 0) {
+        const html = h.innerHTML;
+        const wrap = node => [...node.childNodes].forEach(n => {
+          if (n.nodeType === 1 && n.nodeName !== 'BR') return wrap(n);
+          if (n.nodeType !== 3 || !n.textContent.trim()) return;
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(part => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) return frag.append(part);
+            const w = document.createElement('span'); w.className = 'w';
+            const i = document.createElement('span'); i.className = 'w__in'; i.textContent = part;
+            w.append(i); frag.append(w);
+          });
+          n.replaceWith(frag);
+        });
+        wrap(h);
+        const ins = $$('.w__in', h);
+        const tops = ins.map(i => Math.round(i.parentNode.getBoundingClientRect().top));
+        const rows = [...new Set(tops)].sort((a, b) => a - b);
+        return gsap.fromTo(ins, { yPercent: 112 }, {
+          yPercent: 0, duration: 1.1, ease: EASE, paused: true,
+          delay: i => delay + rows.indexOf(tops[i]) * .12,
+          onComplete: () => { if (h.querySelector('.w')) h.innerHTML = html; }   // clean markup (unless the language changed)
+        });
+      }
+
+      // hero, on load
+      const heroTl = gsap.timeline({ delay: .1 });
+      heroTl.fromTo('.hero__media', { scale: 1.05 }, { scale: 1, duration: 2.6, ease: 'power2.out', clearProps: 'scale' }, 0)
+        .fromTo('.hero__eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, clearProps: 'opacity,transform' }, .15)
+        .fromTo('.hero__title .line > *', { yPercent: 108 }, { yPercent: 0, duration: 1.2, ease: EASE, stagger: .12, clearProps: 'transform' }, .3)
+        .fromTo('.hero__lead, .hero .btn, .hero__hint', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: .1, clearProps: 'opacity,transform' }, .85);
+      track($$('[data-hero]'));
+
+      // headings
+      $$('.panel:not(.hero) :is(.h2, .contacts__title)').forEach(h => { track(h); const t = lines(h); onView(h, () => t.play()); });
+      // photos
+      $$('.about__photo, .export__photo, .contacts__photo').forEach(f => { track(f); const t = wipeUp([f], .1); onView(f, () => t.play()); });
+      const numbersBg = $('.numbers__bg img');
+      if (numbersBg) { const t = gsap.fromTo(numbersBg, { scale: 1.1 }, { scale: 1, duration: 1.8, ease: EASE, paused: true, clearProps: 'scale' }); onView($('.numbers'), () => t.play()); }
+      // product cards: photo wipes, then meta and title, card after card
+      const cards = $$('.card');
+      if (cards.length) {
+        track(cards);
+        const media = cards.map(c => $('.card__media', c)), txt = cards.map(c => $$('.card__meta, .card__title', c));
+        const a = wipeUp(media, 0, .1), b = fadeIn(txt.flat(), .35, .06);
+        onView($('.cards'), () => { a.play(); b.play(); });
+      }
+      // production: step rows drawn one after another, the step photo wipes in
+      const steps = $$('.process__head');
+      if (steps.length) {
+        track($('.process'), steps);
+        const a = drawIn(steps, .1), b = wipeUp($$('.process__media'), .2, 0);
+        onView($('.process'), () => { a.play(); b.play(); });
+      }
+      // about tabs: the line is drawn, the tabs and text fade up
+      const tabs = $('.about__tabs');
+      if (tabs) {
+        track(tabs);
+        const a = drawIn([$('.tabs__list', tabs)], .1), b = fadeIn([$('.tabs__panels', tabs)], .35);
+        onView(tabs, () => { a.play(); b.play(); });
+      }
+      // groups that come in one after another
+      [['.features', '.feature'], ['.stats', '.stat']].forEach(([box, item]) => {
+        const els = $$(item); if (!els.length) return;
+        track(els); const t = fadeIn(els, .1); onView($(box), () => t.play());
+      });
+      const rows = $$('.contact-row');
+      if (rows.length) {
+        track(rows, $('.contact-rows'));
+        const a = drawIn([$('.contact-rows')], 0, 0), b = drawIn(rows, .1);
+        onView($('.contact-rows'), () => { a.play(); b.play(); });
+      }
+      // everything else marked for reveal (labels, text, buttons, the export number, the footer): after the heading
+      [...$$('[data-reveal]'), $('.foot')].filter(el => el && !done.has(el)).forEach(el => {
+        track(el);
+        const delay = el.matches('.eyebrow, .pill') ? .15 : el.matches('.btn') ? .45 : .3;
+        const t = fadeIn([el], delay); onView(el, () => t.play());
+      });
+      endAnim();
+    } catch (err) {
+      // never leave anything hidden
+      gsap.set(touched.flatMap(el => [el, ...$$('*', el)]), { clearProps: 'opacity,transform,clipPath,scale' });
+      endAnim();
+      console.error(err);
+    }
   }
 
-  /* ---------- Key numbers: count up once ----------
-     When the section comes into view (horizontal page: a ScrollTrigger on the track tween via containerAnimation;
-     vertical page: a normal one), each line grows from the left and its number counts up to the value in the HTML
-     (from data-from, else 0), one after another. Only text and a transform change. Reduced motion or no GSAP:
-     the final numbers stay as they are. Screen readers read the .sr-only copy, never the counting digits. */
-  const stats = $$('.stat');
-  if (stats.length && hasGsap && !reduceMotion) {
-    gsap.registerPlugin(ScrollTrigger);
-    const nums = stats.map(s => {
-      const el = $('.stat__num', s);
-      return { el, to: +el.textContent, from: +(el.dataset.from || 0) };
-    });
-    nums.forEach(n => { n.el.textContent = n.from; });
-    gsap.set(stats, { '--grow': 0 });
+  /* ---------- Numbers: count up once ----------
+     When a group comes into view (horizontal page: a ScrollTrigger on the track tween via containerAnimation;
+     vertical page: a normal one), its numbers count up to the values in the HTML (from data-from, else 0), one after
+     another; in the key numbers each line also grows from the left just before its number. Only text and a transform
+     change. Reduced motion or no GSAP: the final numbers stay as they are. Screen readers read the .sr-only copy,
+     never the counting digits. */
+  function countUp(box, lines, start) {
+    const nums = $$('.stat__num', box).map(el => ({ el, line: lines ? el.closest('.stat') : null, to: +el.textContent, from: +(el.dataset.from || 0) }));
+    nums.forEach(n => { n.el.textContent = n.from; if (n.line) gsap.set(n.line, { '--grow': 0 }); });
     const tl = gsap.timeline({ paused: true });
     nums.forEach((n, i) => {
       const at = i * .15;
-      tl.to(stats[i], { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
+      if (n.line) tl.to(n.line, { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
       const o = { v: n.from };
-      tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + .25);
+      tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + (n.line ? .25 : 0));
     });
     ScrollTrigger.create(horizontal
-      ? { trigger: '.numbers', containerAnimation: hTween, start: 'left 60%', once: true, onEnter: () => tl.play() }
-      : { trigger: '.stats', start: 'top 85%', once: true, onEnter: () => tl.play() });
+      ? { trigger: box, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() }
+      : { trigger: box, start: 'top 85%', once: true, onEnter: () => tl.play() });
+  }
+  if (hasGsap && !reduceMotion) {
+    gsap.registerPlugin(ScrollTrigger);
+    // key numbers: when the section is 60% in; the export number (at the far right of its screen): once it is fully in
+    if ($('.stats')) countUp(horizontal ? $('.numbers') : $('.stats'), true, 'left 60%');
+    if ($('.export__stat')) countUp($('.export__stat'), false, 'right 100%');
   }
 
   /* ---------- Anchor links (work in both modes) ---------- */
@@ -316,12 +431,6 @@
     // Pause while the hero is off-screen
     new IntersectionObserver(([en]) => { en.isIntersecting ? video.play().catch(() => {}) : video.pause(); })
       .observe($('.hero'));
-  }
-
-  /* ---------- Hero entrance ---------- */
-  if (hasGsap && !reduceMotion) {
-    gsap.from('.hero__title .line > *', { yPercent: 105, duration: 1.3, ease: 'power3.out', stagger: .12, delay: .15 });
-    gsap.from('.hero__eyebrow, .hero__lead, .hero .btn, .hero__hint', { y: 24, opacity: 0, duration: 1.1, ease: 'power3.out', stagger: .1, delay: .55 });
   }
 
   /* ---------- Production steps ----------

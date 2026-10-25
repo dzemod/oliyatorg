@@ -16,12 +16,17 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=73">
+  <link rel="stylesheet" href="assets/css/style.css?v=78">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
     if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.documentElement.classList.add('is-h');
+    }
+    // animated elements wait hidden for main.js (html.anim); if it never takes over, show everything after 3 s
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('anim');
+      setTimeout(function () { if (!window.__anim) document.documentElement.classList.remove('anim'); }, 3000);
     }
   </script>
 </head>
@@ -293,55 +298,44 @@
         </ol>
       </section>
 
-      <!-- 6. EXPORT & PARTNERSHIP — after the Veltom reference: label, heading, two benefit rows, button;
-           a tall port photo with the trucks photo overlapping its lower left corner in a cream frame -->
+      <!-- 6. EXPORT & PARTNERSHIP — after the Envagyte reference: one large photo on the left (top line to bottom line);
+           on the right the label and heading, then two features (icon above, title, text) from the content line down,
+           and a big number with its caption at the bottom right. Phones: photo, heading, features, number. -->
       <section class="panel export" id="export" data-tone="light" aria-labelledby="export-title">
+        <!-- the plant photo (not a port or trucks): no delivery method is confirmed -->
+        <figure class="export__photo" data-parallax>
+          <picture>
+            <source type="image/webp" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
+            <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
+          </picture>
+        </figure>
+
         <div class="export__text">
           <p class="eyebrow" data-reveal><span data-i18n="export.eyebrow">Експорт і партнерство</span></p>
           <h2 class="h2 export__title" id="export-title" data-reveal data-i18n="export.title">Українська олія — <em>для міжнародних партнерів</em></h2>
-          <ul class="benefits" data-reveal>
-            <li class="benefit">
-              <span class="benefit__icon" aria-hidden="true">
+          <div class="export__body">
+            <ul class="features">
+              <li class="feature" data-reveal>
                 <!-- globe (Lucide, ISC) -->
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-              </span>
-              <div class="benefit__body">
+                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                 <!-- TODO: confirm with client --> <!-- delivery formats (bulk / packaged) and transport (truck / rail / sea) -->
-                <h3 class="benefit__title" data-i18n="export.b1.title">Географія поставок</h3>
-                <p class="benefit__text" data-i18n="export.b1.text">США, Європа, Індія, Китай, Близький Схід, Африка, Австралія.</p>
-              </div>
-            </li>
-            <li class="benefit">
-              <span class="benefit__icon" aria-hidden="true">
+                <h3 class="feature__title" data-i18n="export.b1.title">Географія поставок</h3>
+                <p class="feature__text" data-i18n="export.b1.text">США, Європа, Індія, Китай, Близький Схід, Африка, Австралія.</p>
+              </li>
+              <li class="feature" data-reveal>
                 <!-- handshake (Lucide, ISC) -->
-                <svg viewBox="0 0 24 24"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
-              </span>
-              <div class="benefit__body">
-                <h3 class="benefit__title" data-i18n="export.b2.title">Довгострокова співпраця</h3>
-                <p class="benefit__text" data-i18n="export.b2.text">Будуємо довгострокові партнерські відносини з постачальниками та клієнтами.</p>
-              </div>
-            </li>
-          </ul>
-          <button class="btn" type="button" data-modal-open data-reveal>
-            <span data-i18n="export.cta">Стати партнером</span>
-            <svg class="btn__arrow" viewBox="-19.2 -19.2 62.4 62.4" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
-          </button>
-        </div>
-
-        <!-- the plant photo (not a port): sea delivery is not confirmed -->
-        <div class="export__collage">
-          <figure class="export__media" data-parallax>
-            <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
-              <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
-            </picture>
-          </figure>
-          <figure class="export__inset" data-reveal>
-            <picture>
-              <source type="image/webp" sizes="(min-width: 1024px) 29vw, 70vw" srcset="assets/img/export-trucks-800.webp 800w, assets/img/export-trucks-1400.webp 1400w">
-              <img src="assets/img/export-trucks-800.jpg" sizes="(min-width: 1024px) 29vw, 70vw" srcset="assets/img/export-trucks-800.jpg 800w, assets/img/export-trucks-1400.jpg 1400w" alt="Автоцистерни з олією на дорозі серед соняшникових полів" data-i18n-attr="alt:alt.trucks" width="800" height="447" loading="lazy" decoding="async">
-            </picture>
-          </figure>
+                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
+                <h3 class="feature__title" data-i18n="export.b2.title">Довгострокова співпраця</h3>
+                <p class="feature__text" data-i18n="export.b2.text">Будуємо довгострокові партнерські відносини з постачальниками та клієнтами.</p>
+              </li>
+            </ul>
+            <!-- 7 = the regions listed on the client's site (USA, Europe, India, China, Middle East, Africa, Australia);
+                 counts up like the key numbers (main.js), screen readers read the .sr-only value -->
+            <p class="export__stat" data-reveal>
+              <span class="export__num"><span class="stat__num" aria-hidden="true">7</span><span class="sr-only">7</span></span>
+              <span class="export__caption" data-i18n="export.stat">регіонів поставок</span>
+            </p>
+          </div>
         </div>
       </section>
 
@@ -431,9 +425,9 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=21"></script>
+  <script src="assets/js/i18n.js?v=22"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="assets/js/main.js?v=18" defer></script>
+  <script src="assets/js/main.js?v=21" defer></script>
 </body>
 </html>

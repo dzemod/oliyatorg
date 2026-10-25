@@ -350,24 +350,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .process__media { overflow: hidden; aspect-ratio: 3 / 2; }
 .process__text { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
 
-/* 6. Export & partnership — after the Veltom reference: label, heading, two benefit rows (outline icon in its
-   own cell, thin lines around), the button; a tall port photo with the trucks photo overlapping its lower left
-   corner inside a frame of the section colour. Phones: text first, then the collage. */
+/* 6. Export & partnership — after the Envagyte reference: one large photo, then the label and heading, two
+   features (a thin gold icon above the title and a short text) and a big number with its caption.
+   Phones: photo, heading, features, number, stacked. */
+.export__photo { overflow: hidden; aspect-ratio: 4 / 5; margin-bottom: 48px; }
+.export__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
 .export__title em { display: block; }
-.benefits { display: grid; grid-auto-rows: 1fr; margin-top: 32px; border-bottom: 1px solid var(--line); }   /* rows of equal height */
-.benefit { display: grid; grid-template-columns: 76px minmax(0, 1fr); border-top: 1px solid var(--line); }
-.benefit__icon { display: grid; place-items: center; border-right: 1px solid var(--line); }
-.benefit__icon svg { width: 40px; height: 40px; fill: none; stroke: var(--gold-ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
-.benefit__icon svg * { vector-effect: non-scaling-stroke; }   /* the same 1.4px line in both icons at any size */
-.benefit__body { padding: 22px 0 24px 20px; }
-.benefit__title { font: 600 14px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fg); }
-.benefit__text { margin-top: 8px; font-size: 15px; line-height: 1.6; color: var(--fg-2); }
-.export__text .btn { margin-top: 32px; }
-.export__collage { display: grid; grid-template-columns: repeat(12, 1fr); margin-top: 48px; }
-.export__media { grid-column: 3 / -1; grid-row: 1; overflow: hidden; aspect-ratio: 4 / 5; }
-.export__media img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
-.export__inset { grid-column: 1 / 9; grid-row: 1; align-self: end; z-index: 1; padding: 10px 10px 0 0; background: var(--bg); }
-.export__inset img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; }
+.features { display: grid; gap: 36px; margin-top: 40px; }
+.feature__icon { display: block; width: 36px; height: 36px; fill: none; stroke: var(--gold-ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.feature__icon * { vector-effect: non-scaling-stroke; }   /* the same thin line at any size */
+.feature__title { margin-top: 18px; font: 500 18px/1.3 var(--sans); color: var(--fg); }
+.feature__text { margin-top: 8px; max-width: 26em; font-size: 15px; line-height: 1.6; color: var(--fg-2); }
+.export__stat { display: flex; flex-direction: column; align-items: flex-start; margin-top: 44px; }
+.export__num { font: 400 clamp(88px, 26vw, 120px)/.9 var(--serif); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
+.export__caption { margin-top: 10px; font: 500 16px/1.4 var(--sans); color: var(--fg); }
 
 /* 7. Contacts + footer: the screen itself is styled at the end of the file; the form lives in the popup */
 .form { display: grid; gap: 6px 24px; margin-top: 48px; padding: 28px 22px; background: var(--white); }
@@ -389,9 +385,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .form__status { font-size: 14px; color: var(--graphite-70); }
 .form__status.is-error { color: var(--error); }
 
-/* ---------- Reveal (JS adds .is-in) ---------- */
-.js [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
-.js [data-reveal].is-in { opacity: 1; transform: none; }
+/* ---------- Motion (main.js) ----------
+   html.anim (set in <head>) hides the animated elements only until main.js has given them their start states;
+   without JS, GSAP or motion they are simply visible. */
+.anim :is([data-reveal], [data-hero], .h2, .contacts__title, .about__photo, .export__photo, .contacts__photo,
+  .process__head, .process__media, .contact-rows, .tabs__list, .foot) { visibility: hidden; }
+/* heading words while they rise from their mask (the padding keeps descenders and italic overhangs whole) */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .1em .16em; margin: 0 -.1em -.16em; }
+.w__in { display: inline-block; }
 
 /* =========================================================================
    Tablet (vertical)
@@ -425,7 +426,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html:not(.is-h) .about__photo { aspect-ratio: 4 / 5; }
   html:not(.is-h) .about__text { margin-top: 0; }
   html:not(.is-h) .export { display: grid; grid-template-columns: 5fr 6fr; gap: 6vw; align-items: center; }
-  html:not(.is-h) .export__collage { margin-top: 0; }
+  html:not(.is-h) .export__photo { margin-bottom: 0; }
 }
 
 /* =========================================================================
@@ -558,26 +559,35 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* always 2 lines (fixed height, so switching steps never jumps); the measure keeps every text on two balanced lines */
   .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
 
-  /* 6. Export — text (cols 1–5): label on the top line, button on the bottom line · collage (cols 7–12):
-     port photo (cols 8–12) line to line, framed trucks photo (cols 7–10) over its lower left, bottom on the line */
-  .is-h .export { grid-template-columns: repeat(12, var(--col)); }
-  .is-h .export__text { grid-column: 1 / 6; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
-  /* two lines in five columns: the size follows the screen width as well as its height */
-  .is-h .export .export__title { font-size: min(var(--h2-size), 3vw); }   /* two lines must fit five columns */
-  .is-h .benefits { align-self: stretch; margin: var(--content-gap) 0 0; }   /* on the content line */
-  .is-h .benefit { grid-template-columns: var(--col) minmax(0, 1fr); }
-  .is-h .benefit__icon svg { width: clamp(34px, 4.4vh, 52px); height: clamp(34px, 4.4vh, 52px); }
-  .is-h .benefit__body { padding: 3vh 0 3.4vh 1.6vw; }
-  .is-h .benefit__title { font-size: clamp(13px, 1.75vh, 19px); }
-  .is-h .benefit__text { margin-top: 1.2vh; font-size: clamp(14px, 1.7vh, 18px); max-width: 30em; }
-  .is-h .export__text .btn { margin-top: auto; }
-  .is-h .export__collage {
-    grid-column: 7 / 13; align-self: stretch; margin: 0;
-    grid-template-columns: repeat(6, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap);
-  }
-  .is-h .export__media { grid-column: 2 / 7; height: 100%; aspect-ratio: auto; }
-  .is-h .export__inset { grid-column: 1 / 5; height: 52%; padding: 1.3vw 1.3vw 0 0; }
-  .is-h .export__inset img { height: 100%; aspect-ratio: auto; }
+  /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
+     then the two features as one compact block on the left, ending on the bottom line, and the big number
+     with its caption at the bottom right (the caption on the bottom line) */
+  .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
+  .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
+  .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
+  .is-h .export .export__title { font-size: var(--h2-size); }
+  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--gap); margin-top: var(--content-gap); }
+  .is-h .features { display: flex; flex-direction: column; justify-content: flex-end; gap: clamp(36px, 5vh, 56px); margin: 0; }   /* one compact block on the bottom line */
+  .is-h .feature__icon { width: clamp(30px, 3.6vh, 44px); height: clamp(30px, 3.6vh, 44px); }
+  .is-h .feature__title { margin-top: 2.2vh; font-size: clamp(16px, 2vh, 22px); }
+  .is-h .feature__text { margin-top: 1.2vh; font-size: clamp(14px, 1.7vh, 18px); max-width: 24em; }
+  .is-h .export__stat { align-self: end; margin: 0; }
+  .is-h .export__num { font-size: clamp(96px, 17vh, 210px); }
+  .is-h .export__caption { margin-top: 1.4vh; font-size: clamp(15px, 1.8vh, 20px); }
+}
+
+/* Phones and tablets (vertical page) — one rhythm and comfortable sizes */
+@media (max-width: 1023px) {
+  /* two light sections in a row share one gap (96px phones / 130px tablets) instead of adding two paddings */
+  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { padding-top: 0; }
+  /* body text at least 16px, captions 15px */
+  .feature__text { font-size: 16px; }
+  .stat__label { font-size: 15px; }
+  .foot .foot__nav a { padding: 12px 0; font-size: 15px; }   /* 44px tap height */
+  .foot .foot__copy { font-size: 14px; }
+  .foot .lang__btn { min-height: 44px; }
+  .contact-row a, .contact-row__cta { display: inline-block; padding: 9px 0; margin: -9px 0; }   /* 44px tap height, same layout */
+  .contacts .contacts__side { padding: 64px var(--pad) 40px; }
 }
 
 /* Short desktop screens (e.g. 1280×720 laptops) */
@@ -595,7 +605,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    ========================================================================= */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  .js [data-reveal] { opacity: 1; transform: none; }
   .hero__video { display: none; }
 }
 
