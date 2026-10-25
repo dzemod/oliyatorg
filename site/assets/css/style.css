@@ -21,7 +21,8 @@
   --white: #FFFFFF;                    /* buttons on dark blocks, form fields */
   --line: rgb(43 42 39 / .15);         /* lines and borders on stone */
   --line-light: rgb(239 236 230 / .25);/* lines on olive */
-  --tint: 74 74 58;                    /* olive as RGB channels for photo tints: rgb(var(--tint) / a) */
+  --tint: 74 74 58;                    /* olive as RGB channels (modal backdrop): rgb(var(--tint) / a) */
+  --shade: 0 0 0;                      /* neutral black for photo overlays: rgb(var(--shade) / a), never olive */
   --error: #A53C27;                    /* form errors only */
 
   /* tone tokens — what text, lines and backgrounds read. :root = the light (stone) tone;
@@ -214,8 +215,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .hero__media img, .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero__video { opacity: 0; transition: opacity 1.2s var(--ease); }
 .hero__video.is-ready { opacity: 1; }
-/* flat tint keeps the white text readable on any video frame */
-.hero__media::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .6); }
+/* neutral shade, darker behind the text (≈45–50%), ≈10–15% elsewhere, plus a light band under the header menu:
+   the video keeps its colours. Phones: the text fills the lower half; desktop: the lower left. */
+.hero__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 16%),
+              linear-gradient(to top, rgb(var(--shade) / .5), rgb(var(--shade) / .4) 35%, rgb(var(--shade) / 0) 75%), rgb(var(--shade) / .12);
+}
+@media (min-width: 1024px) {
+  .hero__media::after {
+    background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 16%),
+                linear-gradient(to right, rgb(var(--shade) / .42), rgb(var(--shade) / 0) 75%),
+                linear-gradient(to top, rgb(var(--shade) / .35), rgb(var(--shade) / 0) 70%), rgb(var(--shade) / .1);
+  }
+}
 .hero__inner { position: relative; z-index: 1; }
 /* size capped so the longest phrase ("Відповідальне виробництво." ≈ 11.2em) fits the column */
 .hero__title { margin: 18px 0 20px; font: 400 min(clamp(40px, 11.5vw, 60px), calc((100vw - 2 * var(--pad)) / 11.4))/1.02 var(--serif); letter-spacing: -.012em; }
@@ -258,12 +271,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .numbers { color: var(--fg); overflow: hidden; }
 .numbers__bg { position: absolute; inset: 0; }
 .numbers__bg img { width: 100%; height: 100%; object-fit: cover; }
-.numbers__bg::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .88); }
+/* busy macro photo: an even, stronger neutral shade (≈68%) turns the seeds into a calm dark texture behind the text */
+.numbers__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: rgb(var(--shade) / .68);
+}
 .numbers__inner { position: relative; }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
 .stat { padding-top: 16px; border-top: 1px solid var(--line); }
 .stat__value { font: 400 clamp(52px, 15vw, 72px)/1 var(--serif); color: var(--num); }
-.stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg-2); }
+.stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
+.numbers .stat { border-top-color: rgb(239 236 230 / .3); }   /* the lines over the photo, a little stronger than --line */
 
 /* 4. Products — after the Interos "blog" layout: label and two-line heading on the left, the "all products"
    button on the right on the heading's bottom line (its right edge = the third card's right edge), then three
@@ -287,22 +305,28 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .products__all { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
 }
 
-/* 5. Production — after the Envagyte reference: a large photo, then the text column (label, heading, button) and the
-   four steps. Phones: an accordion — each row is a button (number, title, arrow); the open step shows its photo and
-   text under it. The active row gets a darker, thicker underline and a straight arrow (→); the others ↗. */
-.production__photo { overflow: hidden; aspect-ratio: 4 / 3; }
-.production__photo img, .process__media img { width: 100%; height: 100%; object-fit: cover; }
-.production__text { margin-top: 48px; }
+/* 5. Production — the head (label, heading, button; laid out like Products) and the four steps. Phones: an
+   accordion — each row is a button (number, title, arrow); the open step shows its photo and text under it.
+   The active row gets a darker, thicker underline and a straight arrow (→); the others ↗. */
+.process__media img { width: 100%; height: 100%; object-fit: cover; }
 .production__title em { display: block; }   /* "Чотири кроки" / "до бездоганної олії" */
-.production__text .btn { margin-top: 8px; }
+.production__more { margin-top: 32px; }
+@media (min-width: 640px) {
+  .production__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
+  .production__head .eyebrow { grid-column: 1; justify-self: start; margin-bottom: 22px; }
+  .production .production__title { grid-column: 1; grid-row: 2; margin: 0; }
+  .production__more { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
+}
 .process { margin-top: 48px; }
 .process__head {
   display: flex; align-items: center; gap: 12px; width: 100%; padding: 20px 0; text-align: left;
   border-bottom: 1px solid var(--line); transition: border-color .3s ease, box-shadow .3s ease;
 }
-.process__num { flex: none; min-width: 24px; font: 500 15px var(--serif); color: var(--num); }
-.process__title { flex: 1; font: 400 24px/1.2 var(--serif); }
-.process__arrow { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.4; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
+/* readable at small sizes: sans gold numbers, medium-weight serif titles in the full text colour (the active one 600) */
+.process__num { flex: none; min-width: 30px; font: 600 14px/1 var(--sans); letter-spacing: .12em; color: var(--num); }
+.process__title { flex: 1; font: 500 24px/1.2 var(--serif); color: var(--fg); }
+.process__step.is-active .process__title { font-weight: 600; }
+.process__arrow { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--fg); stroke-width: 1.6; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
 /* thicker without moving the row: the border turns dark and an inset shadow adds a second pixel */
 .process__step.is-active .process__head { border-bottom-color: var(--gold); box-shadow: inset 0 -1px 0 var(--gold); }
 .process__step.is-active .process__arrow { transform: none; }
@@ -385,9 +409,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html:not(.is-h) .about { display: grid; grid-template-columns: 5fr 7fr; gap: 6vw; align-items: center; }
   html:not(.is-h) .about__photo { aspect-ratio: 4 / 5; }
   html:not(.is-h) .about__text { margin-top: 0; }
-  html:not(.is-h) .production { display: grid; grid-template-columns: 5fr 7fr; gap: 6vw; align-items: start; }
-  html:not(.is-h) .production__photo { aspect-ratio: 4 / 5; }
-  html:not(.is-h) .production__text { margin-top: 0; }
   html:not(.is-h) .export { display: grid; grid-template-columns: 5fr 6fr; gap: 6vw; align-items: center; }
   html:not(.is-h) .export__collage { margin-top: 0; }
 }
@@ -426,10 +447,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .hero__hint {
     position: absolute; right: var(--pad); bottom: var(--bottom); z-index: 1; display: flex; align-items: flex-end; gap: 14px; line-height: 1;
     font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--stone);
-    text-shadow: 0 1px 12px rgb(var(--tint) / .8);
+    text-shadow: 0 1px 12px rgb(var(--shade) / .5);
   }
   .is-h .hero__hint span { position: relative; top: 2px; } /* drops the 12px font's descent so the letters' bottom meets the border's bottom */
-  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; box-shadow: 0 0 8px rgb(var(--tint) / .6); }
+  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; box-shadow: 0 0 8px rgb(var(--shade) / .4); }
   .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--gold-light); animation: hint 2.4s var(--ease) infinite; }
   @keyframes hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
@@ -456,7 +477,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin: 0; }
   .is-h .stat { padding-top: 2.4vh; }
   .is-h .stat__value { font-size: clamp(64px, 15vh, 190px); }
-  .is-h .stat__label { margin-top: 1.4vh; font-size: clamp(14px, 1.7vh, 18px); max-width: 16em; }
+  .is-h .stat__label { margin-top: 1.4vh; font-size: clamp(15px, 1.7vh, 18px); white-space: nowrap; }   /* short captions, one line each */
 
   /* 4. Products — 12 columns: heading block on top, three 4-column cards fill down to the bottom line */
   .is-h .panel.products { width: 100vw; display: flex; flex-direction: column; --cards-gap: var(--gap); }   /* outranks the shared section grid */
@@ -472,31 +493,35 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .card__meta { margin-top: 3vh; font-size: clamp(11px, 1.25vh, 14px); }
   .is-h .card__title { margin-top: 1.2vh; font-size: clamp(24px, 3.1vh, 40px); }
 
-  /* 5. Production — one screen on the shared 12-column grid, like About: photo (cols 1–5) line to line; text column
-     (cols 7–12): label on the top line, heading, button; at its bottom the step list (≈52%) and, beside it, the active
-     step's photo and text — the panel stretches to the list's height, so the photo starts level with the first row
-     and the text ends on the bottom line. */
-  .is-h .production { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
-  .is-h .production__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; }
-  .is-h .production__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; margin: 0; }
-  .is-h .production__text .btn { margin-top: 1.4vh; }
-  .is-h .process { position: relative; align-self: stretch; margin-top: auto; padding: 4vh 0 0; padding-right: calc(48% + var(--gap)); }
-  .is-h .process__head { padding: 2.4vh 0; cursor: pointer; }
-  .is-h .process__num { font-size: clamp(13px, 1.5vh, 17px); }
-  .is-h .process__title { font-size: clamp(17px, 2.3vh, 28px); line-height: 1.2; white-space: nowrap; }
-  /* the panel spans the list's height (list top → bottom line) and is sized from the screen height: the text keeps a
-     fixed 3-line area at the bottom (its last line on the bottom line), the photo takes the rest at 3:2 (top level
-     with the list); the image is out of flow, so its own shape never changes these sizes */
+  /* 5. Production — like Products: the head row on top (label on the top line, heading; the button on the right, on
+     the heading's bottom line, its right edge on the right margin), then two equal columns across the full content
+     width (the same gutter as the cards): the step list and the active step's photo with its 2-line text right under
+     it. The steps block fills the height left under the head: the list's four rows share it, the photo takes what
+     the text leaves — tops on one line, the last row's line and the text's last line on the bottom line. */
+  .is-h .panel.production { width: 100vw; display: flex; flex-direction: column; }   /* outranks the shared section grid */
+  .is-h .production__head { align-self: stretch; }   /* full width, so the button ends on the right margin */
+  .is-h .production__head .eyebrow { margin-bottom: 3.2vh; }
+  .is-h .production .production__title { margin: 0; font-size: clamp(40px, 6.4vh, 88px); }
+  .is-h .process {
+    --pt: clamp(15px, 1.85vh, 20px);                      /* step text size */
+    position: relative; flex: 1; min-height: 0; align-self: stretch; margin: 6vh 0 0; padding: 0 calc(50% + var(--gap) / 2) 0 0;
+    display: grid; grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
+  .is-h .process__step { display: flex; }
+  .is-h .process__head { padding: 0; cursor: pointer; }
+  .is-h .process__num { font-size: clamp(13px, 1.35vh, 15px); }
+  .is-h .process__title { font-size: clamp(21px, 2.5vh, 28px); line-height: 1.2; white-space: nowrap; }
+  .is-h .process__arrow { width: clamp(20px, 2.1vh, 24px); height: clamp(20px, 2.1vh, 24px); }
   .is-h .process__step .process__panel {   /* as specific as the phone rule that shows the open step */
-    --pt: clamp(14px, 1.7vh, 18px);
-    position: absolute; top: 4vh; right: 0; bottom: 0; width: 48%; padding: 0;
-    display: grid; grid-template-rows: minmax(0, 1fr) calc(2vh + 4.8 * var(--pt)); justify-items: start;
+    position: absolute; top: 0; right: 0; bottom: 0; width: calc(50% - var(--gap) / 2); padding: 0;
+    display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: clamp(16px, 1.8vh, 20px);
     opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s;
   }
   .is-h .process__step.is-active .process__panel { opacity: 1; visibility: visible; transition: opacity .5s var(--ease) .05s; }
-  .is-h .process__media { position: relative; height: 100%; min-height: 0; max-width: 100%; aspect-ratio: 3 / 2; }
+  .is-h .process__media { position: relative; width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; }
   .is-h .process__media img { position: absolute; inset: 0; }
-  .is-h .process__text { align-self: end; margin: 0; font-size: var(--pt); line-height: 1.6; }
+  /* always 2 lines (fixed height, so switching steps never jumps); the measure keeps every text on two balanced lines */
+  .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
 
   /* 6. Export — text (cols 1–5): label on the top line, button on the bottom line · collage (cols 7–12):
      port photo (cols 8–12) line to line, framed trucks photo (cols 7–10) over its lower left, bottom on the line */
@@ -640,8 +665,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contacts__cta { position: relative; display: flex; align-items: flex-start; overflow: hidden; color: var(--stone); background: var(--olive); }
 .contacts__photo { position: absolute; inset: 0; }
 .contacts__photo img { width: 100%; height: 100%; object-fit: cover; }
-/* soft flat tint keeps the white heading readable (no gradient) */
-.contacts__photo::after { content: ""; position: absolute; inset: 0; background: rgb(var(--tint) / .6); }
+/* neutral shade. Phones: the text covers the whole short photo, so an even ≈40%; desktop: darker behind the label
+   (top) and the heading and button (bottom), light in the middle */
+.contacts__photo::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgb(var(--shade) / .45), rgb(var(--shade) / .32));
+}
+@media (min-width: 1024px) {
+  .contacts__photo::after {
+    background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 45%, rgb(var(--shade) / 0) 55%, rgb(var(--shade) / .35)), rgb(var(--shade) / .12);
+  }
+}
 .contacts__cta-inner { position: relative; z-index: 1; padding: var(--sec-top) var(--pad) 56px; }  /* label at the same top as every section */
 .contacts__title {
   margin: 18px 0 32px; max-width: 11.5em; color: var(--stone); text-wrap: balance;
