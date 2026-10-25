@@ -105,6 +105,7 @@ window.I18N = {
     'alt.unrefined': 'A bottle and a glass bowl of unrefined sunflower oil with seeds',
     'alt.refined': 'A bottle and a glass bowl of refined sunflower oil with seeds',
     'alt.meal': 'Sunflower press cake in a ceramic bowl',
+    'alt.oilcake': 'A bottle of sunflower oil and pieces of press cake on a workshop table',
     'alt.tanks': 'Plant elevator and tanks among sunflower fields',
     'alt.clean': 'Cleaned sunflower seeds, close-up',
     'alt.press': 'Pressing workshop with modern equipment',
