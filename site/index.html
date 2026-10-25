@@ -11,13 +11,14 @@
   <link rel="icon" href="assets/brand/favicon-01-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
 
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); the two faces of the first screen load first -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cormorant-garamond-cyrillic-400-normal.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-cyrillic-400-normal.woff2" crossorigin>
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=91">
+  <link rel="stylesheet" href="assets/css/style.css?v=93">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -426,12 +427,14 @@
   </dialog>
 
   <script src="assets/js/i18n.js?v=25"></script>
-  <!-- GSAP everywhere (the number count-up); ScrollTrigger only for the horizontal desktop page — on phones it would
-       register itself and run on every scroll. Inserted in order (async = false), then main.js. -->
+  <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones: main.js first (it shows the page and
+       sets up the fades), then GSAP for the number count-up — no ScrollTrigger (it would run on every scroll).
+       Inserted in order (async = false). -->
   <script>
-    ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
-     document.documentElement.classList.contains('is-h') && 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
-     'assets/js/main.js?v=26'].filter(Boolean).forEach(function (src) {
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=27';
+    (document.documentElement.classList.contains('is-h')
+      ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
+      : [mainSrc, gsapSrc + 'gsap.min.js']).forEach(function (src) {
       var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s);
     });
   </script>

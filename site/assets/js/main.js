@@ -131,8 +131,7 @@
   /* ---------- Scroll mode ---------- */
   const track = $('#track');
   const scroller = $('.scroller');
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both
-  const hasTween = !!window.gsap;                             // the count-up only needs GSAP
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both (phones load GSAP after this file)
   // No GSAP (CDN blocked) → fall back to the normal vertical page.
   if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h');
   const horizontal = root.classList.contains('is-h');
@@ -267,7 +266,7 @@
       // ---- vertical page: CSS fades ----
       const items = [];
       const add = (els, step = 0) => els.forEach((el, i) => { if (el && !items.includes(el)) { el.classList.add('rv'); if (step) el.style.setProperty('--d', (i * step).toFixed(2) + 's'); items.push(el); } });
-      add($$('[data-hero]:not(.hero__hint)'), .08);   // the hint is desktop-only
+      // the hero text is the first screen (and the LCP): it shows at once, no fade
       $$('.panel:not(.hero)').forEach(sec => {
         add($$('.eyebrow, .pill, .h2, .contacts__title', sec));
         add($$('.card, .feature, .stat, .process__step, .contact-row', sec), .06);
@@ -357,21 +356,27 @@
      never the counting digits. */
   function countUp(box, lines, start) {
     const nums = $$('.stat__num', box).map(el => ({ el, line: lines ? el.closest('.stat') : null, to: +el.textContent, from: +(el.dataset.from || 0) }));
-    nums.forEach(n => { n.el.textContent = n.from; if (n.line) gsap.set(n.line, { '--grow': 0 }); });
-    const tl = gsap.timeline({ paused: true, onComplete: () => tl.kill() });
-    nums.forEach((n, i) => {
-      const at = i * .15;
-      if (n.line) tl.to(n.line, { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
-      const o = { v: n.from };
-      tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + (n.line ? .25 : 0));
-    });
-    if (horizontal) ScrollTrigger.create({ trigger: box, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() });
+    nums.forEach(n => { n.el.textContent = n.from; if (n.line) n.line.style.setProperty('--grow', 0); });
+    const play = () => {
+      if (!window.gsap) {   // GSAP never arrived: just show the final values
+        nums.forEach(n => { n.el.textContent = n.to; if (n.line) n.line.style.removeProperty('--grow'); });
+        return;
+      }
+      const tl = gsap.timeline({ onComplete: () => tl.kill() });
+      nums.forEach((n, i) => {
+        const at = i * .15;
+        if (n.line) tl.to(n.line, { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
+        const o = { v: n.from };
+        tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + (n.line ? .25 : 0));
+      });
+    };
+    if (horizontal) ScrollTrigger.create({ trigger: box, containerAnimation: hTween, start, once: true, onEnter: play });
     else {   // vertical page: no ScrollTrigger at all (it would listen to every scroll), an IntersectionObserver instead
-      const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { tl.play(); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' });
+      const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { play(); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' });
       io.observe(box);
     }
   }
-  if (!reduceMotion && (horizontal ? hasGsap : hasTween && 'IntersectionObserver' in window)) {
+  if (!reduceMotion && (horizontal ? hasGsap : 'IntersectionObserver' in window)) {
     // key numbers: when the section is 60% in; the export number (at the far right of its screen): once it is fully in
     if ($('.stats')) countUp(horizontal ? $('.numbers') : $('.stats'), true, 'left 60%');
     if ($('.export__stat')) countUp($('.export__stat'), false, 'right 100%');
