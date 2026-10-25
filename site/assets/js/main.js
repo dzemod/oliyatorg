@@ -130,7 +130,8 @@
   /* ---------- Scroll mode ---------- */
   const track = $('#track');
   const scroller = $('.scroller');
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both
+  const hasTween = !!window.gsap;                             // the count-up only needs GSAP
   // No GSAP (CDN blocked) → fall back to the normal vertical page.
   if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h');
   const horizontal = root.classList.contains('is-h');
@@ -245,46 +246,55 @@
     document.addEventListener('langchange', () => ScrollTrigger.refresh());
   }
 
-  /* ---------- Motion: calm, once, on first view (both modes) ----------
+  /* ---------- Motion: calm, once, on first view ----------
      The inline script in <head> adds html.anim when motion is allowed; CSS hides the animated elements only while
-     that class is on, so nothing flashes before this runs. Here every element gets its start state from GSAP, then
-     html.anim comes off — so if GSAP is missing, or anything below throws, everything is simply visible.
-     Each block plays once when it enters (horizontal page: ScrollTrigger on the track tween via containerAnimation;
-     vertical page: a normal trigger). Only transform, opacity and clip-path are animated.
+     that class is on, so nothing flashes before this runs. Here the start states are set, then html.anim comes off —
+     if GSAP is missing or anything below throws, everything is simply visible.
+     Desktop (horizontal page): one ScrollTrigger per section (containerAnimation on the track tween) plays the
+     section's timeline once, then the trigger and the timeline are killed. Only transform, opacity and clip-path move:
        · hero, on load: the video scales 1.05 → 1, label, heading line by line (from a mask), then text and button
-       · headings: line by line from a mask (words of one line share a delay, the markup is restored afterwards)
-       · photos: a clip-path wipe from the bottom while the image scales 1.1 → 1
-       · step rows, contact rows, the tab line: drawn from the left (clip-path wipe), one after another
-       · cards, features, numbers: one after another; labels, text, buttons: a soft fade up after the heading */
+       · headings line by line from a mask (the markup is restored afterwards); photos: a clip-path wipe from the
+         bottom (no scaling inside); rows and the tab line: drawn from the left; the rest: a soft fade up, in turn
+     Phones and tablets (vertical page): no GSAP at all — each block gets .rv and fades up 16px with a CSS transition
+     when an IntersectionObserver sees it (nothing runs while scrolling). */
   const animOn = root.classList.contains('anim');
   const endAnim = () => { root.classList.remove('anim'); window.__anim = true; };
-  if (!animOn || !hasGsap || reduceMotion) endAnim();
-  else {
-    const touched = [];
-    try {
+  const touched = [];
+  try {
+    if (!animOn || reduceMotion) endAnim();
+    else if (!horizontal) {
+      // ---- vertical page: CSS fades ----
+      const items = [];
+      const add = (els, step = 0) => els.forEach((el, i) => { if (el && !items.includes(el)) { el.classList.add('rv'); if (step) el.style.setProperty('--d', (i * step).toFixed(2) + 's'); items.push(el); } });
+      add($$('[data-hero]:not(.hero__hint)'), .08);   // the hint is desktop-only
+      $$('.panel:not(.hero)').forEach(sec => {
+        add($$('.eyebrow, .pill, .h2, .contacts__title', sec));
+        add($$('.card, .feature, .stat, .process__step, .contact-row', sec), .06);
+        add($$('[data-reveal], .about__photo, .export__photo, .tabs__panels, .foot', sec));
+      });
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => entries.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        }), { rootMargin: '0px 0px -6% 0px' });
+        items.forEach(el => io.observe(el));
+        root.classList.add('fade');
+      }
+      endAnim();
+    } else if (!hasGsap) endAnim();
+    else {
+      // ---- horizontal page: GSAP, one trigger per section ----
       gsap.registerPlugin(ScrollTrigger);
       const EASE = 'power3.out';
-      const done = new Set();
-      const track = (...els) => { els.flat().forEach(e => { done.add(e); touched.push(e); }); };
-      const onView = (el, play) => ScrollTrigger.create(horizontal
-        ? { trigger: el, containerAnimation: hTween, start: 'left 88%', once: true, onEnter: play }
-        : { trigger: el, start: 'top 88%', once: true, onEnter: play });
-      const fadeIn = (els, delay = 0, each = .1) => gsap.fromTo(els, { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1, ease: EASE, delay, stagger: each, paused: true, clearProps: 'opacity,transform' });
-      const wipeUp = (figs, delay = 0, each = .1) => {
-        const tl = gsap.timeline({ paused: true, delay });
-        figs.forEach((f, i) => {
-          tl.fromTo(f, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.out', clearProps: 'clipPath' }, i * each);
-          const img = $('img', f);
-          if (img) tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: 1.2, ease: EASE, clearProps: 'scale' }, i * each);
-        });
-        return tl;
-      };
-      const drawIn = (rows, delay = 0, each = .1) => gsap.fromTo(rows, { clipPath: 'inset(0% 100% 0% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: EASE, delay, stagger: each, paused: true, clearProps: 'clipPath' });
-
+      const mark = (...els) => els.flat().filter(Boolean).forEach(e => touched.push(e));
+      const fade = (tl, els, at, each = .1) => { els = els.filter(Boolean); if (!els.length) return; mark(els);
+        tl.fromTo(els, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: each, clearProps: 'opacity,transform' }, at); };
+      const wipe = (tl, figs, at, each = .1) => { figs = figs.filter(Boolean); if (!figs.length) return; mark(figs);
+        tl.fromTo(figs, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.out', stagger: each, clearProps: 'clipPath' }, at); };
+      const draw = (tl, rows, at, each = .1) => { rows = rows.filter(Boolean); if (!rows.length) return; mark(rows);
+        tl.fromTo(rows, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: EASE, stagger: each, clearProps: 'clipPath' }, at); };
       // heading → word masks; words on one line share a delay, so each line slides up as one piece
-      function lines(h, delay = 0) {
+      const lines = (tl, h, at) => {
+        if (!h) return; mark(h);
         const html = h.innerHTML;
         const wrap = node => [...node.childNodes].forEach(n => {
           if (n.nodeType === 1 && n.nodeName !== 'BR') return wrap(n);
@@ -303,73 +313,39 @@
         const ins = $$('.w__in', h);
         const tops = ins.map(i => Math.round(i.parentNode.getBoundingClientRect().top));
         const rows = [...new Set(tops)].sort((a, b) => a - b);
-        return gsap.fromTo(ins, { yPercent: 112 }, {
-          yPercent: 0, duration: 1.1, ease: EASE, paused: true,
-          delay: i => delay + rows.indexOf(tops[i]) * .12,
-          onComplete: () => { if (h.querySelector('.w')) h.innerHTML = html; }   // clean markup (unless the language changed)
-        });
-      }
+        tl.fromTo(ins, { yPercent: 112 }, { yPercent: 0, duration: 1.1, ease: EASE, stagger: i => rows.indexOf(tops[i]) * .12,
+          onComplete: () => { if (h.querySelector('.w')) h.innerHTML = html; } }, at);
+      };
+      const section = (sec, build, start = 'left 55%') => {
+        if (!sec) return;
+        const tl = gsap.timeline({ paused: true, onComplete: () => tl.kill() });
+        build(tl);
+        ScrollTrigger.create({ trigger: sec, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() });
+      };
+      const head = (tl, sec) => { fade(tl, [$('.eyebrow, .pill', sec)], 0); lines(tl, $('.h2, .contacts__title', sec), .1); };
 
       // hero, on load
-      const heroTl = gsap.timeline({ delay: .1 });
+      mark($$('[data-hero]'));
+      const heroTl = gsap.timeline({ delay: .1, onComplete: () => heroTl.kill() });
       heroTl.fromTo('.hero__media', { scale: 1.05 }, { scale: 1, duration: 2.6, ease: 'power2.out', clearProps: 'scale' }, 0)
         .fromTo('.hero__eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, clearProps: 'opacity,transform' }, .15)
         .fromTo('.hero__title .line > *', { yPercent: 108 }, { yPercent: 0, duration: 1.2, ease: EASE, stagger: .12, clearProps: 'transform' }, .3)
         .fromTo('.hero__lead, .hero .btn, .hero__hint', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: .1, clearProps: 'opacity,transform' }, .85);
-      track($$('[data-hero]'));
 
-      // headings
-      $$('.panel:not(.hero) :is(.h2, .contacts__title)').forEach(h => { track(h); const t = lines(h); onView(h, () => t.play()); });
-      // photos
-      $$('.about__photo, .export__photo, .contacts__photo').forEach(f => { track(f); const t = wipeUp([f], .1); onView(f, () => t.play()); });
-      const numbersBg = $('.numbers__bg img');
-      if (numbersBg) { const t = gsap.fromTo(numbersBg, { scale: 1.1 }, { scale: 1, duration: 1.8, ease: EASE, paused: true, clearProps: 'scale' }); onView($('.numbers'), () => t.play()); }
-      // product cards: photo wipes, then meta and title, card after card
-      const cards = $$('.card');
-      if (cards.length) {
-        track(cards);
-        const media = cards.map(c => $('.card__media', c)), txt = cards.map(c => $$('.card__meta, .card__title', c));
-        const a = wipeUp(media, 0, .1), b = fadeIn(txt.flat(), .35, .06);
-        onView($('.cards'), () => { a.play(); b.play(); });
-      }
-      // production: step rows drawn one after another, the step photo wipes in
-      const steps = $$('.process__head');
-      if (steps.length) {
-        track($('.process'), steps);
-        const a = drawIn(steps, .1), b = wipeUp($$('.process__media'), .2, 0);
-        onView($('.process'), () => { a.play(); b.play(); });
-      }
-      // about tabs: the line is drawn, the tabs and text fade up
-      const tabs = $('.about__tabs');
-      if (tabs) {
-        track(tabs);
-        const a = drawIn([$('.tabs__list', tabs)], .1), b = fadeIn([$('.tabs__panels', tabs)], .35);
-        onView(tabs, () => { a.play(); b.play(); });
-      }
-      // groups that come in one after another
-      [['.features', '.feature'], ['.stats', '.stat']].forEach(([box, item]) => {
-        const els = $$(item); if (!els.length) return;
-        track(els); const t = fadeIn(els, .1); onView($(box), () => t.play());
-      });
-      const rows = $$('.contact-row');
-      if (rows.length) {
-        track(rows, $('.contact-rows'));
-        const a = drawIn([$('.contact-rows')], 0, 0), b = drawIn(rows, .1);
-        onView($('.contact-rows'), () => { a.play(); b.play(); });
-      }
-      // everything else marked for reveal (labels, text, buttons, the export number, the footer): after the heading
-      [...$$('[data-reveal]'), $('.foot')].filter(el => el && !done.has(el)).forEach(el => {
-        track(el);
-        const delay = el.matches('.eyebrow, .pill') ? .15 : el.matches('.btn') ? .45 : .3;
-        const t = fadeIn([el], delay); onView(el, () => t.play());
-      });
+      section($('.about'), tl => { wipe(tl, [$('.about__photo')], 0); head(tl, $('.about')); fade(tl, [$('.about .text'), $('.about__body .btn')], .4); draw(tl, [$('.tabs__list')], .5); fade(tl, [$('.tabs__panels')], .7); }, 'left 70%');
+      section($('.numbers'), tl => { head(tl, $('.numbers')); fade(tl, $$('.stat'), .3); });
+      section($('#products'), tl => { head(tl, $('#products')); fade(tl, [$('.products__all')], .45); wipe(tl, $$('.card__media'), .3); fade(tl, $$('.card__meta, .card__title'), .65, .06); });
+      section($('#production'), tl => { head(tl, $('#production')); fade(tl, [$('.production__more')], .45); draw(tl, $$('.process__head'), .3); wipe(tl, $$('.process__media'), .5, 0); });
+      section($('#export'), tl => { wipe(tl, [$('.export__photo')], 0); head(tl, $('#export')); fade(tl, $$('.feature'), .35); fade(tl, [$('.export__stat')], .6); }, 'left 70%');
+      section($('#contacts'), tl => { wipe(tl, [$('.contacts__photo')], 0); head(tl, $('.contacts__cta')); fade(tl, [$('.contacts__cta .btn')], .45); draw(tl, [$('.contact-rows'), ...$$('.contact-row')], .3, .08); fade(tl, [$('.foot')], .7); }, 'left 70%');
       endAnim();
-    } catch (err) {
-      // never leave anything hidden
-      gsap.set(touched.flatMap(el => [el, ...$$('*', el)]), { clearProps: 'opacity,transform,clipPath,scale' });
-      endAnim();
-      console.error(err);
     }
+  } catch (err) {
+    // never leave anything hidden
+    if (window.gsap) gsap.set(touched.flatMap(el => [el, ...$$('*', el)]), { clearProps: 'opacity,transform,clipPath,scale' });
+    root.classList.remove('fade');
+    endAnim();
+    console.error(err);
   }
 
   /* ---------- Numbers: count up once ----------
@@ -381,19 +357,20 @@
   function countUp(box, lines, start) {
     const nums = $$('.stat__num', box).map(el => ({ el, line: lines ? el.closest('.stat') : null, to: +el.textContent, from: +(el.dataset.from || 0) }));
     nums.forEach(n => { n.el.textContent = n.from; if (n.line) gsap.set(n.line, { '--grow': 0 }); });
-    const tl = gsap.timeline({ paused: true });
+    const tl = gsap.timeline({ paused: true, onComplete: () => tl.kill() });
     nums.forEach((n, i) => {
       const at = i * .15;
       if (n.line) tl.to(n.line, { '--grow': 1, duration: .6, ease: 'power2.out' }, at);
       const o = { v: n.from };
       tl.to(o, { v: n.to, duration: 1.8, ease: 'power3.out', onUpdate: () => { n.el.textContent = Math.round(o.v); } }, at + (n.line ? .25 : 0));
     });
-    ScrollTrigger.create(horizontal
-      ? { trigger: box, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() }
-      : { trigger: box, start: 'top 85%', once: true, onEnter: () => tl.play() });
+    if (horizontal) ScrollTrigger.create({ trigger: box, containerAnimation: hTween, start, once: true, onEnter: () => tl.play() });
+    else {   // vertical page: no ScrollTrigger at all (it would listen to every scroll), an IntersectionObserver instead
+      const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { tl.play(); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' });
+      io.observe(box);
+    }
   }
-  if (hasGsap && !reduceMotion) {
-    gsap.registerPlugin(ScrollTrigger);
+  if (!reduceMotion && (horizontal ? hasGsap : hasTween && 'IntersectionObserver' in window)) {
     // key numbers: when the section is 60% in; the export number (at the far right of its screen): once it is fully in
     if ($('.stats')) countUp(horizontal ? $('.numbers') : $('.stats'), true, 'left 60%');
     if ($('.export__stat')) countUp($('.export__stat'), false, 'right 100%');
@@ -425,9 +402,13 @@
   /* ---------- Hero video: desktop only, never with "reduce motion" ---------- */
   const video = $('.hero__video');
   if (video && horizontal && !reduceMotion) {
-    video.src = innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
-    video.addEventListener('canplay', () => video.classList.add('is-ready'), { once: true });
-    video.play().catch(() => { /* autoplay blocked — poster stays */ });
+    // starts after the page has loaded, so it never competes with the first screen's poster, fonts and images
+    const start = () => {
+      video.src = innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
+      video.addEventListener('canplay', () => video.classList.add('is-ready'), { once: true });
+      video.play().catch(() => { /* autoplay blocked — poster stays */ });
+    };
+    document.readyState === 'complete' ? start() : addEventListener('load', start, { once: true });
     // Pause while the hero is off-screen
     new IntersectionObserver(([en]) => { en.isIntersecting ? video.play().catch(() => {}) : video.pause(); })
       .observe($('.hero'));

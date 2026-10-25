@@ -10,13 +10,13 @@
   <link rel="icon" href="assets/brand/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap">
+  <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); the two faces of the first screen load first -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cormorant-garamond-cyrillic-400-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-cyrillic-400-normal.woff2" crossorigin>
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=78">
+  <link rel="stylesheet" href="assets/css/style.css?v=80">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -38,8 +38,8 @@
     <a class="header__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
       <!-- LOGO: assets/brand/logo.png (client's original) + logo-white.png (for dark sections / video).
            Both are built by tools/make_logo_assets.mjs; CSS shows the right one. -->
-      <img class="logo logo--color" src="assets/brand/logo.png" alt="Оліяторг" width="200" height="200">
-      <img class="logo logo--white" src="assets/brand/logo-white.png" alt="" width="200" height="200" aria-hidden="true">
+      <picture><source type="image/webp" srcset="assets/brand/logo-128.webp"><img class="logo logo--color" src="assets/brand/logo.png" alt="Оліяторг" width="200" height="200"></picture>
+      <picture><source type="image/webp" srcset="assets/brand/logo-white-128.webp"><img class="logo logo--white" src="assets/brand/logo-white.png" alt="" width="200" height="200" aria-hidden="true"></picture>
     </a>
 
     <nav class="nav" id="nav" aria-label="Головне меню" data-i18n-attr="aria-label:ui.menu">
@@ -76,7 +76,6 @@
           </picture>
           <!-- Video is attached by main.js only on desktop without "reduce motion"; mobile shows the poster. -->
           <video class="hero__video" muted loop playsinline preload="none"
-                 poster="assets/img/hero-poster-1920.jpg"
                  data-src-large="assets/img/hero-1920.mp4"
                  data-src-small="assets/img/hero-960.mp4"></video>
         </div>
@@ -106,8 +105,8 @@
       <section class="panel about" id="about" data-tone="light" aria-labelledby="about-title">
         <figure class="about__photo">
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/about-main-800.webp 800w, assets/img/about-main-1400.webp 1400w, assets/img/about-main-2400.webp 2400w">
-            <img src="assets/img/about-main-1400.jpg" sizes="(min-width: 1024px) 125vh, 135vw" srcset="assets/img/about-main-800.jpg 800w, assets/img/about-main-1400.jpg 1400w, assets/img/about-main-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="1045" loading="lazy" decoding="async">
+            <source type="image/webp" sizes="(min-width: 1024px) 125vh, 100vw" srcset="assets/img/about-main-800.webp 800w, assets/img/about-main-1400.webp 1400w, assets/img/about-main-2400.webp 2400w">
+            <img src="assets/img/about-main-1400.jpg" sizes="(min-width: 1024px) 125vh, 100vw" srcset="assets/img/about-main-800.jpg 800w, assets/img/about-main-1400.jpg 1400w, assets/img/about-main-2400.jpg 2400w" alt="Соняшникове поле на заході сонця" data-i18n-attr="alt:alt.sunset" width="1400" height="1045" loading="lazy" decoding="async">
           </picture>
         </figure>
 
@@ -426,8 +425,14 @@
   </dialog>
 
   <script src="assets/js/i18n.js?v=22"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="assets/js/main.js?v=21" defer></script>
+  <!-- GSAP everywhere (the number count-up); ScrollTrigger only for the horizontal desktop page — on phones it would
+       register itself and run on every scroll. Inserted in order (async = false), then main.js. -->
+  <script>
+    ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+     document.documentElement.classList.contains('is-h') && 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
+     'assets/js/main.js?v=25'].filter(Boolean).forEach(function (src) {
+      var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s);
+    });
+  </script>
 </body>
 </html>

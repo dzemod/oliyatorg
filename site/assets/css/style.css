@@ -4,6 +4,22 @@
    html.is-h (set in <head> for ≥1024px without "reduce motion").
    ========================================================================= */
 
+/* Self-hosted fonts (from @fontsource; only the weights the site uses), swap so text shows at once. */
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/cormorant-garamond-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/cormorant-garamond-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/cormorant-garamond-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/cormorant-garamond-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/cormorant-garamond-cyrillic-400-italic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/cormorant-garamond-latin-400-italic.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/manrope-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/manrope-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/manrope-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/manrope-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/manrope-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/manrope-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
 :root {
   /* palette "Olive oil & stone" — the ONE place for colours; everything else uses these variables.
      Contrast (WCAG): graphite on stone 12.2:1 · graphite 70% 5.0:1 · stone on olive 7.6:1 · stone 75% on olive 5.2:1.
@@ -390,6 +406,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    without JS, GSAP or motion they are simply visible. */
 .anim :is([data-reveal], [data-hero], .h2, .contacts__title, .about__photo, .export__photo, .contacts__photo,
   .process__head, .process__media, .contact-rows, .tabs__list, .foot) { visibility: hidden; }
+/* phones and tablets: a short CSS fade up as each block comes into view (main.js adds .rv, .in and html.fade) */
+.fade .rv { transition: opacity .6s ease-out var(--d, 0s), transform .6s ease-out var(--d, 0s); }
+.fade .rv:not(.in) { opacity: 0; transform: translateY(16px); }
 /* heading words while they rise from their mask (the padding keeps descenders and italic overhangs whole) */
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .1em .16em; margin: 0 -.1em -.16em; }
 .w__in { display: inline-block; }
@@ -480,10 +499,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .hero__hint {
     position: absolute; right: var(--pad); bottom: var(--bottom); z-index: 1; display: flex; align-items: flex-end; gap: 14px; line-height: 1;
     font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--stone);
-    text-shadow: 0 1px 12px rgb(var(--shade) / .5);
   }
   .is-h .hero__hint span { position: relative; top: 2px; } /* drops the 12px font's descent so the letters' bottom meets the border's bottom */
-  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; box-shadow: 0 0 8px rgb(var(--shade) / .4); }
+  .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; }
   .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--gold-light); animation: hint 2.4s var(--ease) infinite; }
   @keyframes hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
