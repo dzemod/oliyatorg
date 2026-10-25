@@ -382,7 +382,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* 6. Export & partnership — after the Envagyte reference: one large photo, then the label and heading, two
    features (a thin gold icon above the title and a short text). Phones: photo, heading, features, stacked;
-   desktop: the two features side by side. */
+   desktop: the two features one under the other in the left half of the text column. */
 .export__photo { overflow: hidden; aspect-ratio: 4 / 5; margin-bottom: 48px; }
 .export__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
 .export__title em { display: block; }
@@ -456,7 +456,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html:not(.is-h) .about__text { margin-top: 0; }
   html:not(.is-h) .export { display: grid; grid-template-columns: 5fr 6fr; gap: 6vw; align-items: center; }
   html:not(.is-h) .export__photo { margin-bottom: 0; }
-  html:not(.is-h) .features { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gap); }   /* the card gap */
+  html:not(.is-h) .features { width: 50%; gap: 48px; }
 }
 
 /* =========================================================================
@@ -593,14 +593,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
-     then from the content line the two features side by side in two equal columns across the whole text column
-     (heading's left edge to the right margin), with the product cards' gap */
+     then from the content line the two features one under the other, 48px apart, left-aligned with the heading
+     and half the text column wide (short lines) */
   .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
   .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   .is-h .export .export__title { font-size: var(--h2-size); }
-  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: var(--content-gap); }
-  .is-h .features { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 0 var(--gap); margin: 0; }   /* var(--gap): the product cards' gap */
+  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: max(var(--content-gap), 56px); }   /* the content line, at least 56px under the heading on short screens */
+  .is-h .features { width: 50%; align-content: start; gap: 48px; margin: 0; }
   .is-h .feature__icon { width: clamp(30px, 3.6vh, 44px); height: clamp(30px, 3.6vh, 44px); }
   .is-h .feature__title { margin-top: 2.2vh; font-size: clamp(16px, 2vh, 22px); }
   .is-h .feature__text { margin-top: 1.2vh; font-size: var(--t-body); max-width: 24em; }
