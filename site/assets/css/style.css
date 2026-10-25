@@ -840,8 +840,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contacts .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-height: 100svh;
     padding: calc(var(--header-h) + 48px) var(--pad) 48px; }
   .contacts .contacts__cta-inner .btn { margin-top: auto; }
-  .contacts .contacts__title { text-transform: none; letter-spacing: -.012em;   /* normal case, sized like the hero heading */
-    font-size: min(clamp(40px, 11.5vw, 60px), calc((100vw - 2 * var(--pad)) / 11.4)); line-height: 1.02; }
+  .contacts .contacts__title { text-transform: none; letter-spacing: -.012em; }   /* normal case, like the hero heading */
 
   /* footer: more air between the rows, the menu (≈20px between items) and the copyright */
   .contacts .contacts__side { padding: 64px var(--pad) 48px; }
@@ -851,6 +850,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .foot .lang__btn { min-height: 44px; }
   .contact-row a, .contact-row__cta { padding: 9px 0; margin: -9px 0; }   /* 44px tap height, same layout */
   .contact-row a { display: inline-block; }
+
+  /* one heading size for every section, the hero included (≈44px at 375, 48px at 414); hero phrases may wrap */
+  .hero .hero__title, .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
+  .export .export__title, .contacts .contacts__title { font-size: clamp(40px, 11.7vw, 64px); line-height: 1.08; }
+  .hero__title .line > * { white-space: normal; }
+  .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
+  /* the logo: the band wordmark readable, the header stays 68px */
+  .logo { height: 64px; }
 
   /* body text at least 16px, captions 15px */
   .feature__text { font-size: 16px; }
@@ -864,7 +871,5 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* contact rows: the label above the value, so the value gets the full width */
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
-  /* "для міжнародних партнерів" (≈10.5em) stays on one line — no single word on the last line */
-  .export .export__title { font-size: min(clamp(38px, 10vw, 56px), calc((100vw - 2 * var(--pad)) / 10.7)); }
   .products .products__all, .production .production__more { margin-top: 40px; }
 }

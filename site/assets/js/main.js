@@ -34,7 +34,8 @@
     ties = [];
     $$(ORPHAN_BLOCKS).forEach(el => {
       const tie = tieLast(el);
-      if (tie && el.scrollWidth > el.clientWidth + 1) {
+      // wider than its box — or, for an inline-block (hero lines), wider than its parent
+      if (tie && (el.scrollWidth > el.clientWidth + 1 || el.getBoundingClientRect().width > el.parentElement.clientWidth + 1)) {
         tie.node.nodeValue = tie.node.nodeValue.slice(0, tie.i) + ' ' + tie.node.nodeValue.slice(tie.i + 1);
       } else if (tie) ties.push(tie);
     });
