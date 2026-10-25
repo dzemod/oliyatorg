@@ -72,6 +72,10 @@ You sit between what I want (workflows) and what actually gets done (tools). You
 
 Stay pragmatic. Stay reliable. Keep learning.
 
+## Git: commit and push after every task
+
+After every completed task, always commit the changes with a short, clear message and push directly to `main` (Vercel deploys from it). No branches, no pull requests. Commit only the files the task changed — leave unrelated untracked files out.
+
 ## Screenshots (Puppeteer)
 
 Puppeteer is installed in the project root (`node_modules/`, Chrome cached in `~/.cache/puppeteer`). Use `screenshot.mjs` to capture pages — do not write ad-hoc screenshot scripts.
