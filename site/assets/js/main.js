@@ -336,7 +336,7 @@
       section($('.numbers'), tl => { head(tl, $('.numbers')); fade(tl, $$('.stat'), .3); });
       section($('#products'), tl => { head(tl, $('#products')); fade(tl, [$('.products__all')], .45); wipe(tl, $$('.card__media'), .3); fade(tl, $$('.card__meta, .card__title'), .65, .06); });
       section($('#production'), tl => { head(tl, $('#production')); fade(tl, [$('.production__more')], .45); draw(tl, $$('.process__head'), .3); wipe(tl, $$('.process__media'), .5, 0); });
-      section($('#export'), tl => { wipe(tl, [$('.export__photo')], 0); head(tl, $('#export')); fade(tl, $$('.feature'), .35); fade(tl, [$('.export__stat')], .6); }, 'left 70%');
+      section($('#export'), tl => { wipe(tl, [$('.export__photo')], 0); head(tl, $('#export')); fade(tl, $('.feature'), .35); }, 'left 70%');
       section($('#contacts'), tl => { wipe(tl, [$('.contacts__photo')], 0); head(tl, $('.contacts__cta')); fade(tl, [$('.contacts__cta .btn')], .45); draw(tl, [$('.contact-rows'), ...$$('.contact-row')], .3, .08); fade(tl, [$('.foot')], .7); }, 'left 70%');
       endAnim();
     }
@@ -377,9 +377,8 @@
     }
   }
   if (!reduceMotion && (horizontal ? hasGsap : 'IntersectionObserver' in window)) {
-    // key numbers: when the section is 60% in; the export number (at the far right of its screen): once it is fully in
+    // key numbers: when the section is 60% in
     if ($('.stats')) countUp(horizontal ? $('.numbers') : $('.stats'), true, 'left 60%');
-    if ($('.export__stat')) countUp($('.export__stat'), false, 'right 100%');
   }
 
   /* ---------- Anchor links (work in both modes) ---------- */

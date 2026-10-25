@@ -77,7 +77,6 @@ window.I18N = {
     'export.b1.text': 'USA, Europe, India, China, the Middle East, Africa, Australia.',
     'export.b2.title': 'Long-term partnership',
     'export.b2.text': 'We build long-term partnerships with suppliers and customers.',
-    'export.stat': 'supply regions',
 
     'contacts.eyebrow': 'Partnership',
     'contacts.title': 'Want to become our partner?',
