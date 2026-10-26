@@ -35,12 +35,19 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=105">
+  <link rel="stylesheet" href="assets/css/style.css?v=106">
   <script>
-    // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
+    // Decide the scroll mode before first paint. One page, two versions (for the review): index.html scrolls sideways
+    // on desktop, vertical.html (the same file, served by a rewrite in vercel.json) scrolls top to bottom.
+    // html.mode-v: the vertical version (any width; the footer link reads it).
+    // html.is-h: the designed desktop layout (wide screens without "reduce motion"); with html.is-v the sections stack
+    // vertically instead of on the sideways track. Phones and tablets are the same page in both versions.
     document.documentElement.classList.add('js');
+    var verticalVersion = /vertical/.test(location.pathname + location.search);
+    if (verticalVersion) document.documentElement.classList.add('mode-v');
     if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.documentElement.classList.add('is-h');
+      if (verticalVersion) document.documentElement.classList.add('is-v');
     }
     // animated elements wait hidden for main.js (html.anim); if it never takes over, show everything after 3 s
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -405,6 +412,8 @@
               <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
             </div>
             <p class="foot__copy">© <span data-year>2026</span> <span data-i18n="footer.copy">Оліяторг. Усі права захищено.</span></p>
+            <!-- REVIEW ONLY (remove after the client's choice): switch between the two versions of the page -->
+            <p class="foot__versions"><a href="./" data-version="h" data-i18n="footer.vH">Горизонтальна версія</a> / <a href="vertical.html" data-version="v" data-i18n="footer.vV">Вертикальна версія</a></p>
           </footer>
         </div>
       </section>
@@ -448,12 +457,12 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=28"></script>
+  <script src="assets/js/i18n.js?v=29"></script>
   <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are
        CSS transitions and the count-up is a few requestAnimationFrame steps, so no GSAP there.
        Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=33';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=34';
     (document.documentElement.classList.contains('is-h')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {

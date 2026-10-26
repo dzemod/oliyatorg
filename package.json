@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "media": "node tools/optimize_media.mjs",
-    "serve": "npx --yes http-server site -p 3000 -c-1"
+    "serve": "node tools/serve.mjs"
   },
   "devDependencies": {
     "@fontsource/cormorant-garamond": "^5.1.0",

@@ -618,6 +618,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .text { font-size: 16px; }
   .is-h .section-head .text { display: none; }
 }
+/* =========================================================================
+   Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
+   bottom instead of on the sideways track. Each section fills the screen under the solid header (100vh minus the
+   header); the gap between two sections' content is always 160px: 64px bottom line + 96px top line.
+   ========================================================================= */
+@media (min-width: 1024px) {
+  html.is-v { --top: 96px; --bottom: 64px; }
+  .is-v .scroller { height: auto; overflow: visible; }
+  .is-v .track { display: block; width: auto; height: auto; will-change: auto; }   /* no transform: Production pins with position: fixed */
+  .is-v .panel:not(.hero) { height: calc(100vh - var(--header-h)); }
+  .is-v .contacts { min-height: 0; }
+}
+
 
 /* =========================================================================
    Reduced motion — no animation anywhere
@@ -757,7 +770,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contact-row__cta:hover svg { transform: translateX(.18em); }
 
 /* footer: menu in two columns, language, copyright (the header logo is the only logo on this screen) */
-.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
+.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy" "ver"; gap: 24px; margin-top: 44px; align-items: start; }
 .foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
 .foot__nav a[href]:hover { color: var(--hover); }
@@ -768,6 +781,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .foot .lang__btn { min-width: 0; padding: 0 10px; }
 .foot .lang__btn:first-child { padding-left: 0; }
 .foot__copy { grid-area: copy; font-size: 13px; color: var(--fg-2); }
+/* REVIEW ONLY: the switch between the horizontal and the vertical version (remove with its markup after the choice) */
+.foot__versions { grid-area: ver; justify-self: end; font-size: 12px; line-height: 1; color: var(--fg-2); opacity: .7; }
+.foot__versions a { transition: color .2s ease; }
+.foot__versions a:hover { color: var(--hover); }
+html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [data-version="v"] { color: var(--fg); }
+@media (max-width: 1023px) { .foot__versions { justify-self: start; } }
 
 @media (min-width: 1024px) {
   /* Between the two lines. This screen follows the header menu instead of the column grid
@@ -794,7 +813,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contact-row dt { padding-top: 0; font-size: var(--t-caps); }
   .contact-row dd { font-size: clamp(24px, 3.1vh, 34px); line-height: 1.15; }
 
-  .foot { margin-top: clamp(40px, 7.4vh, 80px); padding-top: 0; grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "lang copy"; align-items: end; row-gap: 1.6vh; }
+  .foot { margin-top: clamp(40px, 7.4vh, 80px); padding-top: 0; grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "ver ver" "lang copy"; align-items: end; row-gap: 1.6vh; }
   .foot__nav { display: flex; flex-wrap: wrap; gap: 0 clamp(20px, 2vw, 40px); }   /* the menu in one row */
   .foot__nav a { padding: .5vh 0; font-size: clamp(13px, 1.45vh, 16px); }
   /* UA / EN and the copyright: no extra button height, so their text (not a taller box) ends on the bottom line, level with the button */

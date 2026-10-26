@@ -149,11 +149,29 @@
   /* ---------- Scroll mode ---------- */
   const track = $('#track');
   const scroller = $('.scroller');
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the horizontal page needs both (phones don't load GSAP)
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the desktop page needs both (phones don't load GSAP)
   // No GSAP (CDN blocked) → fall back to the normal vertical page.
-  if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h');
-  const horizontal = root.classList.contains('is-h');
+  if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h', 'is-v');
+  // html.is-h: the designed desktop layout; with html.is-v (vertical.html) it scrolls top to bottom, else sideways
+  const vertical = root.classList.contains('is-v');
+  const horizontal = root.classList.contains('is-h') && !vertical;
   const sections = $$('.panel');
+
+  // Production steps driven by the scroll (both desktop versions): the section pins for four step lengths of scroll
+  // and the steps follow it, 01 → 04 (reversed going back); the counter shows the position.
+  const production = $('#production');
+  const stepsOf = $$('.process__step', production || document);
+  const counterNum = $('.process__count b');
+  let activeStep = 0;
+  const setStep = i => {
+    if (i === activeStep) return;
+    activeStep = i;
+    stepsOf.forEach((st, k) => {
+      st.classList.toggle('is-active', k === i);
+      $('.process__head', st).setAttribute('aria-expanded', String(k === i));
+    });
+    if (counterNum) counterNum.textContent = String(i + 1).padStart(2, '0');
+  };
   let hTween = null;
   // horizontal page: the page scroll (px from the pin's start) for a track position x, and the steps' jump
   let scrollFor = x => x;
@@ -183,11 +201,7 @@
     }).filter(Boolean);
 
     // Production pauses the sideways movement: once the section fills the screen the track holds still (pinned) for
-    // four step lengths of scroll, the steps follow the scroll (01 → 04, reversed going back), then the track moves on.
-    const production = $('#production');
-    const stepsOf = $$('.process__step', production);
-    const counterNum = $('.process__count b', production);
-    let activeStep = 0;
+    // four step lengths of scroll (setStep follows it), then the track moves on.
 
     // Everything the track needs per frame is measured once per refresh (load, resize, fonts,
     // language), so scrolling itself only does arithmetic on the scroll offset — no layout reads.
@@ -220,10 +234,6 @@
     const setX = gsap.quickSetter(track, 'x', 'px');
     const scroll = { s: 0 };   // the one scrubbed value: the scroll offset into the pinned page
     measure();
-    const showStep = i => stepsOf.forEach((st, k) => {
-      st.classList.toggle('is-active', k === i);
-      $('.process__head', st).setAttribute('aria-expanded', String(k === i));
-    });
 
     function onTrack() {
       if (!geo) return;
@@ -232,8 +242,7 @@
       setX(x);
       // Production steps while pinned: one step per step length; before → 01, after → 04
       if (geo.hold) {
-        const i = Math.max(0, Math.min(stepsOf.length - 1, Math.floor((s - geo.pre) / geo.step)));
-        if (i !== activeStep) { activeStep = i; showStep(i); if (counterNum) counterNum.textContent = String(i + 1).padStart(2, '0'); }
+        setStep(Math.max(0, Math.min(stepsOf.length - 1, Math.floor((s - geo.pre) / geo.step))));
       }
       // section reveals: a section plays once its left edge passes 70% of the screen
       if (pendingReveals) pendingReveals.forEach((play, k) => {
@@ -313,6 +322,26 @@
     document.addEventListener('langchange', () => ScrollTrigger.refresh());
   }
 
+  if (vertical && production) {
+    // Vertical version: the page scrolls normally; Production pins under the header for four step lengths of scroll
+    // and the steps follow it, then the page moves on. One ScrollTrigger; its own scroll handling, no extra listeners.
+    gsap.registerPlugin(ScrollTrigger);
+    const header = $('#header');
+    const step = () => Math.round(innerHeight * .5);
+    const pin = ScrollTrigger.create({
+      trigger: production,
+      pin: true,
+      start: () => 'top ' + header.offsetHeight,
+      end: () => '+=' + stepsOf.length * step(),
+      invalidateOnRefresh: true,
+      onUpdate: self => setStep(Math.min(stepsOf.length - 1, Math.floor(self.progress * stepsOf.length)))
+    });
+    jumpToStep = i => scrollTo({ top: pin.start + (i + .5) * step(), behavior: 'smooth' });
+    document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
+    addEventListener('load', () => ScrollTrigger.refresh());
+    document.addEventListener('langchange', () => ScrollTrigger.refresh());
+  }
+
   /* ---------- Motion: one calm sequence per section, once ----------
      Every animated block carries [data-reveal] (the hero's: [data-hero]). The inline script in <head> adds html.anim
      when motion is allowed and CSS hides those blocks only while it is on; here the start states are set, then
@@ -322,8 +351,9 @@
      (power2.out). The motion itself is a CSS transition of opacity (+ a 16px rise on desktop), so the compositor runs
      it and no script works per frame. The section's numbers count up from the same trigger. Everything is built once
      (never again on resize or language change) and each trigger is removed after it fires.
-       · desktop (horizontal page): the trigger is a ScrollTrigger on the track tween (containerAnimation)
-       · phones and tablets (vertical page): an IntersectionObserver; opacity only, no movement
+       · desktop, horizontal page: the track update (onTrack) plays a section when its left edge passes 70%
+       · desktop, vertical version: an IntersectionObserver, with the same 16px rise
+       · phones and tablets: an IntersectionObserver; opacity only, no movement
        · hero: the same sequence on load · reduced motion: none of this, the final state at once */
   const animOn = root.classList.contains('anim');
   const endAnim = () => { root.classList.remove('anim'); window.__anim = true; };
@@ -357,7 +387,7 @@
   // Phones and tablets: the Partnership screen's label, heading and button are never hidden for a reveal. They sit on
   // a dark photo that loads lazily, and while their fade waited for the observer (or a jump / a page capture outran it)
   // the screen showed only a dark photo with no text — the "disappeared" heading. Static, they are always readable.
-  if (!horizontal) $$('.contacts__cta [data-reveal]').forEach(el => el.removeAttribute('data-reveal'));
+  if (!root.classList.contains('is-h')) $$('.contacts__cta [data-reveal]').forEach(el => el.removeAttribute('data-reveal'));
   const restore =() => $$('.stat__num').forEach(el => { const s = el.parentNode.querySelector('.sr-only'); if (s) el.textContent = s.textContent; });
   try {
     const canTrigger = horizontal ? hasGsap : 'IntersectionObserver' in window;
@@ -425,7 +455,7 @@
 
   /* ---------- Hero video: desktop only, never with "reduce motion" ---------- */
   const video = $('.hero__video');
-  if (video && horizontal && !reduceMotion) {
+  if (video && (horizontal || vertical) && !reduceMotion) {
     // starts after the page has loaded, so it never competes with the first screen's poster, fonts and images
     const start = () => {
       video.src = innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
