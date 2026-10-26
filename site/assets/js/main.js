@@ -27,7 +27,7 @@
   /* No orphans: tie the last two words of every text block, so a single word never ends up alone on the last line.
      Layout-aware: where the tied pair is wider than its box (very narrow columns), the tie is undone — overflow is
      worse than an orphan. Re-run on resize and language change. */
-  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, dt, dd, li > a, figcaption, label, .btn > span, .process__title, .tabs__tab';
+  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, .t-full, .t-short, dt, dd, li > a, figcaption, label, .btn > span, .process__title, .tabs__tab';
   let ties = [];
   const untie = ({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); };
   function tieLastWords() {
@@ -153,7 +153,14 @@
   // No GSAP (CDN blocked) → fall back to the normal vertical page.
   if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h');
   const horizontal = root.classList.contains('is-h');
+  const sections = $$('.panel');
   let hTween = null;
+  // horizontal page: the page scroll (px from the pin's start) for a track position x, and the steps' jump
+  let scrollFor = x => x;
+  let jumpToStep = null;
+  // horizontal page: the sections' reveal plays, run from the track update when a section's left edge passes 70%
+  let pendingReveals = null;
+  let trackUpdate = () => {};
 
   // Reload when crossing the desktop breakpoint so the right mode is built.
   const desktopMq = matchMedia('(min-width: 1024px)');
@@ -175,28 +182,63 @@
       return { fig, set: gsap.quickSetter(img, 'xPercent'), v: null };
     }).filter(Boolean);
 
+    // Production pauses the sideways movement: once the section fills the screen the track holds still (pinned) for
+    // four step lengths of scroll, the steps follow the scroll (01 → 04, reversed going back), then the track moves on.
+    const production = $('#production');
+    const stepsOf = $$('.process__step', production);
+    const counterNum = $('.process__count b', production);
+    let activeStep = 0;
+
     // Everything the track needs per frame is measured once per refresh (load, resize, fonts,
-    // language), so scrolling itself only does arithmetic on the track's x — no layout reads.
+    // language), so scrolling itself only does arithmetic on the scroll offset — no layout reads.
     let geo = null;
     function measure() {
       const x0 = track.getBoundingClientRect().left;
       const box = el => { const r = el.getBoundingClientRect(); return { l: r.left - x0, w: r.width }; };
       const mid = el => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
+      const dist = distance();
+      const step = Math.round(innerHeight * .5);   // scroll per step while pinned
       geo = {
         vw: innerWidth,
+        dist,
+        hold: production ? stepsOf.length * step : 0,
+        step,
+        pre: production ? Math.min(box(production).l, dist) : dist,   // track x where Production fills the screen
         panels: panels.map(p => ({ ...box(p), dark: p.dataset.theme === 'dark' })),
+        secs: sections.map(box),
         frames: frames.map(f => box(f.fig)),
         logo: mid(logoLink),
         nav: navItems.map(mid)
       };
     }
+    // scroll offset s → track x: straight up to Production, still while pinned, then on again
+    const xAt = s => s <= geo.pre ? s : s <= geo.pre + geo.hold ? geo.pre : s - geo.hold;
+    scrollFor = x => geo && x > geo.pre ? x + geo.hold : x;
     const darkAt = x => { const p = geo.panels.find(p => x >= p.l && x < p.l + p.w); return !!p && p.dark; };
     let logoDark = null;
     const navDark = navItems.map(() => null);
+    const setX = gsap.quickSetter(track, 'x', 'px');
+    const scroll = { s: 0 };   // the one scrubbed value: the scroll offset into the pinned page
+    measure();
+    const showStep = i => stepsOf.forEach((st, k) => {
+      st.classList.toggle('is-active', k === i);
+      $('.process__head', st).setAttribute('aria-expanded', String(k === i));
+    });
 
     function onTrack() {
       if (!geo) return;
-      const x = gsap.getProperty(track, 'x');
+      const s = Math.min(scroll.s, geo.dist + geo.hold);
+      const x = -xAt(s);
+      setX(x);
+      // Production steps while pinned: one step per step length; before → 01, after → 04
+      if (geo.hold) {
+        const i = Math.max(0, Math.min(stepsOf.length - 1, Math.floor((s - geo.pre) / geo.step)));
+        if (i !== activeStep) { activeStep = i; showStep(i); if (counterNum) counterNum.textContent = String(i + 1).padStart(2, '0'); }
+      }
+      // section reveals: a section plays once its left edge passes 70% of the screen
+      if (pendingReveals) pendingReveals.forEach((play, k) => {
+        if (play && geo.secs[k].l + x < geo.vw * .7) { pendingReveals[k] = null; play(); }
+      });
       // Gentle parallax inside photo frames: -4% when the frame enters on the right, +4% as it leaves on the left
       frames.forEach((f, i) => {
         const { l, w } = geo.frames[i];
@@ -213,23 +255,30 @@
       });
     }
 
-    // The only ScrollTrigger: pins the page and scrubs the track. Its tween's onUpdate also runs while
-    // the scrub glides on after the wheel stops, so no extra scroll listeners or tickers are needed.
-    hTween = gsap.to(track, {
-      x: () => -distance(),
+    // The only ScrollTrigger: pins the page and scrubs one value, the scroll offset, over the track's length plus the
+    // Production hold; onTrack maps it to the track's x, the steps and the reveals. The tween's onUpdate also runs
+    // while the scrub glides on after the wheel stops, so no extra scroll listeners or tickers are needed.
+    hTween = gsap.to(scroll, {
+      s: () => geo.dist + geo.hold,
       ease: 'none',
       onUpdate: onTrack,
       scrollTrigger: {
         trigger: scroller,
         pin: true,
         scrub: 1,
-        end: () => '+=' + distance(),
+        end: () => { measure(); return '+=' + (geo.dist + geo.hold); },   // re-measured on every refresh, before the tween reads geo
         invalidateOnRefresh: true,
-        onRefresh: () => { measure(); onTrack(); }
+        onRefresh: onTrack
       }
     });
-    measure();
     onTrack();
+    trackUpdate = onTrack;
+
+    // a click on a step scrolls to the middle of its stretch of the hold, so the scroll and the step agree
+    jumpToStep = i => {
+      const st = hTween.scrollTrigger;
+      scrollTo({ top: st.start + geo.pre + (i + .5) * geo.step, behavior: 'smooth' });
+    };
 
     // Trackpad: horizontal swipe moves the page too. Passive, so the browser never waits for this
     // handler before scrolling (sideways overscroll is off in CSS, nothing to prevent).
@@ -255,7 +304,7 @@
       if (r.left >= 0 && r.right <= innerWidth) return;
       const st = hTween.scrollTrigger;
       const x = r.left - track.getBoundingClientRect().left;
-      scrollTo({ top: Math.max(st.start, Math.min(st.start + x - innerWidth * 0.3, st.end)), behavior: 'auto' });
+      scrollTo({ top: Math.max(st.start, Math.min(st.start + scrollFor(x - innerWidth * 0.3), st.end)), behavior: 'auto' });
     });
 
     // Fonts and images change widths → recalculate
@@ -305,8 +354,11 @@
       requestAnimationFrame(tick);
     };
   }
-  const sections = $$('.panel');
-  const restore = () => $$('.stat__num').forEach(el => { const s = el.parentNode.querySelector('.sr-only'); if (s) el.textContent = s.textContent; });
+  // Phones and tablets: the Partnership screen's label, heading and button are never hidden for a reveal. They sit on
+  // a dark photo that loads lazily, and while their fade waited for the observer (or a jump / a page capture outran it)
+  // the screen showed only a dark photo with no text — the "disappeared" heading. Static, they are always readable.
+  if (!horizontal) $$('.contacts__cta [data-reveal]').forEach(el => el.removeAttribute('data-reveal'));
+  const restore =() => $$('.stat__num').forEach(el => { const s = el.parentNode.querySelector('.sr-only'); if (s) el.textContent = s.textContent; });
   try {
     const canTrigger = horizontal ? hasGsap : 'IntersectionObserver' in window;
     if (!animOn || reduceMotion || !canTrigger) endAnim();
@@ -320,9 +372,9 @@
       });
       root.classList.add('fade');
       if (horizontal) {
-        sections.forEach((sec, k) => {
-          if (!sec.classList.contains('hero')) ScrollTrigger.create({ trigger: sec, containerAnimation: hTween, start: 'left 70%', onEnter: self => { self.kill(); plays[k](); } });
-        });
+        // played from the track update (onTrack), so the Production hold never shifts a trigger
+        pendingReveals = sections.map((sec, k) => sec.classList.contains('hero') ? null : plays[k]);
+        trackUpdate();   // a page reloaded mid-way plays what is already on screen
       } else {
         const io = new IntersectionObserver(entries => entries.forEach(en => {
           if (!en.isIntersecting) return;
@@ -357,7 +409,7 @@
       const st = hTween.scrollTrigger;
       const panel = target.closest('.panel') || target;
       const x = panel.getBoundingClientRect().left - track.getBoundingClientRect().left;
-      scrollTo({ top: Math.min(st.start + x, st.end), behavior });
+      scrollTo({ top: Math.min(st.start + scrollFor(x), st.end), behavior });
     } else {
       target.scrollIntoView({ behavior });
     }
@@ -387,12 +439,12 @@
   }
 
   /* ---------- Production steps ----------
-     Desktop (horizontal page): one step is always active; hover (mouse), click or keyboard switches it and its photo
-     and text fade in beside the list. Phones / tablets: an accordion — tapping a step opens it (and closes the
-     others), tapping the open step closes it. ↑ ↓ Home End move between the step buttons. */
+     Desktop (horizontal page): one step is always active and the scroll drives it while the section is pinned (see
+     onTrack); a click or keyboard focus jumps the scroll to that step, so its photo and text fade in beside the list.
+     Phones / tablets and "reduce motion": an accordion — tapping a step opens it (and closes the others), tapping the
+     open step closes it. ↑ ↓ Home End move between the step buttons. */
   const steps = $$('.process__step');
   const heads = steps.map(s => $('.process__head', s));
-  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
   function activate(step) {
     steps.forEach(s => {
       const on = s === step;
@@ -401,9 +453,11 @@
     });
   }
   steps.forEach((s, i) => {
-    heads[i].addEventListener('click', () => activate(!horizontal && s.classList.contains('is-active') ? null : s));
-    heads[i].addEventListener('mouseenter', () => { if (horizontal && canHover) activate(s); });
-    heads[i].addEventListener('focus', () => { if (horizontal && root.dataset.input === 'key') activate(s); });
+    heads[i].addEventListener('click', () => {
+      if (jumpToStep) jumpToStep(i);
+      else activate(s.classList.contains('is-active') ? null : s);
+    });
+    heads[i].addEventListener('focus', () => { if (jumpToStep && root.dataset.input === 'key') jumpToStep(i); });
     heads[i].addEventListener('keydown', e => {
       const to = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: heads.length - 1 }[e.key];
       if (to === undefined) return;

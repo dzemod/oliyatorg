@@ -4,30 +4,24 @@
    html.is-h (set in <head> for ≥1024px without "reduce motion").
    ========================================================================= */
 
-/* Self-hosted fonts (from @fontsource; only the weights the site uses), swap so text shows at once.
-   size-adjust keeps the text widths of the previous pair (Cormorant Garamond + Manrope), so every size and
-   one-line heading in this file stays as tuned: Literata runs ~26% wider than Cormorant, Golos ~5% wider than Manrope. */
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 500; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 500; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Literata"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Literata"; font-style: italic; font-weight: 400; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-cyrillic-400-italic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Literata"; font-style: italic; font-weight: 400; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-latin-400-italic.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Literata"; font-style: italic; font-weight: 500; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-cyrillic-500-italic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Literata"; font-style: italic; font-weight: 500; font-display: swap; size-adjust: 79%; src: url("../fonts/literata-latin-500-italic.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 500; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 500; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 96%; src: url("../fonts/golos-text-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+/* Self-hosted Google Fonts (the @fontsource copies of Inter Tight and Inter; Cyrillic + Latin subsets, only the weights
+   the site uses), swap so text shows at once: Inter Tight 400/500 for headings and big numbers, Inter 400/500/600 for
+   body text, labels, buttons and the menu. The Cyrillic files of the first screen are preloaded in index.html. */
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-tight-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-tight-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 
-/* metric-matched fallbacks: until the web fonts arrive, Georgia and Arial take the same width and line height,
-   so the swap moves nothing (no layout shift) */
-@font-face { font-family: "Literata Fallback"; src: local("Georgia"); size-adjust: 85.9%; ascent-override: 108.3%; descent-override: 28.3%; line-gap-override: 0%; }
-@font-face { font-family: "Golos Fallback"; src: local("Arial"); size-adjust: 102.7%; ascent-override: 91.6%; descent-override: 20.6%; line-gap-override: 0%; }
+/* metric-matched fallbacks: until the web fonts arrive, Arial takes about the same width and line height,
+   so the swap barely moves anything */
+@font-face { font-family: "Inter Tight Fallback"; src: local("Arial"); size-adjust: 100.5%; ascent-override: 96%; descent-override: 24%; line-gap-override: 0%; }
+@font-face { font-family: "Inter Fallback"; src: local("Arial"); size-adjust: 107%; ascent-override: 90.5%; descent-override: 22.5%; line-gap-override: 0%; }
 
 :root {
   /* palette "Olive oil & stone" — the ONE place for colours; everything else uses these variables.
@@ -39,7 +33,7 @@
   --graphite-70: rgb(43 42 39 / .7);   /* secondary text (5.0:1 on stone) */
   --olive: #4A4A3A;                    /* dark blocks, dark sections, footer, photo tints */
   --gold: #B8913A;                     /* accent marks: label dots, thin accent lines, active tab / step */
-  --gold-text: #9C7B31;                /* large gold text on stone — heading italics (3.4:1) */
+  --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
   --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
   --gold-light: #D4BD89;               /* gold text on olive and over photos (4.9:1 on olive) */
   --stone-75: rgb(239 236 230 / .75);  /* secondary light text on olive (5.2:1) */
@@ -58,12 +52,11 @@
   --label: var(--gold);
   --em: var(--gold-text);
   --num: var(--gold-ink);
-  --btn-bg: var(--stone);
-  --btn-hover-line: var(--olive);   /* button border on hover */
   --hover: var(--gold-ink);         /* link hover colour */
 
-  --serif: "Literata", "Literata Fallback", Georgia, "Times New Roman", serif;
-  --sans: "Golos Text", "Golos Fallback", "Segoe UI", Arial, sans-serif;
+  --display: "Inter Tight", "Inter Tight Fallback", "Segoe UI", Arial, sans-serif;   /* headings and big numbers */
+  --sans: "Inter", "Inter Fallback", "Segoe UI", Arial, sans-serif;                    /* body, labels, buttons, menu */
+  --track: -.02em;          /* headings: slightly tight */
 
   --header-h: 68px;
   --ease: cubic-bezier(.22, .61, .36, 1);
@@ -91,13 +84,13 @@
     /* every section (except the hero) follows four lines: top (labels), head (headings), content, bottom */
     --label-h: clamp(32px, 3.6vh, 42px);                            /* label height */
     --label-gap: 3.2vh;                                             /* label → heading */
-    --h2-size: clamp(40px, 6.4vh, 88px);                            /* section heading size */
+    --h2-size: clamp(38px, 5.8vh, 80px);                            /* section heading size */
     --head: calc(var(--top) + var(--label-h) + var(--label-gap));   /* head line: the top of every heading */
-    --head-h: calc(2 * 1.14 * var(--h2-size));                      /* heading area: two lines (about: line-height 1.12 + italic), the same everywhere */
+    --head-h: calc(2 * 1.1 * var(--h2-size));                       /* heading area: two lines (line-height 1.08), the same everywhere */
     --content-gap: 6vh;                                             /* heading area → content */
     --content: calc(var(--head) + var(--head-h) + var(--content-gap));   /* content line: where the main content starts */
     /* type scale (desktop): one size per role in every section */
-    --t-sub: clamp(21px, 2.5vh, 28px);       /* subheadings: card and step titles (serif 500) */
+    --t-sub: clamp(20px, 2.3vh, 26px);       /* subheadings: card and step titles (Inter Tight 500) */
     --t-body: clamp(16px, 1.75vh, 19px);     /* body text — never under 16px */
     --t-caps: clamp(12px, 1.3vh, 14px);      /* small uppercase captions: tab names, card captions, contact labels (600) */
     --t-numcap: clamp(16px, 1.8vh, 20px);    /* captions under big numbers (500) */
@@ -125,7 +118,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 ul, ol, dl, dd { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3, p { margin: 0; }
-em { font-style: italic; }
+em { font-style: normal; }   /* the gold second part of headings: colour only, never italic */
 /* focus: a subtle thin outline for keyboard navigation only (main.js sets data-input="mouse" on pointer use,
    so a click never leaves a frame, even where a browser would otherwise show :focus-visible) */
 :focus-visible { outline: 1px solid var(--focus, rgb(43 42 39 / .5)); outline-offset: 4px; }
@@ -153,8 +146,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 [data-tone="dark"] :is(.eyebrow, .pill), [data-tone="photo"] :is(.eyebrow, .pill) { border-color: rgb(239 236 230 / .45); }
 
 .h2 {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(38px, 10vw, 56px); line-height: 1.04; letter-spacing: -.01em;
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(30px, 8vw, 48px); line-height: 1.08; letter-spacing: var(--track);
   margin: 18px 0 20px; text-wrap: balance;
 }
 .h2 em { color: var(--em); }
@@ -211,11 +204,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 .lang { display: flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 600; letter-spacing: .08em; }
 .lang__btn { min-width: 40px; min-height: 40px; color: var(--fg-2); }
-.lang__btn[aria-pressed="true"] { color: inherit; font-weight: 800; }
+.lang__btn[aria-pressed="true"] { color: inherit; }
 /* no gold focus box on the switcher; keyboard focus shows as an underline instead */
 .lang__btn:focus-visible { outline: none; text-decoration: underline; text-underline-offset: 5px; }
 .lang__btn:hover { color: inherit; }
 .lang__sep { opacity: .35; }
+.header__lang { display: none; }   /* phones and tablets only: next to the burger */
 
 .burger { position: relative; z-index: 2; width: 48px; height: 48px; margin-right: -10px; }
 .burger span { position: absolute; left: 12px; right: 12px; height: 1.5px; background: currentColor; transition: transform .4s var(--ease); }
@@ -233,7 +227,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
   .nav.is-open { opacity: 1; visibility: visible; transition: opacity .4s var(--ease); }
   .nav__list li { border-bottom: 1px solid var(--line); }
-  .nav__list a { display: block; padding: 14px 0; font: 400 36px/1.15 var(--serif); letter-spacing: 0; }
+  .nav__list a { display: block; padding: 14px 0; font: 500 28px/1.2 var(--sans); letter-spacing: -.01em; }
   .nav__list a::after { display: none; }
   .nav .lang { margin-top: 28px; font-size: 16px; }
   .nav .lang__btn { min-width: 52px; min-height: 48px; }
@@ -271,9 +265,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
 }
 .hero__inner { position: relative; z-index: 1; }
-/* size capped so the longest phrase ("Відповідальне виробництво." ≈ 11.2em) fits the column */
-.hero__title { margin: 18px 0 20px; font: 400 min(clamp(40px, 11.5vw, 60px), calc((100vw - 2 * var(--pad)) / 11.4))/1.02 var(--serif); letter-spacing: -.012em; }
-.hero__title .line { display: block; overflow: hidden; padding-bottom: .06em; }
+/* exactly three lines: the size is capped so the longest phrase ("Відповідальне виробництво." ≈ 12.6em in Inter Tight 500)
+   fits the column on one line */
+.hero__title { margin: 18px 0 20px; font: 500 min(64px, calc((100vw - 2 * var(--pad)) / 12.8))/1.05 var(--display); letter-spacing: var(--track); }
+.hero__title .line { display: block; overflow: hidden; padding-bottom: .04em; }
 .hero__title .line > * { display: inline-block; white-space: nowrap; }   /* each phrase on one line: no lone word */
 .hero__title em { color: var(--gold-light); }
 .hero__lead { max-width: 30em; margin-bottom: 28px; font-size: 16px; line-height: 1.6; color: var(--stone); }   /* full stone: readable over any video frame */
@@ -285,7 +280,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .about__photo img { width: 100%; height: 100%; object-fit: cover; }
 /* text: label, heading, paragraph, button and tabs all start on one left line */
 .about__text { margin-top: 48px; }
-.about .h2.about__title { margin: 22px 0 30px; font-size: clamp(31px, 8.4vw, 52px); line-height: 1.12; }
+.about .h2.about__title { margin: 22px 0 30px; }
 .about__body { max-width: 29em; }
 .about__body .btn { margin-top: 38px; }
 
@@ -319,13 +314,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 .numbers__inner { position: relative; }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
-/* the line over each number */
-.stat { position: relative; padding-top: 16px; }
-.stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
 /* lining, tabular figures: every number sits on the baseline (no hanging 9s) and keeps its width while counting */
-.stat__value { font: 400 clamp(52px, 15vw, 72px)/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
+.stat__value { font: 400 clamp(48px, 13vw, 64px)/1 var(--display); letter-spacing: var(--track); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
-.numbers .stat::before { background: rgb(239 236 230 / .3); }   /* the lines over the photo, a little stronger than --line */
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* 4. Products — after the Interos "blog" layout: label and two-line heading on the left, the "all products"
@@ -341,7 +332,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
 .card__link:hover .card__media img { transform: scale(1.04); }
 .card__meta { margin-top: 20px; }
-.card__title { margin-top: 8px; font: 500 30px/1.12 var(--serif); }
+.card__title { margin-top: 8px; font: 500 26px/1.15 var(--display); letter-spacing: -.01em; }
 
 @media (min-width: 640px) {
   .products__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
@@ -367,10 +358,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   display: flex; align-items: center; gap: 12px; width: 100%; padding: 20px 0; text-align: left;
   border-bottom: 1px solid var(--line); transition: border-color .3s ease, box-shadow .3s ease;
 }
-/* readable at small sizes: sans gold numbers, medium-weight serif titles in the full text colour (the active one 600) */
+/* readable at small sizes: sans gold numbers, Inter Tight 500 titles in the full text colour */
 .process__num { flex: none; min-width: 30px; font: 600 14px/1 var(--sans); letter-spacing: .12em; color: var(--num); }
-.process__title { flex: 1; font: 500 24px/1.2 var(--serif); color: var(--fg); }
-.process__step.is-active .process__title { font-weight: 600; }
+.process__title { flex: 1; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; color: var(--fg); }
 .process__arrow { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--fg); stroke-width: 1.6; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
 /* thicker without moving the row: the border turns dark and an inset shadow adds a second pixel */
 .process__step.is-active .process__head { border-bottom-color: var(--gold); box-shadow: inset 0 -1px 0 var(--gold); }
@@ -379,6 +369,13 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .process__step.is-active .process__panel { display: block; }
 .process__media { overflow: hidden; aspect-ratio: 3 / 2; }
 .process__text { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
+.process__count { display: none; }
+/* two lengths of one text (index.html): the full one on desktop, the short one on phones and tablets */
+.t-short { display: none; }
+@media (max-width: 1023px) {
+  .t-full { display: none; }
+  .t-short { display: inline; }
+}
 
 /* 6. Export & partnership — after the Envagyte reference: one large photo, then the label and heading, two
    features (a thin gold icon above the title and a short text). Phones: photo, heading, features, stacked;
@@ -386,7 +383,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .export__photo { overflow: hidden; aspect-ratio: 4 / 5; margin-bottom: 48px; }
 .export__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
 .export__title em { display: block; }
-.features { display: grid; gap: 36px; margin-top: 40px; }
+.features { display: grid; gap: 40px; margin-top: 48px; }
 .feature__icon { display: block; width: 36px; height: 36px; fill: none; stroke: var(--gold-ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .feature__icon * { vector-effect: non-scaling-stroke; }   /* the same thin line at any size */
 .feature__title { margin-top: 18px; font: 500 18px/1.3 var(--sans); color: var(--fg); }
@@ -446,9 +443,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .nav__list { display: flex; gap: 34px; }
   .logo { height: 76px; }
 
-  .hero__title { font-size: clamp(56px, 6.2vw, 104px); }
+  .hero__title { font-size: clamp(52px, 5.4vw, 96px); }
   .hero__lead { font-size: 18px; }
-  .h2 { font-size: clamp(48px, 4.6vw, 80px); }
+  .h2 { font-size: clamp(44px, 4.2vw, 72px); }
 
   /* reduced-motion desktop keeps a calm vertical layout */
   html:not(.is-h) .about { display: grid; grid-template-columns: 5fr 7fr; gap: 6vw; align-items: center; }
@@ -456,7 +453,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html:not(.is-h) .about__text { margin-top: 0; }
   html:not(.is-h) .export { display: grid; grid-template-columns: 5fr 6fr; gap: 6vw; align-items: center; }
   html:not(.is-h) .export__photo { margin-bottom: 0; }
-  html:not(.is-h) .features { width: 50%; gap: 48px; }
+  html:not(.is-h) .features { width: 50%; }
 }
 
 /* =========================================================================
@@ -477,7 +474,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
 
   /* shared type in vh */
-  .is-h .h2 { font-size: clamp(44px, 7.2vh, 96px); margin: 2.4vh 0 2.6vh; }
+  .is-h .h2 { font-size: var(--h2-size); margin: 2.4vh 0 2.6vh; }
   .is-h .text { font-size: var(--t-body); }
   .is-h :is(.eyebrow, .pill) { height: var(--label-h); padding: 0 1.8vh; font-size: clamp(13px, 1.4vh, 16px); }
   /* the lines (see :root): label on the top line, heading on the head line in a two-line area, so whatever follows
@@ -504,7 +501,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
                 linear-gradient(to right, rgb(var(--shade) / .42), rgb(var(--shade) / 0) 75%),
                 linear-gradient(to top, rgb(var(--shade) / .35), rgb(var(--shade) / 0) 70%), rgb(var(--shade) / .1);
   }
-  .is-h .hero__title { font-size: clamp(56px, 9vh, 120px); margin: 2.6vh 0 3vh; }
+  .is-h .hero__title { font-size: clamp(52px, min(8.5vh, 5.6vw), 112px); line-height: 1.05; margin: 2.6vh 0 3vh; }
   .is-h .hero__lead { font-size: clamp(16px, 2vh, 21px); margin-bottom: 4vh; max-width: 34em; }
   /* same bottom as the hero button (last child of .hero__inner) → text baseline and line sit on its bottom border */
   .is-h .hero__hint {
@@ -523,8 +520,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* photo: columns 1–5 (≈40% of the content width), from the top line to the bottom line; column 6 is the gap */
   .is-h .about__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; }
   /* the column runs from the top line to the bottom line; the tabs block sits on the bottom line */
-  .is-h .about__text { grid-column: 7 / 13; align-self: stretch; margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
-  .is-h .about__tabs { align-self: stretch; margin-top: auto; padding-top: 4vh; }
+  /* compact: the tabs follow the button 64px under it (not pushed to the bottom line) */
+  .is-h .about__text { grid-column: 7 / 13; align-self: start; margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .is-h .about__tabs { align-self: stretch; margin-top: 64px; }
   .is-h .tabs__tab { min-height: clamp(40px, 5vh, 56px); padding-bottom: .8vh; font-size: var(--t-caps); }
   .is-h .tabs__panels { margin-top: 2.4vh; }
   .is-h .tabs__panel { font-size: var(--t-body); }
@@ -539,12 +537,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* 3. Numbers — full-screen photo; label/heading from the top line, figures end on the bottom line */
   .is-h .panel.numbers { width: 100vw; display: block; }   /* .panel.numbers outranks the shared section grid */
   .is-h .numbers__inner { position: absolute; inset: var(--top) var(--pad) var(--bottom); display: flex; flex-direction: column; }
-  .is-h .numbers .h2 { font-size: clamp(52px, 9vh, 120px); max-width: 12em; }
+  .is-h .numbers .h2 { font-size: clamp(48px, 8vh, 108px); max-width: 12em; }
   /* each column runs from the content line (its line) to the bottom line (the number and caption) */
   .is-h .stats { flex: 1; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin: var(--content-gap) 0 0; }
   .is-h .stat { display: flex; flex-direction: column; justify-content: flex-end; }
-  .is-h .stat { padding-top: 2.4vh; }
-  .is-h .stat__value { font-size: clamp(64px, 15vh, 190px); }
+  .is-h .stat__value { font-size: clamp(60px, 13vh, 168px); }
   .is-h .stat__label { margin-top: 1.4vh; font-size: var(--t-numcap); font-weight: 500; white-space: nowrap; }   /* short captions, one line each */
 
   /* 4. Products — 12 columns: heading block on top, three 4-column cards fill down to the bottom line */
@@ -591,16 +588,23 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .process__media img { position: absolute; inset: 0; }
   /* always 2 lines (fixed height, so switching steps never jumps); the measure keeps every text on two balanced lines */
   .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
+  /* the step counter ("02 / 04") on the right of the text line: the steps follow the scroll while the section is pinned */
+  .is-h .process__count {
+    display: block; position: absolute; right: 0; bottom: 0; line-height: calc(1.55 * var(--pt));
+    font-size: var(--t-caps); font-weight: 500; letter-spacing: .12em; font-variant-numeric: tabular-nums; color: var(--fg-2);
+  }
+  .is-h .process__count b { font-weight: 600; color: var(--num); }
+  .is-h .process__text { max-width: min(30em, calc(100% - 8em)); }   /* clear of the counter */
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
-     then from the content line the two features one under the other, 48px apart, left-aligned with the heading
+     then 48px under the heading the two features one under the other, 40px apart, left-aligned with the heading
      and half the text column wide (short lines) */
   .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
   .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   .is-h .export .export__title { font-size: var(--h2-size); }
-  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: max(var(--content-gap), 56px); }   /* the content line, at least 56px under the heading on short screens */
-  .is-h .features { width: 50%; align-content: start; gap: 48px; margin: 0; }
+  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: 48px; }   /* 48px under the heading area */
+  .is-h .features { width: 50%; align-content: start; gap: 40px; margin: 0; }
   .is-h .feature__icon { width: clamp(30px, 3.6vh, 44px); height: clamp(30px, 3.6vh, 44px); }
   .is-h .feature__title { margin-top: 2.2vh; font-size: clamp(16px, 2vh, 22px); }
   .is-h .feature__text { margin-top: 1.2vh; font-size: var(--t-body); max-width: 24em; }
@@ -608,8 +612,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* Short desktop screens (e.g. 1280×720 laptops) */
 @media (min-width: 1024px) and (max-height: 760px) {
-  :root { --h2-size: 46px; --content-gap: 4vh; }
-  .is-h .h2 { font-size: 46px; }
+  :root { --h2-size: 42px; --content-gap: 4vh; }
   .is-h .about__body .btn { margin-top: 3.5vh; }
   .is-h .about__tabs { padding-top: 2.5vh; }
   .is-h .text { font-size: 16px; }
@@ -667,7 +670,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 [data-tone="stone"] { --bg: var(--stone); }
 [data-tone="dark"], [data-tone="photo"] {
   --bg: var(--olive); --fg: var(--stone); --fg-2: var(--stone-75); --label: var(--gold); --em: var(--gold-light); --num: var(--gold-light);
-  --line: var(--line-light); --btn-bg: var(--white); --btn-hover-line: var(--stone); --hover: var(--gold-light);
+  --line: var(--line-light); --hover: var(--gold-light);
 }
 .panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
@@ -686,27 +689,27 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 .nav__list a, .nav .lang__btn { transition: color .2s ease; }
 .nav__list a[href]:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
-.nav .lang__btn[aria-pressed="true"] { color: var(--nav-accent); }
+.nav .lang__btn[aria-pressed="true"], .header__lang .lang__btn[aria-pressed="true"] { color: var(--nav-accent); }
 
 /* sideways trackpad swipes scroll the page instead of triggering browser back/forward */
 .is-h, .is-h body { overscroll-behavior-x: none; }
 
 /* =========================================================================
-   Buttons: stone (white on dark blocks) with a thin graphite border, filling with olive (light text and arrow) on hover;
-   a separate square arrow box, 2px apart (every button). On hover the arrow
-   rotates in place from ↗ to →.
+   Buttons — one style everywhere, light and dark backgrounds alike: filled accent gold with dark graphite text and
+   arrow, sharp corners; on hover (0.3s) dark olive with light text and arrow, and the arrow rotates in place from ↗ to →.
+   A separate square arrow box, 2px apart. (Graphite on the gold: 4.7:1.)
    ========================================================================= */
 .btn, .btn--light, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
 .btn > span {
-  height: 54px; background: var(--btn-bg); color: var(--graphite); border: 1px solid var(--graphite);
-  transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+  height: 54px; background: var(--gold); color: var(--graphite);
+  transition: background-color .3s ease, color .3s ease;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
 /* the arrow box: a square flex box, the 20px icon centred in it by flexbox (independent of the font and line box);
    the icon's arrow is drawn centred on (12, 12), so rotating the whole svg turns it around the arrow's own centre */
 .btn > .btn__box { order: -1; flex: none; width: 54px; padding: 0; justify-content: center; }
 .btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
-.btn:hover > span { background: var(--olive); border-color: var(--btn-hover-line); color: var(--stone); }
+.btn:hover > span { background: var(--olive); color: var(--stone); }
 .btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover .btn__arrow { transform: rotate(-45deg); }
@@ -738,7 +741,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contacts__title {
   margin: 18px 0 32px; max-width: 11.5em; color: var(--stone); text-wrap: balance;
   /* capped so the last line "нашим партнером?" (≈ 10.9em, kept together) fits the column */
-  font: 400 min(clamp(40px, 11.4vw, 56px), calc((100vw - 2 * var(--pad)) / 11.2))/1.02 var(--serif); letter-spacing: .01em; text-transform: uppercase;
+  font: 500 clamp(30px, 8vw, 48px)/1.08 var(--display); letter-spacing: var(--track);
 }
 
 /* contact rows */
@@ -746,7 +749,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contact-rows { border-bottom: 1px solid var(--line); }
 .contact-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 16px; padding: 18px 0 20px; border-top: 1px solid var(--line); }
 .contact-row dt { padding-top: .6em; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); }
-.contact-row dd { font: 400 clamp(22px, 6.4vw, 28px)/1.12 var(--serif); }
+.contact-row dd { font: 400 clamp(21px, 5.8vw, 26px)/1.2 var(--display); letter-spacing: -.01em; }
 .contact-row a, .contact-row__cta { color: var(--fg); transition: color .2s ease; }
 .contact-row a:hover, .contact-row__cta:hover { color: var(--hover); }
 .contact-row__cta { display: inline-flex; align-items: center; gap: .3em; text-align: left; font: inherit; }
@@ -779,8 +782,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* inside the photo: label on the global top line, button on the global bottom line, left edge = the page margin */
   .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: var(--top) 8cqi var(--bottom) var(--pad); }
   .contacts__cta-inner .btn { margin-top: auto; }
-  /* normal case like the hero: up to its size (9vh), and "нашим партнером?" (≈7.45em) always fits the photo */
-  .contacts__title { text-transform: none; letter-spacing: -.012em; font-size: clamp(30px, min(9vh, calc((92cqi - var(--pad)) / 7.6)), 120px); }
+  /* like the hero: up to its size, and "нашим партнером?" (≈8.6em in Inter Tight 500) always fits the photo */
+  .contacts__title { font-size: clamp(30px, min(8.5vh, calc((92cqi - var(--pad)) / 8.8)), 112px); line-height: 1.05; }
 
   .contacts__side { grid-column: 1 / -1; align-self: stretch; margin-left: calc(var(--nav-left, 50vw) - var(--pad)); padding: calc(var(--contacts-line, var(--content)) - var(--top)) 0 0; }   /* the first row's top line level with the heading's cap top (main.js) */
   /* rows from the content line, the footer on the bottom line: compact enough to fit between them */
@@ -789,7 +792,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contact-rows { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .contact-row { flex: 1; grid-template-columns: minmax(90px, 20%) minmax(0, 1fr); align-items: center; padding: clamp(8px, 1.3vh, 44px) 0; }
   .contact-row dt { padding-top: 0; font-size: var(--t-caps); }
-  .contact-row dd { font-size: clamp(26px, 3.4vh, 38px); line-height: 1.1; }
+  .contact-row dd { font-size: clamp(24px, 3.1vh, 34px); line-height: 1.15; }
 
   .foot { margin-top: clamp(40px, 7.4vh, 80px); padding-top: 0; grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "lang copy"; align-items: end; row-gap: 1.6vh; }
   .foot__nav { display: flex; flex-wrap: wrap; gap: 0 clamp(20px, 2vw, 40px); }   /* the menu in one row */
@@ -849,16 +852,39 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* rows: more air in each */
   .process .process__head { padding: 32px 0; }
-  .export .features { gap: 64px; }
   .contacts .contact-row { padding: 32px 0; }
+
+  /* buttons: the full content width, the arrow box on the left, the label centred in the rest */
+  .btn { display: flex; width: 100%; }
+  .btn > span:not(.btn__box) { flex: 1; justify-content: center; }
+  .products__head, .production__head { display: block; }
+  .products .products__all, .production .production__more { margin-top: 40px; }
+
+  /* Numbers: compact — less air around the section, 32px between the figures */
+  .numbers.panel { padding-top: 88px; padding-bottom: 88px; }
+  .numbers .stats { margin-top: 40px; gap: 32px 20px; }
+  .numbers .stat__label { margin-top: 6px; }
+
+  /* Export: label → photo → heading → features (the text column dissolves, so its parts take their own order) */
+  .export.panel { display: flex; flex-direction: column; }
+  .export__text { display: contents; }
+  .export .eyebrow { order: 0; }
+  .export .export__photo { order: 1; margin: 0 0 40px; }
+  .export .export__title { order: 2; }
+  .export .export__body { order: 3; }
+  .export .features { margin-top: 48px; gap: 40px; }
+
+  /* the language switch sits in the header next to the burger (the menu itself no longer repeats it) */
+  .header__lang { display: flex; margin-left: auto; margin-right: 4px; position: relative; z-index: 2; }
+  .header__lang .lang__btn { min-width: 36px; min-height: 44px; }
+  .menu-open .header { --fg-2: var(--graphite-70); --nav-accent: var(--gold-ink); }   /* the open menu is stone: dark switch colours */
+  .nav .lang { display: none; }
 
   /* Partnership: a full-screen photo like the hero — label and heading at the top, the button at the bottom */
   .contacts .contacts__cta { min-height: 100svh; }
   .contacts .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-height: 100svh;
     padding: calc(var(--header-h) + 48px) var(--pad) 48px; }
   .contacts .contacts__cta-inner .btn { margin-top: auto; }
-  .contacts .contacts__title { text-transform: none; letter-spacing: -.012em; }   /* normal case, like the hero heading */
-  .contacts .contacts__cta .contacts__title { font-size: min(clamp(40px, 11.7vw, 64px), calc((100vw - 2 * var(--pad)) / 7.7)); }   /* "нашим партнером?" (≈7.6em in 500) always fits */
 
   /* footer: more air between the rows, the menu (≈20px between items) and the copyright */
   .contacts .contacts__side { padding: 64px var(--pad) 48px; }
@@ -869,17 +895,16 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contact-row a, .contact-row__cta { padding: 9px 0; margin: -9px 0; }   /* 44px tap height, same layout */
   .contact-row a { display: inline-block; }
 
-  /* one heading size for every section, the hero included (≈44px at 375, 48px at 414); hero phrases may wrap */
-  .hero .hero__title, .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
-  .export .export__title, .contacts .contacts__title { font-size: clamp(40px, 11.7vw, 64px); line-height: 1.08; }
-  .hero__title .line > * { white-space: normal; }
+  /* one heading size for every section (≈26px at 375, so no heading runs over 2–3 lines); the hero keeps its own
+     size (see .hero__title): exactly three lines, each phrase on one line */
+  .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
+  .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
   .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
   /* the logo: the band wordmark readable, the header stays 68px */
   .logo { height: 64px; }
 
-  /* type scale (phones and tablets): subheadings 26px serif 500, uppercase captions 12px 600 */
-  .card .card__title, .process .process__title { font-size: 26px; font-weight: 500; }
-  .process .process__step.is-active .process__title { font-weight: 600; }
+  /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */
+  .card .card__title, .process .process__title { font-size: 22px; font-weight: 500; }
   .card .card__meta, .contact-row dt, .tabs .tabs__tab { font-size: 12px; font-weight: 600; }
   .stat .stat__label { font-weight: 500; }
 
@@ -889,11 +914,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 @media (max-width: 639px) {
   :root { --pad: 24px; }   /* 24px side margins on phones */
-  /* key numbers: one column, each with its line, number and caption */
-  .numbers .stats { grid-template-columns: minmax(0, 1fr); gap: 48px; }
-  .numbers .stat { padding-top: 20px; }
+  /* key numbers: one column, number and caption, 32px apart */
+  .numbers .stats { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   /* contact rows: the label above the value, so the value gets the full width */
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
-  .products .products__all, .production .production__more { margin-top: 40px; }
 }

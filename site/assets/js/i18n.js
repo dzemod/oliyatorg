@@ -32,6 +32,7 @@ window.I18N = {
     'about.eyebrow': 'About us',
     'about.title': 'From seed to oil —<br><em>with respect for nature</em>',
     'about.p1': 'Oliyatorg processes sunflower seeds from Ukrainian farmers with double pressing technology — no chemical solvents, keeping the natural properties of the raw material.',
+    'about.p1short': 'We double-press sunflower seeds from Ukrainian farmers — no chemical solvents.',
     'about.tabs': 'Our values',
     'about.t1': 'Nature',
     'about.t2': 'People',

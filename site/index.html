@@ -25,19 +25,17 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
 
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <!-- fonts are self-hosted (assets/fonts, @font-face in style.css); every face of the first screen is preloaded, so the
-       text never swaps after it has painted (the heading is Literata 400 on desktop, 500 on phones and tablets) -->
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-400-normal.woff2" crossorigin media="(min-width: 1024px)">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-400-italic.woff2" crossorigin media="(min-width: 1024px)">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-500-normal.woff2" crossorigin media="(max-width: 1023px)">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/literata-cyrillic-500-italic.woff2" crossorigin media="(max-width: 1023px)">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-400-normal.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-500-normal.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/golos-text-cyrillic-600-normal.woff2" crossorigin>
+  <!-- fonts are self-hosted Google Fonts (assets/fonts, @font-face in style.css): Inter Tight for headings and numbers,
+       Inter for the rest. Every Cyrillic face is preloaded (≈7 KB each), so the first screen never swaps after it has painted -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-tight-cyrillic-400-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-tight-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-400-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-600-normal.woff2" crossorigin>
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=104">
+  <link rel="stylesheet" href="assets/css/style.css?v=105">
   <script>
     // Decide the scroll mode before first paint: horizontal only on wide screens without "reduce motion".
     document.documentElement.classList.add('js');
@@ -77,6 +75,13 @@
         <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
       </div>
     </nav>
+
+    <!-- phones and tablets: the language switch next to the burger (desktop: the one in the menu) -->
+    <div class="lang header__lang" role="group" aria-label="Мова сайту" data-i18n-attr="aria-label:ui.lang">
+      <button type="button" class="lang__btn" data-lang="uk" aria-pressed="true">UA</button>
+      <span class="lang__sep" aria-hidden="true">/</span>
+      <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+    </div>
 
     <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Відкрити меню" data-i18n-attr="aria-label:ui.openMenu">
       <span></span><span></span>
@@ -135,7 +140,8 @@
           <p class="eyebrow" data-reveal><span data-i18n="about.eyebrow">Про компанію</span></p>
           <h2 class="h2 about__title" id="about-title" data-reveal data-i18n="about.title">Від насіння до&nbsp;олії —<br><em>з&nbsp;повагою до&nbsp;природи</em></h2>
           <div class="about__body">
-            <p class="text" data-reveal data-i18n="about.p1">Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини.</p>
+            <!-- two lengths of the same text: the full one on desktop, the short one on phones and tablets (.t-full / .t-short) -->
+            <p class="text" data-reveal><span class="t-full" data-i18n="about.p1">Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини.</span><span class="t-short" data-i18n="about.p1short">Переробляємо насіння українських аграріїв подвійним віджимом — без хімічних розчинників.</span></p>
             <!-- TODO: about.html when the page is built --><a class="btn" href="#contacts" data-reveal>
               <span data-i18n="about.cta">Про компанію</span>
               <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
@@ -238,7 +244,8 @@
 
       <!-- 5. PRODUCTION — head row like Products: label and heading on the left, the button on the right on the heading's
            bottom line; below, two equal columns: the 4 steps (list) and the active step's photo with its text under it.
-           main.js switches the steps (hover / click / keyboard); phones: an accordion with the photo and text in the open step. -->
+           main.js switches the steps: on the horizontal page the section pins and the scroll walks through them (click and keyboard
+           jump); phones: an accordion with the photo and text in the open step. -->
       <!-- Steps: from brief.txt (incoming control, two-stage mechanical pressing without solvents, oil + press cake for feed) and the website (certified lab, oil tanks) -->
       <!-- TODO: confirm with client --> <!-- exact production steps (cleaning / drying? stages of the pressing) -->
       <section class="panel production" id="production" data-tone="stone" aria-labelledby="production-title">
@@ -316,6 +323,7 @@
               <p class="process__text" data-i18n="production.s4.text">Якість контролює сертифікована лабораторія, олію зберігаємо в ємностях до&nbsp;5&nbsp;000&nbsp;т.</p>
             </div>
           </li>
+          <li class="process__count" aria-hidden="true"><b>01</b> / 04</li>
         </ol>
       </section>
 
@@ -337,15 +345,15 @@
           <div class="export__body">
             <ul class="features">
               <li class="feature" data-reveal>
-                <!-- globe (Lucide, ISC) -->
-                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                <!-- route between two points (Lucide "route", ISC) -->
+                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
                 <!-- TODO: confirm with client --> <!-- delivery formats (bulk / packaged) and transport (truck / rail / sea) -->
                 <h3 class="feature__title" data-i18n="export.b1.title">Географія поставок</h3>
                 <p class="feature__text" data-i18n="export.b1.text">США, Європа, Індія, Китай, Близький Схід, Африка, Австралія.</p>
               </li>
               <li class="feature" data-reveal>
-                <!-- handshake (Lucide, ISC) -->
-                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
+                <!-- signed agreement (Lucide "file-pen-line", ISC) -->
+                <svg class="feature__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/><path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><path d="M8 18h1"/></svg>
                 <h3 class="feature__title" data-i18n="export.b2.title">Довгострокова співпраця</h3>
                 <p class="feature__text" data-i18n="export.b2.text">Будуємо довгострокові партнерські відносини з постачальниками та клієнтами.</p>
               </li>
@@ -440,12 +448,12 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=27"></script>
+  <script src="assets/js/i18n.js?v=28"></script>
   <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are
        CSS transitions and the count-up is a few requestAnimationFrame steps, so no GSAP there.
        Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=32';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=33';
     (document.documentElement.classList.contains('is-h')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {
