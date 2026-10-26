@@ -620,15 +620,33 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 /* =========================================================================
    Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
-   bottom instead of on the sideways track. Each section fills the screen under the solid header (100vh minus the
-   header); the gap between two sections' content is always 160px: 64px bottom line + 96px top line.
+   bottom instead of on the sideways track. Each section fills at least the screen under the solid header (100vh
+   minus the header). Every section keeps half the section gap above and below its content, so the gap between two
+   sections' content is the same everywhere: 200px at 1920, scaled with the width (≈142px at 1366).
    ========================================================================= */
 @media (min-width: 1024px) {
-  html.is-v { --top: 96px; --bottom: 64px; }
+  html.is-v { --vgap: calc(100vw * 200 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px; }
   .is-v .scroller { height: auto; overflow: visible; }
   .is-v .track { display: block; width: auto; height: auto; will-change: auto; }   /* no transform: Production pins with position: fixed */
   .is-v .panel:not(.hero) { height: calc(100vh - var(--header-h)); }
   .is-v .contacts { min-height: 0; }
+
+  /* photo left, text right (About, Export): the text column spans the photo exactly — the label on the photo's top
+     line, the last line on its bottom line. The column is compact (label → heading 24, heading → content at least 40,
+     text → button 32, button → tabs 40, features 32 apart); the free height goes between the heading and the content.
+     The section grows past the screen only when the text needs more room — then the photo grows with it (the image
+     is absolutely placed, so it never sets the height itself, and the text is never cut). */
+  .is-v .panel:is(.about, .export) { height: auto; min-height: calc(100vh - var(--header-h)); grid-template-rows: auto; }
+  .is-v :is(.about__photo, .export__photo) { position: relative; align-self: stretch; }
+  .is-v :is(.about__photo, .export__photo) img { position: absolute; inset: 0; }
+  .is-v :is(.about__text, .export__text) { align-self: stretch; }
+  .is-v .about__body, .is-v .export__body { flex: none; margin-top: auto; padding-top: 40px; }
+  .is-v .about__body .btn { margin-top: 32px; }
+  .is-v .about__tabs { margin-top: 40px; }
+  .is-v .tabs__panels { margin-top: 16px; }
+  /* Export: the features take the full text column, so each text runs on two lines at most */
+  .is-v .features { width: 100%; gap: 32px; }
+  .is-v .feature__text { max-width: 36em; }
 }
 
 
