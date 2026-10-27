@@ -39,7 +39,8 @@
   --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
   --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
   --gold-light: #D4BD89;               /* gold text on olive and over photos (4.9:1 on olive) */
-  --gold-soft: #E3CD98;                /* button fill (graphite text on it: 9.6:1); hover turns it --gold */
+  --gold-soft: #E3CD98;                /* button fill (graphite text on it: 9.6:1) */
+  --btn-hover: #5E6B45;                /* button hover: muted olive green (white text on it: 5.6:1) */
   --stone-75: rgb(239 236 230 / .75);  /* secondary light text on olive (5.2:1) */
   --white: #FFFFFF;                    /* buttons on dark blocks, form fields */
   --line: rgb(43 42 39 / .15);         /* lines and borders on stone */
@@ -168,12 +169,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   display: inline-flex; align-items: center; gap: 14px; min-height: 52px; padding: 0 26px;
   font-size: 15px; font-weight: 500; letter-spacing: .02em;
 }
-.btn__arrow, .link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform .4s var(--ease); }
+.btn__arrow, .link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.link svg { transition: transform .4s var(--ease); }
 .link:hover svg { transform: translateX(4px); }
-.btn--light { border: 1px solid rgb(239 236 230 / .55); color: var(--stone); background: rgb(239 236 230 / .08); }
-.btn--light:hover { background: var(--stone); color: var(--graphite); }
-.btn--dark { background: var(--graphite); color: var(--stone); }
-.btn--dark:hover { background: var(--graphite-70); }
 
 .link {
   display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 18px;
@@ -653,66 +651,92 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .about__body .btn { margin-top: 32px; }
   .is-v .about__tabs { margin-top: 40px; }
   .is-v .tabs__panels { margin-top: 16px; }
-  /* Export: the features take the full text column, so each text runs on two lines at most */
-  .is-v .features { width: 100%; gap: 32px; }
+  /* Export: the text block decides the height — label on the photo's top line, the features 48px under the heading
+     (40px apart), the last line on the photo's bottom line; the photo stretches to it. Each feature text takes the
+     full column, so it runs on two lines at most. */
+  .is-v .panel.export { min-height: 0; }
+  .is-v .export .export__body { margin-top: 48px; padding-top: 0; }
+  .is-v .features { width: 100%; gap: 40px; }
   .is-v .feature__text { max-width: 36em; }
   /* the text column stays on column 7 (the page's centre line); the photo grows to end --split before it */
   .is-v :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
 
-  /* Production — pinned while the scroll walks through the four steps (main.js). Left: label, heading, the active
-     step's big number with the button beside it, and the step list down to the bottom line. Right: the active step's
-     photo (columns 7–12, top line to bottom line) with its text under it; the photos cross-fade with a slight zoom.
-     Between them, --split apart, a thin progress line fills with the scroll. The header and the list are
-     display: contents, so all their parts sit on the section's grid; the photos are placed against the section. */
+  /* Production — pinned while the scroll walks through the four steps (main.js). Left: the active step's photo, 55% of
+     the content width, top line to bottom line, with the counter on its bottom. Right (--split after it): label,
+     heading, button, and the step list down to the bottom line; the active step opens its text under it (accordion).
+     The header, the list, its rows' panels are display: contents, so heads and texts sit on the section's grid and
+     the photos are placed against the section.
+     Step change: the new photo wipes in from the bottom over the old one (clip-path, 0.7s power2.inOut) while its
+     image settles from 106%; the old one stays under it until the wipe ends. One gold line moves to the new step
+     (main.js sets its translateY). Every text keeps the same reserved height, so the list never changes height. */
   .is-v .panel.production {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto minmax(0, 1fr) auto repeat(4, auto);
-    padding-right: calc(var(--pad) + var(--half) + var(--split));
+    --photo-w: calc((100vw - 2 * var(--pad)) * .55);
+    --row: clamp(40px, 6.2vh, 72px);
+    --pt: var(--t-body);
+    --desc-pad: clamp(6px, 1.2vh, 14px);
+    --desc-h: calc(var(--desc-lines, 2) * 1.55 * var(--pt) + 2 * var(--desc-pad));
+    --wipe: cubic-bezier(.45, 0, .55, 1);   /* power2.inOut */
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) repeat(4, auto);
+    padding-left: calc(var(--pad) + var(--photo-w) + var(--split));
   }
-  .is-v .production__head, .is-v .production .process { display: contents; }
-  .is-v .production__head .eyebrow { grid-area: 1 / 1 / 2 / -1; margin: 0 0 var(--label-gap); }
-  .is-v .production .production__title { grid-area: 2 / 1 / 3 / -1; }
-  .is-v .production .process__count {
-    grid-area: 4 / 1; align-self: end; position: static; margin: 0 0 clamp(20px, 3vh, 36px);
-    font: 400 var(--t-numcap)/1 var(--display); letter-spacing: .04em; color: var(--fg-2);
+  .is-v .production__head, .is-v .production .process, .is-v .production .process__step .process__panel { display: contents; }
+  .is-v .production .process__step .process__panel { visibility: visible; transition: none; }   /* the photos and texts hide themselves */
+  .is-v .production__head .eyebrow { grid-row: 1; margin: 0 0 var(--label-gap); }
+  .is-v .production .production__title { grid-row: 2; }
+  .is-v .production .production__more { grid-area: 3 / 1; align-self: start; justify-self: start; margin: clamp(16px, 2.6vh, 32px) 0 0; }
+  .is-v .production .process__step {
+    display: grid; grid-column: 1; grid-template-rows: var(--row) 0px; overflow: hidden;
+    transition: grid-template-rows .5s var(--wipe);
   }
-  .is-v .production .process__count b {
-    display: inline-block; margin-right: .12em; font: 400 clamp(64px, 12vh, 150px)/.74 var(--display); letter-spacing: var(--track);
-    font-variant-numeric: lining-nums tabular-nums; color: var(--num);
-  }
-  .is-v .production .production__more { grid-area: 4 / 2; align-self: end; margin: 0 0 clamp(20px, 3vh, 36px); }
-  .is-v .production .process__step { display: block; grid-column: 1 / -1; }
+  .is-v .production .process__step.is-active { grid-template-rows: var(--row) var(--desc-h); }
   .is-v .production .process__step:nth-child(1) { grid-row: 5; }
   .is-v .production .process__step:nth-child(2) { grid-row: 6; }
   .is-v .production .process__step:nth-child(3) { grid-row: 7; }
   .is-v .production .process__step:nth-child(4) { grid-row: 8; }
-  /* the rows: the active one gets a gold line drawn from the left and a bold title */
-  .is-v .production .process__head { position: relative; height: clamp(46px, 6.8vh, 76px); padding: 0; gap: 20px; }
+  .is-v .production .process__head { padding: 0; gap: 20px; }
   .is-v .production .process__step.is-active .process__head { border-bottom-color: var(--line); box-shadow: none; }
-  .is-v .production .process__head::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold);
-    transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease);
-  }
-  .is-v .production .process__step.is-active .process__head::after { transform: none; }
   .is-v .production .process__title { font-weight: 400; color: var(--fg-2); transition: color .3s ease; }
   .is-v .production .process__head:hover .process__title { color: var(--fg); }
   .is-v .production .process__step.is-active .process__title { font-weight: 600; color: var(--fg); }
-  /* the photo and text of each step, stacked in one place: the active one fades in while its photo settles from 106% */
-  .is-v .production .process__step .process__panel {
-    top: var(--top); bottom: var(--bottom); right: var(--pad); width: var(--half); row-gap: clamp(16px, 2.2vh, 24px);
-    transition: opacity .8s var(--ease), visibility 0s .8s;
+  /* the step text, under its title (past the number) */
+  .is-v .production .process__step .process__text {
+    min-height: 0; height: auto; max-width: none; margin: 0; padding: var(--desc-pad) 0 var(--desc-pad) 50px;
+    font-size: var(--pt); line-height: 1.55; text-wrap: pretty; opacity: 0; transition: opacity .25s ease;
   }
-  .is-v .production .process__step.is-active .process__panel { transition: opacity .8s var(--ease); }
-  .is-v .production .process__media { overflow: hidden; }
-  .is-v .production .process__media img { transform: scale(1.06); transition: transform 1.4s var(--ease); }
-  .is-v .production .process__step.is-active .process__media img { transform: none; }
-  .is-v .production .process__text { max-width: none; text-wrap: pretty; }
-  .is-v .process__line {
-    display: block; position: absolute; top: var(--top); bottom: var(--bottom); right: calc(var(--pad) + var(--half) + var(--split) / 2);
-    width: 1px; background: var(--line);
+  .is-v .production .process__step.is-active .process__text { opacity: 1; transition: opacity .45s ease .15s; }
+  /* the gold line under the active step's title: one element, moved by main.js */
+  .is-v .production .process__marker {
+    display: block; position: relative; z-index: 1; grid-area: 5 / 1; align-self: start; height: 2px; background: var(--gold);   /* shares the first row's cell */
+    transform: translateY(calc(var(--row) - 2px)); transition: transform .7s var(--wipe); pointer-events: none;
   }
-  .is-v .process__line i { position: absolute; inset: 0; background: var(--gold); transform: scaleY(0); transform-origin: top; }
-
+  /* the photos, stacked: the active one on top and open; the others closed from the top, so each opens bottom → top */
+  .is-v .production .process__step .process__media {
+    position: absolute; top: var(--top); bottom: var(--bottom); left: var(--pad); width: var(--photo-w); height: auto;
+    z-index: 1; overflow: hidden; clip-path: inset(100% 0 0 0);
+    transition: clip-path 0s .7s, opacity .6s ease, transform .6s ease;   /* closes only once the next has covered it */
+  }
+  .is-v .production .process__step.is-active .process__media {
+    z-index: 2; clip-path: inset(0 0 0 0); transition: clip-path .7s var(--wipe), opacity .6s ease, transform .6s ease;
+  }
+  .is-v .production .process__media img { transform: scale(1.06); transition: transform 0s .7s; }
+  .is-v .production .process__step.is-active .process__media img { transform: none; transition: transform .9s cubic-bezier(.33, 1, .68, 1); }
+  /* a light shade at the bottom of the photo, for the counter */
+  .is-v .production .process__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--shade) / .45), rgb(var(--shade) / 0) 32%); }
+  .is-v .production .process__count {
+    position: absolute; z-index: 3; top: auto; right: auto; left: calc(var(--pad) + clamp(20px, 2.2vw, 40px)); bottom: calc(var(--bottom) + clamp(16px, 2.6vh, 36px));
+    font: 500 var(--t-numcap)/1 var(--display); letter-spacing: .04em; color: var(--stone-75);
+  }
+  .is-v .production .process__count b {
+    display: inline-block; margin-right: .12em; font: 400 clamp(44px, 7vh, 88px)/.74 var(--display); letter-spacing: var(--track);
+    font-variant-numeric: lining-nums tabular-nums; color: var(--stone);
+  }
+}
+/* narrower desktops: the step texts get three lines */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .is-v .panel.production { --desc-lines: 3; }
+}
+@media (min-width: 1024px) {
   /* Partnership: on the photo, the label and heading sit in the upper part and the button in the lower part, both the
      same distance in from the section's lines (never on the photo's bottom edge); on the right, the contact rows
      start level with the heading (main.js: --contacts-line) and the footer ends level with the button's bottom
@@ -721,7 +745,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .contacts__side { padding-bottom: calc(var(--contacts-end, var(--bottom)) - var(--bottom)); }
   .is-v .foot { margin-top: clamp(32px, 5vh, 56px); }
 }
-.process__line { display: none; }   /* vertical version only */
+.process__marker { display: none; }   /* vertical version only */
 
 
 /* =========================================================================
@@ -755,7 +779,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* buttons and links: rectangular, thin, small tracked capitals */
 .btn { border-radius: 0; min-height: 54px; padding: 0 30px; gap: 16px; font-size: 12.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
-.btn--light { background: rgb(239 236 230 / .04); }
 .link { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; padding-bottom: 2px; }
 
 
@@ -801,22 +824,22 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* =========================================================================
    Buttons — one style everywhere, light and dark backgrounds alike: filled light soft gold with dark graphite text
-   and arrow, sharp corners; on hover (0.3s) rich gold with white text and arrow, and the arrow rotates in place from
-   ↗ to →. A separate square arrow box, 2px apart, always the same colours as the text box.
-   (Graphite on the soft gold: 9.6:1; white on the rich gold: 2.9:1 — the uppercase 600 label stays legible
-   for the moment of the hover; the soft gold also stands out on olive and over photos.)
+   and arrow, sharp corners; on hover (0.25s) muted olive green with white text and arrow, and the arrow snaps in place
+   from ↗ to → (transform only, 0.25s ease-out, no delay). A separate square arrow box, 2px apart, always the same
+   colours as the text box. (Graphite on the soft gold: 9.6:1; white on the olive green: 5.6:1; the soft gold also
+   stands out on olive and over photos.) These are the only button rules for colour and motion.
    ========================================================================= */
-.btn, .btn--light, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
+.btn { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
 .btn > span {
   height: 54px; background: var(--gold-soft); color: var(--graphite);
-  transition: background-color .3s ease, color .3s ease;
+  transition: background-color .25s ease-out, color .25s ease-out;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
 /* the arrow box: a square flex box, the 20px icon centred in it by flexbox (independent of the font and line box);
    the icon's arrow is drawn centred on (12, 12), so rotating the whole svg turns it around the arrow's own centre */
 .btn > .btn__box { order: -1; flex: none; width: 54px; padding: 0; justify-content: center; }
-.btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
-.btn:hover > span { background: var(--gold); color: var(--white); }
+.btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .25s ease-out; }
+.btn:hover > span { background: var(--btn-hover); color: var(--white); }
 .btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover .btn__arrow { transform: rotate(-45deg); }
@@ -1033,3 +1056,23 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
 }
+
+/* =========================================================================
+   Production on phones, tablets and "reduce motion" desktops (html:not(.is-h)): one photo on top (the active step's,
+   the photos stacked in one cell and cross-faded), then the steps as an accordion with the open step's text under it.
+   The rows and panels are display: contents, so every photo, head and text sits on the list's own grid.
+   ========================================================================= */
+html:not(.is-h) .process { display: grid; grid-template-columns: minmax(0, 1fr); }
+html:not(.is-h) .process__step, html:not(.is-h) .process__step .process__panel { display: contents; }
+html:not(.is-h) .process__step .process__media { grid-area: 1 / 1; margin-bottom: 16px; opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility 0s .4s; }
+html:not(.is-h) .process__step.is-active .process__media { opacity: 1; visibility: visible; transition: opacity .4s ease; }
+html:not(.is-h) .process__step:nth-child(1) .process__head { grid-row: 2; }
+html:not(.is-h) .process__step:nth-child(2) .process__head { grid-row: 4; }
+html:not(.is-h) .process__step:nth-child(3) .process__head { grid-row: 6; }
+html:not(.is-h) .process__step:nth-child(4) .process__head { grid-row: 8; }
+html:not(.is-h) .process__step:nth-child(1) .process__text { grid-row: 3; }
+html:not(.is-h) .process__step:nth-child(2) .process__text { grid-row: 5; }
+html:not(.is-h) .process__step:nth-child(3) .process__text { grid-row: 7; }
+html:not(.is-h) .process__step:nth-child(4) .process__text { grid-row: 9; }
+html:not(.is-h) .process__step .process__text { display: none; margin: 0; padding: 16px 0 24px; }
+html:not(.is-h) .process__step.is-active .process__text { display: block; }

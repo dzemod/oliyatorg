@@ -35,7 +35,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=108">
+  <link rel="stylesheet" href="assets/css/style.css?v=109">
   <script>
     // Decide the scroll mode before first paint. One page, two versions (for the review): index.html scrolls sideways
     // on desktop, vertical.html (the same file, served by a rewrite in vercel.json) scrolls top to bottom.
@@ -330,10 +330,10 @@
               <p class="process__text" data-i18n="production.s4.text">Якість контролює сертифікована лабораторія, олію зберігаємо в ємностях до&nbsp;5&nbsp;000&nbsp;тонн.</p>
             </div>
           </li>
+          <!-- vertical version: the gold line under the active step, moved by main.js -->
+          <li class="process__marker" aria-hidden="true"></li>
           <li class="process__count" aria-hidden="true"><b>01</b> / 04</li>
         </ol>
-        <!-- vertical version: the thin progress line between the step list and the photo, filled by the scroll (main.js) -->
-        <span class="process__line" aria-hidden="true"><i></i></span>
       </section>
 
       <!-- 6. EXPORT & PARTNERSHIP — after the Envagyte reference: one large photo on the left (top line to bottom line);
@@ -464,7 +464,7 @@
        CSS transitions and the count-up is a few requestAnimationFrame steps, so no GSAP there.
        Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=35';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=36';
     (document.documentElement.classList.contains('is-h')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {

@@ -168,6 +168,12 @@
   const production = $('#production');
   const stepsOf = $$('.process__step', production || document);
   const counterNum = $('.process__count b');
+  // vertical version: one gold line under the active step's title. Every row above the active one is closed, so that
+  // title's bottom is (i + 1) row heights below the list's top — the line moves there (transform only, CSS transition)
+  const marker = $('.process__marker', production || document);
+  const placeMarker = () => {
+    if (vertical && marker && stepsOf.length) marker.style.transform = `translateY(${(activeStep + 1) * $('.process__head', stepsOf[0]).offsetHeight - 2}px)`;
+  };
   let activeStep = 0;
   const setStep = i => {
     if (i === activeStep) return;
@@ -176,6 +182,7 @@
       st.classList.toggle('is-active', k === i);
       $('.process__head', st).setAttribute('aria-expanded', String(k === i));
     });
+    placeMarker();
     if (counterNum) {
       counterNum.textContent = String(i + 1).padStart(2, '0');
       // vertical version: the big number rises into place (compositor only)
@@ -337,7 +344,6 @@
   if (vertical && production) {
     // Vertical version: the page scrolls normally; Production pins under the header for four step lengths of scroll
     // and the steps follow it, then the page moves on. One ScrollTrigger; its own scroll handling, no extra listeners.
-    // The thin line between the list and the photo fills with the same progress.
     gsap.registerPlugin(ScrollTrigger);
     const header = $('#header');
     const step = () => Math.round(innerHeight * .5);
@@ -345,21 +351,16 @@
     const list = $('.process', production);
     if (list && list.hasAttribute('data-reveal')) {
       list.removeAttribute('data-reveal');
-      $$('.process__head, .process__count, .process__panel', list).forEach(el => el.setAttribute('data-reveal', ''));
+      $$('.process__head, .process__count, .process__media', list).forEach(el => el.setAttribute('data-reveal', ''));
     }
-    const fill = $('.process__line i', production);
-    const setFill = fill ? gsap.quickSetter(fill, 'scaleY') : () => {};
     const pin = ScrollTrigger.create({
       trigger: production,
       pin: true,
       start: () => 'top ' + header.offsetHeight,
       end: () => '+=' + stepsOf.length * step(),
       invalidateOnRefresh: true,
-      onUpdate: self => {
-        setStep(Math.min(stepsOf.length - 1, Math.floor(self.progress * stepsOf.length)));
-        setFill(self.progress);
-      },
-      onRefresh: self => setFill(self.progress)
+      onUpdate: self => setStep(Math.min(stepsOf.length - 1, Math.floor(self.progress * stepsOf.length))),
+      onRefresh: placeMarker   // the row height follows the screen height
     });
     jumpToStep = i => scrollTo({ top: pin.start + (i + .5) * step(), behavior: 'smooth' });
     document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
@@ -497,7 +498,7 @@
      Desktop (horizontal page): one step is always active and the scroll drives it while the section is pinned (see
      onTrack); a click or keyboard focus jumps the scroll to that step, so its photo and text fade in beside the list.
      Phones / tablets and "reduce motion": an accordion — tapping a step opens it (and closes the others), tapping the
-     open step closes it. ↑ ↓ Home End move between the step buttons. */
+     one photo above the list shows the open step (one step is always open). ↑ ↓ Home End move between the step buttons. */
   const steps = $$('.process__step');
   const heads = steps.map(s => $('.process__head', s));
   function activate(step) {
@@ -510,7 +511,7 @@
   steps.forEach((s, i) => {
     heads[i].addEventListener('click', () => {
       if (jumpToStep) jumpToStep(i);
-      else activate(s.classList.contains('is-active') ? null : s);
+      else activate(s);   // one step always open: its photo shows above the list
     });
     heads[i].addEventListener('focus', () => { if (jumpToStep && root.dataset.input === 'key') jumpToStep(i); });
     heads[i].addEventListener('keydown', e => {
