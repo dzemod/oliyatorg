@@ -359,15 +359,6 @@
   // the hero's scroll hint loops only while the hero is on screen (an endless animation would restyle every frame)
   const hero = $('.hero');
   if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
-  // the Export map (every version): .in once it is a third in view (the arcs draw in, style.css), and .is-live while it
-  // is on screen, so its pins pulse only then. Works on the sideways track too (the observer sees the transform).
-  const map = $('.map');
-  if (map && 'IntersectionObserver' in window) {
-    new IntersectionObserver(([en]) => {
-      map.classList.toggle('is-live', en.isIntersecting);
-      if (en.intersectionRatio >= .35) map.classList.add('in');
-    }, { threshold: [0, .35] }).observe(map);
-  } else if (map) map.classList.add('in', 'is-live');
 
   /* ---------- Anchor links (work in both modes) ---------- */
   function scrollToTarget(id) {

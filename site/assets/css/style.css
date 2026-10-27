@@ -599,14 +599,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
-     then 48px under the heading the two features one under the other, 40px apart, left-aligned with the heading
-     and half the text column wide (short lines) */
+     then the three features (see "Export (both desktop versions)" below) */
   .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
   .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   .is-h .export .export__title { font-size: var(--h2-size); }
-  .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: 48px; }   /* 48px under the heading area */
-  .is-h .features { width: 50%; align-content: start; gap: 40px; margin: 0; }
 }
 
 /* Short desktop screens (e.g. 1280×720 laptops) */
@@ -662,12 +659,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .about__body .btn { margin-top: 32px; }
   .is-v .about__tabs { margin-top: 40px; }
   .is-v .tabs__panels { margin-top: 16px; }
-  /* Export: the text block decides the height — label on the photo's top line, the features 48px under the heading
-     (40px apart), the last line on the photo's bottom line; the photo stretches to it. Each feature text takes the
-     full column, so it runs on two lines at most. */
-  /* Export: at least the screen under the header (photo and text column the same height); the map lies behind the text */
-  .is-v .export .export__body { margin-top: 56px; padding-top: 0; }
-  .is-v .features { width: 100%; gap: 40px; }
+  /* Export: at least the screen under the header (photo and text column the same height); the features: see below */
   /* About, Export (both desktop versions): the text column stays on column 7 (the page's centre line); the photo
      grows to end --split before it */
   .is-h :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
@@ -686,88 +678,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
-  /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
-     two features form one compact group right under the heading — 56px under it, 40px apart (a little less on short
-     screens), never stretched. Each feature (both desktop versions, .is-h): the icon left of the title, centred on it,
-     and the description 12px under the title, in the title's column — compact, so the map below keeps its room. */
-  html.is-h:not(.is-v) .export { --feat-w: min(100%, clamp(420px, 29.2vw, 560px)); }   /* the text column: ≈560px at 1920 */
-  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(36px, 6vh, 56px); }
-  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(28px, 4.5vh, 40px); width: var(--feat-w); }
-  .is-h .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
-  .is-h .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
-  .is-h .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
-  .is-h .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
+  /* Export (both desktop versions): three features (geography, partnership, quality) in one group under the heading —
+     ≈60px under it and ≈56px apart at 1080 (both follow the screen height). Each feature: the icon left of the title, centred on
+     it, and the description 12px under the title, in the title's column, one or two lines. The sizes follow the
+     screen height, so the group fills the column down to about the photo's bottom line on any screen. */
+  .is-h .export { --feat-w: min(100%, clamp(460px, 36vw, 660px)); }   /* the features' width: 660px at 1920, 518px at 1440 */
+  .is-h .export .export__body { flex: none; margin-top: clamp(24px, 5.8vh, 64px); padding-top: 0; }
+  .is-h .features { display: flex; flex-direction: column; gap: clamp(20px, 5.4vh, 60px); width: var(--feat-w); margin: 0; }
+  .is-h .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(14px, 1.6vh, 18px); }
+  .is-h .feature__icon { width: clamp(24px, 4vh, 46px); height: clamp(24px, 4vh, 46px); }
+  .is-h .feature__title { margin: 0; font-size: clamp(16px, 2.75vh, 30px); }
+  .is-h .feature__text { grid-column: 2; margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(14px, 2.05vh, 22px); line-height: 1.55; max-width: none; }
+  @media (max-height: 640px) { .is-h .features { gap: 16px; } }   /* very short screens (125% zoom on 1366): it still fits */
+}
 
-  /* the map, both desktop versions: its own area under the features, never behind any text — the full text column
-     wide, from 32px under the last feature line down to the photo's bottom line. Size containment: it adds no height
-     (the column stays the photo's height), it just takes what is left. The world keeps its proportions (contained),
-     centred across and resting on the bottom line; with less than 160px left it is not shown. */
-  .is-h .export__map {
-    flex: 1 1 0; min-height: 0; align-self: stretch; display: flex; align-items: flex-end; justify-content: center;
-    margin: 32px 0 0; container: exmap / size;
-  }
-  .is-h .map { --route-w: .25; width: min(100cqw, 100cqh * 2.11); aspect-ratio: 2.11; }
-}
-@container exmap (max-height: 159px) { .map { display: none; } }
-
-/* =========================================================================
-   Export map (built by tools/build_export_map.mjs) — every version. An equirectangular dotted world (≈2.1 : 1):
-   low-contrast graphite land dots, thin gold arcs (70%) from Ukraine to the seven supply regions, gold pins. Desktop:
-   a background layer of the text column (above); phones and tablets: a compact 200px strip under the features. The
-   frame covers the .map box like a photo (object-fit: cover, container units), so the pins, placed in % of the frame,
-   stay on their regions. Labels: "Україна" always; the regions on hover (desktop), always on phones and tablets.
-   Motion (main.js adds .in when the map enters the view): the arcs draw in one by one, each pin appears as its arc
-   arrives; on desktop the pins then pulse, slowly and staggered, while the map is on screen (.is-live). Reduced
-   motion: the static map.
-   ========================================================================= */
-.export__map { margin-top: 48px; }
-.map { position: relative; overflow: hidden; width: 100%; aspect-ratio: 2.11; container: map / size; }
-/* centred across; down the crop is weighted 30 / 70, so a low box loses Antarctica and the southern ocean first */
-.map__frame { position: absolute; left: 50%; top: 0; width: max(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar); transform: translate(-50%, calc((100cqh - 100%) * .3)); }
-.map__svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .16; stroke-width: .56; stroke-linecap: round; }
-.map__land--polar { stroke-opacity: .08; }
-/* the arcs: their width is in map units (one grid step), so each layout sets it for ≈1.2px on screen; a scaling stroke
-   keeps the dash maths in pathLength units, which the draw-in needs */
-.map__route { fill: none; stroke: var(--gold); stroke-opacity: .7; stroke-width: var(--route-w, .5); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
-/* pins: a 24px hit area around an 8px gold dot; the halo pulses (transform + opacity only) */
-.map__pin { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; }
-.map__pin::before, .map__pin::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--gold); }
-.map__pin::before { opacity: .8; }
-.map__pin::after { opacity: 0; animation: map-pulse 2.5s cubic-bezier(.33, 1, .68, 1) calc(var(--k, 0) * .36s) infinite; }
-.map:not(.is-live) .map__pin::after { animation-play-state: paused; }
-@keyframes map-pulse { 0% { opacity: .5; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } }
-/* Ukraine, where every arc starts: a bigger gold dot with a soft glow, never pulsing */
-.map__pin--home { z-index: 1; }
-.map__pin--home::before { inset: 6px; opacity: 1; box-shadow: 0 0 0 4px rgb(184 145 58 / .2), 0 0 14px 4px rgb(184 145 58 / .35); }
-.map__pin--home::after { display: none; }
-/* labels: data-pos puts each one where it never covers a neighbour (t / b / l / r of its dot) */
-.map__label {
-  position: absolute; padding: 5px 8px; white-space: nowrap; pointer-events: none;
-  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: var(--fg);
-  background: var(--stone); border: 1px solid var(--line);
-  opacity: 0; transition: opacity .25s ease;
-}
-[data-pos="t"] > .map__label { left: 50%; bottom: calc(100% - 4px); transform: translateX(-50%); }
-[data-pos="b"] > .map__label { left: 50%; top: calc(100% - 4px); transform: translateX(-50%); }
-[data-pos="l"] > .map__label { right: calc(100% - 4px); top: 50%; transform: translateY(-50%); }
-[data-pos="r"] > .map__label { left: calc(100% - 4px); top: 50%; transform: translateY(-50%); }
-.map__pin:hover { z-index: 2; }
-.map__pin:hover > .map__label, .map__pin--home > .map__label { opacity: 1; }
-/* phones and tablets: a compact strip (only the polar edges and the ocean at the sides are cropped), every label
-   shows (small), no endless pulse */
-@media (max-width: 1023px) {
-  .map { height: 200px; aspect-ratio: auto; }
-  .map__label { opacity: 1; padding: 3px 5px; font-size: 9px; letter-spacing: .08em; }
-  .map__pin::before { inset: 9px; }
-  .map__pin--home::before { inset: 7px; }
-  .map__pin::after { display: none; }
-}
-/* motion */
-.fade .map__route { transition: stroke-dashoffset 1.3s cubic-bezier(.65, 0, .35, 1) calc(.3s + var(--k) * .28s); }
-.fade .map__pin:not(.map__pin--home) { transition: opacity .5s ease calc(1.3s + var(--k) * .28s); }
-.fade .map:not(.in) .map__route { stroke-dashoffset: 1; }
-.fade .map:not(.in) .map__pin:not(.map__pin--home) { opacity: 0; }
 
 
 /* =========================================================================
@@ -1046,7 +970,6 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .export .export__photo { order: 1; margin: 0 0 40px; }
   .export .export__title { order: 2; }
   .export .export__body { order: 3; }
-  .export .export__map { order: 4; margin-top: 40px; }
   .export .features { margin-top: 48px; gap: 40px; }
 
   /* the language switch sits in the header next to the burger (the menu itself no longer repeats it) */
