@@ -63,13 +63,13 @@ window.I18N = {
     'production.title': 'Four steps <em>to quality oil</em>',
     'production.more': 'About production',
     'production.s1.title': 'Raw material intake',
-    'production.s1.text': 'We take seeds from trusted farmers and check their quality right at intake',
+    'production.s1.text': 'We take seeds from trusted farmers and check their quality at intake',
     'production.s2.title': 'Double pressing',
-    'production.s2.text': 'Two-stage pressing without chemical solvents keeps the natural properties of the seeds',
+    'production.s2.text': 'Two-stage pressing without chemical solvents keeps the seeds’ properties',
     'production.s3.title': 'Oil and press cake',
-    'production.s3.text': 'We get quality oil and press cake, a nutritious component of animal feed',
+    'production.s3.text': 'We get quality oil and press cake, a nutritious part of animal feed',
     'production.s4.title': 'Quality control & storage',
-    'production.s4.text': 'A certified laboratory controls quality; oil is stored in tanks of up to 5,000 tons',
+    'production.s4.text': 'A certified laboratory; oil is stored in tanks of up to 5,000 tons',
 
 
     'export.eyebrow': 'Export & partnership',

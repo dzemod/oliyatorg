@@ -570,12 +570,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* 5. Production — like Products: the head row on top (label on the top line, heading; the button on the right, on
      the heading's bottom line, its right edge on the right margin), then the four step cards in one row on the grid,
-     equal width and height. A card is at least 280px wide: on narrow screens the horizontal page simply makes the
+     equal width and height. A card is at least 315px wide (the descriptions keep two lines, see below): on narrow screens the horizontal page simply makes the
      section wider than the screen, so the texts never get squeezed. The cards' parts share rows (subgrid), so every
      number, title and text starts on one line. The photo is 3:2 when there is room; on a short screen it gives up
      height first (minmax(0, auto)), so the texts always fit above the bottom line. */
   .is-h .panel.production {   /* outranks the shared section grid */
-    --step-w: max(280px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
+    --step-w: max(315px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
     width: max(100vw, calc(2 * var(--pad) + 4 * var(--step-w) + 3 * var(--gap))); display: flex; flex-direction: column;
   }
   .is-h .production__head { align-self: flex-start; width: calc(100vw - 2 * var(--pad)); }   /* one screen wide, so the button ends on the first screen's right margin even when the section is wider */
@@ -589,7 +589,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .step__media { align-self: stretch; justify-self: stretch; min-height: 0; aspect-ratio: 4 / 3; }   /* stretch both ways: the full card width, and the row may make the 4:3 frame shorter */
   .is-h .step__num { margin-top: clamp(14px, 2.4vh, 28px); font-size: clamp(12px, 1.3vh, 14px); }
   .is-h .step__title { margin-top: clamp(8px, 1.3vh, 14px); font-size: var(--t-sub); }
-  .is-h .step__text { margin-top: clamp(6px, 1vh, 12px); font-size: var(--t-body); line-height: 1.55; }
+  /* every description exactly two lines: balanced, a fixed two-line height (the cards align), and on a narrow card
+     (1366, 125% zoom) the size follows the card width (--step-w; 4.6% of it: the longest line, ≈41 characters, fits) a
+     little below the body size instead of wrapping to a third line; on a wide card (the vertical 2 × 2 grid) the
+     measure is capped at 24em, so the text still runs on two lines */
+  .is-h .step__text {
+    margin-top: clamp(6px, 1vh, 12px); font-size: clamp(14px, calc(var(--step-w) * .046), var(--t-body)); line-height: 1.55;
+    max-width: 24em; height: calc(2 * 1.55em); overflow: hidden; text-wrap: balance;
+  }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
      then 48px under the heading the two features one under the other, 40px apart, left-aligned with the heading
@@ -671,8 +678,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* Production (vertical): the section is as tall as its content; the four cards share the content width (no
      minimum: the page never scrolls sideways) and keep their 3:2 photos */
-  .is-v .panel.production { width: auto; }
+  .is-v .panel.production { width: auto; --step-w: calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4); }
   .is-v .steps { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto auto; }
+  /* below ≈1480px four cards in a row get too narrow for two-line descriptions: a 2 × 2 grid instead */
+  @media (max-width: 1479px) {
+    .is-v .panel.production { --step-w: calc((100vw - 2 * var(--pad) - var(--gap)) / 2); }
+    .is-v .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(8, auto); }
+    .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
+    .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
+  }
   /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
