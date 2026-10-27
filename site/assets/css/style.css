@@ -11,6 +11,9 @@
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-tight-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+/* 600: only the active Production step on the vertical version (loaded when used) */
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-tight-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-tight-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
@@ -36,6 +39,7 @@
   --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
   --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
   --gold-light: #D4BD89;               /* gold text on olive and over photos (4.9:1 on olive) */
+  --gold-soft: #E3CD98;                /* button fill (graphite text on it: 9.6:1); hover turns it --gold */
   --stone-75: rgb(239 236 230 / .75);  /* secondary light text on olive (5.2:1) */
   --white: #FFFFFF;                    /* buttons on dark blocks, form fields */
   --line: rgb(43 42 39 / .15);         /* lines and borders on stone */
@@ -622,10 +626,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
    bottom instead of on the sideways track. Each section fills at least the screen under the solid header (100vh
    minus the header). Every section keeps half the section gap above and below its content, so the gap between two
-   sections' content is the same everywhere: 200px at 1920, scaled with the width (≈142px at 1366).
+   sections' content is the same everywhere: 140px at 1920, scaled with the width (≈100px at 1366).
+   --split: the gap between a photo and the text beside it (About, Export, Production): 80px at 1920, ≈57px at 1366.
    ========================================================================= */
 @media (min-width: 1024px) {
-  html.is-v { --vgap: calc(100vw * 200 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px; }
+  html.is-v {
+    --vgap: calc(100vw * 140 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px;
+    --split: clamp(48px, calc(100vw * 80 / 1920), 80px);
+    --half: calc(6 * var(--col) + 5 * var(--gap));   /* half the content width: columns 1–6 or 7–12 */
+  }
   .is-v .scroller { height: auto; overflow: visible; }
   .is-v .track { display: block; width: auto; height: auto; will-change: auto; }   /* no transform: Production pins with position: fixed */
   .is-v .panel:not(.hero) { height: calc(100vh - var(--header-h)); }
@@ -647,7 +656,72 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* Export: the features take the full text column, so each text runs on two lines at most */
   .is-v .features { width: 100%; gap: 32px; }
   .is-v .feature__text { max-width: 36em; }
+  /* the text column stays on column 7 (the page's centre line); the photo grows to end --split before it */
+  .is-v :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
+
+  /* Production — pinned while the scroll walks through the four steps (main.js). Left: label, heading, the active
+     step's big number with the button beside it, and the step list down to the bottom line. Right: the active step's
+     photo (columns 7–12, top line to bottom line) with its text under it; the photos cross-fade with a slight zoom.
+     Between them, --split apart, a thin progress line fills with the scroll. The header and the list are
+     display: contents, so all their parts sit on the section's grid; the photos are placed against the section. */
+  .is-v .panel.production {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto minmax(0, 1fr) auto repeat(4, auto);
+    padding-right: calc(var(--pad) + var(--half) + var(--split));
+  }
+  .is-v .production__head, .is-v .production .process { display: contents; }
+  .is-v .production__head .eyebrow { grid-area: 1 / 1 / 2 / -1; margin: 0 0 var(--label-gap); }
+  .is-v .production .production__title { grid-area: 2 / 1 / 3 / -1; }
+  .is-v .production .process__count {
+    grid-area: 4 / 1; align-self: end; position: static; margin: 0 0 clamp(20px, 3vh, 36px);
+    font: 400 var(--t-numcap)/1 var(--display); letter-spacing: .04em; color: var(--fg-2);
+  }
+  .is-v .production .process__count b {
+    display: inline-block; margin-right: .12em; font: 400 clamp(64px, 12vh, 150px)/.74 var(--display); letter-spacing: var(--track);
+    font-variant-numeric: lining-nums tabular-nums; color: var(--num);
+  }
+  .is-v .production .production__more { grid-area: 4 / 2; align-self: end; margin: 0 0 clamp(20px, 3vh, 36px); }
+  .is-v .production .process__step { display: block; grid-column: 1 / -1; }
+  .is-v .production .process__step:nth-child(1) { grid-row: 5; }
+  .is-v .production .process__step:nth-child(2) { grid-row: 6; }
+  .is-v .production .process__step:nth-child(3) { grid-row: 7; }
+  .is-v .production .process__step:nth-child(4) { grid-row: 8; }
+  /* the rows: the active one gets a gold line drawn from the left and a bold title */
+  .is-v .production .process__head { position: relative; height: clamp(46px, 6.8vh, 76px); padding: 0; gap: 20px; }
+  .is-v .production .process__step.is-active .process__head { border-bottom-color: var(--line); box-shadow: none; }
+  .is-v .production .process__head::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold);
+    transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease);
+  }
+  .is-v .production .process__step.is-active .process__head::after { transform: none; }
+  .is-v .production .process__title { font-weight: 400; color: var(--fg-2); transition: color .3s ease; }
+  .is-v .production .process__head:hover .process__title { color: var(--fg); }
+  .is-v .production .process__step.is-active .process__title { font-weight: 600; color: var(--fg); }
+  /* the photo and text of each step, stacked in one place: the active one fades in while its photo settles from 106% */
+  .is-v .production .process__step .process__panel {
+    top: var(--top); bottom: var(--bottom); right: var(--pad); width: var(--half); row-gap: clamp(16px, 2.2vh, 24px);
+    transition: opacity .8s var(--ease), visibility 0s .8s;
+  }
+  .is-v .production .process__step.is-active .process__panel { transition: opacity .8s var(--ease); }
+  .is-v .production .process__media { overflow: hidden; }
+  .is-v .production .process__media img { transform: scale(1.06); transition: transform 1.4s var(--ease); }
+  .is-v .production .process__step.is-active .process__media img { transform: none; }
+  .is-v .production .process__text { max-width: none; text-wrap: pretty; }
+  .is-v .process__line {
+    display: block; position: absolute; top: var(--top); bottom: var(--bottom); right: calc(var(--pad) + var(--half) + var(--split) / 2);
+    width: 1px; background: var(--line);
+  }
+  .is-v .process__line i { position: absolute; inset: 0; background: var(--gold); transform: scaleY(0); transform-origin: top; }
+
+  /* Partnership: on the photo, the label and heading sit in the upper part and the button in the lower part, both the
+     same distance in from the section's lines (never on the photo's bottom edge); on the right, the contact rows
+     start level with the heading (main.js: --contacts-line) and the footer ends level with the button's bottom
+     (main.js: --contacts-end, from the section's bottom), so both columns share one top and one bottom */
+  .is-v .contacts__cta-inner { --inset: clamp(24px, 9vh, 120px); top: calc(var(--top) + var(--inset)); bottom: calc(var(--bottom) + var(--inset)); }
+  .is-v .contacts__side { padding-bottom: calc(var(--contacts-end, var(--bottom)) - var(--bottom)); }
+  .is-v .foot { margin-top: clamp(32px, 5vh, 56px); }
 }
+.process__line { display: none; }   /* vertical version only */
 
 
 /* =========================================================================
@@ -726,13 +800,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .is-h, .is-h body { overscroll-behavior-x: none; }
 
 /* =========================================================================
-   Buttons — one style everywhere, light and dark backgrounds alike: filled accent gold with dark graphite text and
-   arrow, sharp corners; on hover (0.3s) dark olive with light text and arrow, and the arrow rotates in place from ↗ to →.
-   A separate square arrow box, 2px apart. (Graphite on the gold: 4.7:1.)
+   Buttons — one style everywhere, light and dark backgrounds alike: filled light soft gold with dark graphite text
+   and arrow, sharp corners; on hover (0.3s) rich gold with white text and arrow, and the arrow rotates in place from
+   ↗ to →. A separate square arrow box, 2px apart, always the same colours as the text box.
+   (Graphite on the soft gold: 9.6:1; white on the rich gold: 2.9:1 — the uppercase 600 label stays legible
+   for the moment of the hover; the soft gold also stands out on olive and over photos.)
    ========================================================================= */
 .btn, .btn--light, .btn--dark { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
 .btn > span {
-  height: 54px; background: var(--gold); color: var(--graphite);
+  height: 54px; background: var(--gold-soft); color: var(--graphite);
   transition: background-color .3s ease, color .3s ease;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
@@ -740,7 +816,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    the icon's arrow is drawn centred on (12, 12), so rotating the whole svg turns it around the arrow's own centre */
 .btn > .btn__box { order: -1; flex: none; width: 54px; padding: 0; justify-content: center; }
 .btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
-.btn:hover > span { background: var(--olive); color: var(--stone); }
+.btn:hover > span { background: var(--gold); color: var(--white); }
 .btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover .btn__arrow { transform: rotate(-45deg); }

@@ -37,7 +37,7 @@ window.I18N = {
     'about.t1': 'Nature',
     'about.t2': 'People',
     'about.t3': 'Quality',
-    'about.v1': 'No chemical solvents, our own 1.8&nbsp;MW solar power plant.',
+    'about.v1': 'No chemical solvents, our own 1.8-megawatt solar power plant.',
     'about.v2': 'We support sport, culture and local initiatives.',
     'about.v3': 'Quality control at every stage — from raw materials to finished product.',
     'about.cta': 'About us',
@@ -69,7 +69,7 @@ window.I18N = {
     'production.s3.title': 'Oil and press cake',
     'production.s3.text': 'We get quality oil and press cake, a nutritious component of animal feed.',
     'production.s4.title': 'Quality control & storage',
-    'production.s4.text': 'A certified laboratory controls quality; oil is stored in tanks of up to 5,000 t.',
+    'production.s4.text': 'A certified laboratory controls quality; oil is stored in tanks of up to 5,000 tons.',
 
 
     'export.eyebrow': 'Export & partnership',
@@ -85,7 +85,7 @@ window.I18N = {
     'contacts.partner': 'Become a partner',
     'contacts.phone': 'Phone',
     'contacts.address': 'Address',
-    'contacts.addressValue': '5&nbsp;Symona&nbsp;Petliury St., Kyiv, Ukraine',
+    'contacts.addressValue': '5&nbsp;Symona&nbsp;Petliury Street, Kyiv, Ukraine',
     'modal.title': 'Let’s talk <em>about cooperation</em>',
     'ui.close': 'Close',
 

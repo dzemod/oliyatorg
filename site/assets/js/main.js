@@ -126,6 +126,7 @@
   const navList = $('.nav__list');
   const contactsSec = $('#contacts');
   const contactsTitle = $('.contacts__title');
+  const contactsBtn = $('.contacts__cta-inner .btn');
   const pageTop = el => { let y = 0; for (; el; el = el.offsetParent) y += el.offsetTop; return y; };
   const ctx = document.createElement('canvas').getContext('2d');
   const wideMq = matchMedia('(min-width: 1024px)');
@@ -140,6 +141,11 @@
     const half = (lh - m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2;   // half-leading above the glyphs
     const cap = pageTop(contactsTitle) - pageTop(contactsSec) + half + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
     root.style.setProperty('--contacts-line', cap.toFixed(1) + 'px');
+    // vertical version: the footer ends level with the button's bottom (its distance from the section's bottom)
+    if (contactsBtn) {
+      const end = contactsSec.offsetHeight - (pageTop(contactsBtn) - pageTop(contactsSec) + contactsBtn.offsetHeight);
+      root.style.setProperty('--contacts-end', Math.max(0, end).toFixed(1) + 'px');
+    }
   };
   fitContacts();
   addEventListener('resize', fitContacts);
@@ -170,7 +176,13 @@
       st.classList.toggle('is-active', k === i);
       $('.process__head', st).setAttribute('aria-expanded', String(k === i));
     });
-    if (counterNum) counterNum.textContent = String(i + 1).padStart(2, '0');
+    if (counterNum) {
+      counterNum.textContent = String(i + 1).padStart(2, '0');
+      // vertical version: the big number rises into place (compositor only)
+      if (vertical && !reduceMotion && counterNum.animate) {
+        counterNum.animate([{ opacity: 0, transform: 'translateY(.12em)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.22, .61, .36, 1)' });
+      }
+    }
   };
   let hTween = null;
   // horizontal page: the page scroll (px from the pin's start) for a track position x, and the steps' jump
@@ -325,16 +337,29 @@
   if (vertical && production) {
     // Vertical version: the page scrolls normally; Production pins under the header for four step lengths of scroll
     // and the steps follow it, then the page moves on. One ScrollTrigger; its own scroll handling, no extra listeners.
+    // The thin line between the list and the photo fills with the same progress.
     gsap.registerPlugin(ScrollTrigger);
     const header = $('#header');
     const step = () => Math.round(innerHeight * .5);
+    // the list is display: contents here (its rows sit on the section's grid), so it can't fade in itself: its parts do
+    const list = $('.process', production);
+    if (list && list.hasAttribute('data-reveal')) {
+      list.removeAttribute('data-reveal');
+      $$('.process__head, .process__count, .process__panel', list).forEach(el => el.setAttribute('data-reveal', ''));
+    }
+    const fill = $('.process__line i', production);
+    const setFill = fill ? gsap.quickSetter(fill, 'scaleY') : () => {};
     const pin = ScrollTrigger.create({
       trigger: production,
       pin: true,
       start: () => 'top ' + header.offsetHeight,
       end: () => '+=' + stepsOf.length * step(),
       invalidateOnRefresh: true,
-      onUpdate: self => setStep(Math.min(stepsOf.length - 1, Math.floor(self.progress * stepsOf.length)))
+      onUpdate: self => {
+        setStep(Math.min(stepsOf.length - 1, Math.floor(self.progress * stepsOf.length)));
+        setFill(self.progress);
+      },
+      onRefresh: self => setFill(self.progress)
     });
     jumpToStep = i => scrollTo({ top: pin.start + (i + .5) * step(), behavior: 'smooth' });
     document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
