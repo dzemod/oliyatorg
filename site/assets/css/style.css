@@ -611,14 +611,16 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .text { font-size: 16px; }
   .is-h .section-head .text { display: none; }
   /* everything still fits between the lines down to 1280×720 at 125% zoom (≈1024×576): tighter gaps in About (the
-     vertical version keeps its own), and on the horizontal page Export's two features side by side */
+     vertical version keeps its own) */
   .is-h .about__body .btn { margin-top: 3vh; }
   .is-h .about__body .text { line-height: 1.6; }
   .is-h .about__tabs { margin-top: 3vh; }
   .is-h .tabs__panels { margin-top: 1.6vh; }
   .is-h .tabs__tab { min-height: 36px; }
-  html.is-h:not(.is-v) .export__body { margin-top: 4vh; }
-  html.is-h:not(.is-v) .features { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+  /* horizontal Export: the icon sits left of the title, so the two stacked features fit under a three-line heading */
+  html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; align-items: center; }
+  html.is-h:not(.is-v) .feature__title { margin-top: 0; }
+  html.is-h:not(.is-v) .feature__text { grid-column: 1 / -1; }
 }
 /* =========================================================================
    Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
@@ -678,6 +680,18 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
+
+  /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
+     two features one under the other in the left half of the text column, spread over the photo's height. The first
+     starts at least 64px under the heading, the second at least 56px under the first; whatever height is left is
+     shared equally by those two gaps (auto margins), so the second feature's last line ends on the photo's bottom
+     line. The features grow a little with the screen height, so on tall screens the gaps stay moderate. */
+  html.is-h:not(.is-v) .export__body { display: flex; flex-direction: column; margin-top: clamp(20px, 6vh, 64px); }
+  html.is-h:not(.is-v) .features { flex: 1; display: flex; flex-direction: column; gap: clamp(20px, 5.2vh, 56px); width: 50%; min-width: min(100%, 20em); }
+  html.is-h:not(.is-v) .feature { margin-top: auto; }
+  html.is-h:not(.is-v) .feature__icon { width: clamp(30px, 4.4vh, 52px); height: clamp(30px, 4.4vh, 52px); }
+  html.is-h:not(.is-v) .feature__title { font-size: clamp(16px, 2.3vh, 26px); }
+  html.is-h:not(.is-v) .feature__text { font-size: clamp(16px, 2vh, 21px); max-width: 26em; }
 }
 
 
