@@ -678,14 +678,55 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
   /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
      two features form one compact group right under the heading — 56px under it, 48px apart (a little less on short
-     screens), never stretched; any free height stays at the bottom of the column. Each feature: the icon left of
+     screens), never stretched; the dotted map below fills the rest of the column. Each feature: the icon left of
      the title, centred on it, and the description 12px under the title, in the title's column. */
-  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(40px, 6.5vh, 56px); }
-  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: 50%; min-width: min(100%, 22em); }
+  html.is-h:not(.is-v) .export { --feat-w: min(100%, clamp(420px, 29.2vw, 560px)); }   /* the text column: ≈560px at 1920 */
+  html.is-h:not(.is-v) .export__body { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: flex-start; margin-top: clamp(40px, 6.5vh, 56px); }
+  html.is-h:not(.is-v) .features { flex: none; display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: var(--feat-w); }
   html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
   html.is-h:not(.is-v) .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
-  html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(16px, 2.2vh, 24px); }
-  html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: var(--t-body); max-width: 26em; }
+  html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
+  html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
+
+  /* the dotted world map under the features: the column's width, the rest of the height down to the photo's bottom
+     line (its bottom on that line); on short screens it shrinks, and below 72px of room it is left out. The map keeps
+     its aspect ratio (container units), so the pins, placed in % over it, always sit on their regions. */
+  html.is-h:not(.is-v) .export__map {
+    display: flex; align-items: flex-end; flex: 1; min-height: 0; width: var(--feat-w); margin-top: clamp(24px, 4.5vh, 48px);
+    container-type: size;
+  }
+}
+/* the map (built by tools/build_export_map.mjs): low-contrast graphite land dots, thin gold routes from Ukraine and
+   pulsing gold pins with labels on hover. Horizontal page only — everywhere else it is not shown at all. */
+.export__map { display: none; }
+.map { position: relative; width: min(100cqw, 100cqh * var(--ar)); }
+.map__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .2; stroke-width: 3.2; stroke-linecap: round; }
+.map__route { fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .85; }
+/* pins: a 24px hit area around an 8px gold dot; the halo pulses (transform + opacity only), one after another */
+.map__pin { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; }
+.map__pin::before, .map__pin::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--gold); }
+.map__pin::after { opacity: 0; animation: map-pulse 2.5s cubic-bezier(.33, 1, .68, 1) calc(var(--k, 0) * .36s) infinite; }
+.export:not(.is-live) .map__pin::after { animation-play-state: paused; }   /* main.js: only while the section is on screen */
+@keyframes map-pulse { 0% { opacity: .55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } }
+/* Ukraine, where every route starts: a darker, still dot */
+.map__pin--home::before { inset: 7px; background: var(--gold-ink); box-shadow: 0 0 0 2px var(--bg); }
+.map__pin--home::after { display: none; }
+.map__label {
+  position: absolute; left: 50%; bottom: calc(100% - 2px); padding: 5px 9px; white-space: nowrap;
+  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: var(--fg);
+  background: var(--stone); border: 1px solid var(--line);
+  opacity: 0; transform: translate(-50%, 4px); transition: opacity .25s ease, transform .25s ease; pointer-events: none;
+}
+.map__pin:hover .map__label { opacity: 1; transform: translate(-50%, 0); }
+.map__pin:hover { z-index: 1; }
+@container (max-height: 72px) { .map { display: none; } }
+/* motion: when the section plays (.in), the routes draw in one by one, then each pin appears as its route arrives */
+.fade .map__route { transition: stroke-dashoffset 1.3s cubic-bezier(.65, 0, .35, 1) calc(.5s + var(--k) * .28s); }
+.fade .map__pin { transition: opacity .5s ease calc(1.5s + var(--k, -1) * .28s); }
+.fade .panel.export:not(.in) .map__route { stroke-dashoffset: 1; }
+.fade .panel.export:not(.in) .map__pin { opacity: 0; }
+@media (min-width: 1024px) {
 
 }
 

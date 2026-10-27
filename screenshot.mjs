@@ -3,7 +3,8 @@
 // Optional env: VW / VH (viewport), SCROLL (px of page scroll before the shot), FULL=0 (viewport only — the horizontal
 // desktop page is one screen tall, so use SCROLL + FULL=0 to capture a given section there), SEL (a section's CSS
 // selector, e.g. SEL=#production: scrolls to it instead of SCROLL, on both the horizontal and the vertical page),
-// CLICK (a selector clicked after load, before scrolling — e.g. the EN button).
+// CLICK (a selector clicked after load, before scrolling — e.g. the EN button), WAIT (extra ms before the shot),
+// HOVER (a selector hovered right before the shot).
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,6 +44,8 @@ if (process.env.SEL) {
   await page.evaluate(y => scrollTo(0, y), +process.env.SCROLL);
   await new Promise(r => setTimeout(r, 2500));   // the scrub (1 s) and the section fades settle
 }
+if (process.env.WAIT) await new Promise(r => setTimeout(r, +process.env.WAIT));   // extra ms, e.g. for a long animation
+if (process.env.HOVER) { await page.hover(process.env.HOVER); await new Promise(r => setTimeout(r, 500)); }
 await page.screenshot({ path: file, fullPage: process.env.FULL !== '0' });
 await browser.close();
 console.log(file);

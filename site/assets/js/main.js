@@ -359,6 +359,9 @@
   // the hero's scroll hint loops only while the hero is on screen (an endless animation would restyle every frame)
   const hero = $('.hero');
   if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
+  // the same for the pulsing pins of the Export map (horizontal page): they run only while the section is on screen
+  const exportSec = $('#export');
+  if (horizontal && exportSec && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => exportSec.classList.toggle('is-live', en.isIntersecting)).observe(exportSec);
 
   /* ---------- Anchor links (work in both modes) ---------- */
   function scrollToTarget(id) {
