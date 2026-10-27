@@ -35,7 +35,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=117">
+  <link rel="stylesheet" href="assets/css/style.css?v=118">
   <script>
     // Decide the scroll mode before first paint. One page, two versions (for the review): index.html scrolls sideways
     // on desktop, vertical.html (the same file, served by a rewrite in vercel.json) scrolls top to bottom.
@@ -344,9 +344,10 @@
                 <p class="feature__text" data-i18n="export.b2.text">Будуємо довгострокові партнерські відносини з постачальниками та клієнтами</p>
               </li>
             </ul>
-            <!-- a dotted world map with the routes from Ukraine to the supply regions (every version; style.css sizes it per
-                 layout) -->
-            <!-- MAP:START — built by tools/build_export_map.mjs; do not edit by hand -->
+          </div>
+          <!-- the dotted world map with the routes from Ukraine to the supply regions: on desktop a background layer behind the
+         whole text column (style.css), on phones and tablets a compact strip under the features -->
+        <!-- MAP:START — built by tools/build_export_map.mjs; do not edit by hand -->
         <div class="export__map" aria-hidden="true">
           <div class="map">
             <div class="map__frame" style="--ar: 2.11;">
@@ -368,12 +369,11 @@
               <span class="map__pin" data-pos="l" style="left: 52.78%; top: 47.54%; --k: 3;"><span class="map__label" data-i18n="map.africa">Африка</span></span>
               <span class="map__pin" data-pos="b" style="left: 68.61%; top: 36.97%; --k: 4;"><span class="map__label" data-i18n="map.india">Індія</span></span>
               <span class="map__pin" data-pos="t" style="left: 76.39%; top: 29.34%; --k: 5;"><span class="map__label" data-i18n="map.china">Китай</span></span>
-              <span class="map__pin" data-pos="b" style="left: 84.17%; top: 63.97%; --k: 6;"><span class="map__label" data-i18n="map.australia">Австралія</span></span>
+              <span class="map__pin" data-pos="l" style="left: 84.17%; top: 63.97%; --k: 6;"><span class="map__label" data-i18n="map.australia">Австралія</span></span>
             </div>
           </div>
         </div>
         <!-- MAP:END -->
-          </div>
         </div>
       </section>
 

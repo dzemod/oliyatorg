@@ -668,7 +668,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* Export: the text block decides the height — label on the photo's top line, the features 48px under the heading
      (40px apart), the last line on the photo's bottom line; the photo stretches to it. Each feature text takes the
      full column, so it runs on two lines at most. */
-  .is-v .panel.export { min-height: 0; }
+  /* Export: at least the screen under the header (photo and text column the same height); the map lies behind the text */
   .is-v .export .export__body { margin-top: 48px; padding-top: 0; }
   .is-v .features { width: 100%; gap: 40px; }
   .is-v .feature__text { max-width: 36em; }
@@ -692,63 +692,66 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
   /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
      two features form one compact group right under the heading — 56px under it, 48px apart (a little less on short
-     screens), never stretched; the dotted map below fills the rest of the column. Each feature: the icon left of
-     the title, centred on it, and the description 12px under the title, in the title's column. */
+     screens), never stretched. Each feature: the icon left of the title, centred on it, and the description 12px
+     under the title, in the title's column. */
   html.is-h:not(.is-v) .export { --feat-w: min(100%, clamp(420px, 29.2vw, 560px)); }   /* the text column: ≈560px at 1920 */
-  html.is-h:not(.is-v) .export__body { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: flex-start; margin-top: clamp(40px, 6.5vh, 56px); }
-  html.is-h:not(.is-v) .features { flex: none; display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: var(--feat-w); }
+  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(40px, 6.5vh, 56px); }
+  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: var(--feat-w); }
   html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
   html.is-h:not(.is-v) .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
   html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
   html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
 
-
-  /* horizontal: the map takes the full text column (from the label's left edge to the right margin) and the rest of
-     the height, its bottom on the photo's bottom line. Its box may be from 1.9 : 1 to 3.2 : 1 — the world inside
-     covers it (only the polar edges get cropped, never Ukraine or Australia); on a lower box the map gets narrower
-     instead, and below 80px of room it is left out. */
-  html.is-h:not(.is-v) .export__map {
-    display: flex; align-items: flex-end; flex: 1; min-height: 0; align-self: stretch; margin-top: clamp(24px, 4.5vh, 48px);
-    container: exmap / size;
+  /* the map, both desktop versions: a background layer of the whole text column (the photo's top line to its bottom
+     line), behind the label, heading and features; it adds no height. The world keeps its proportions (contained,
+     never cropped), centred across and resting on the bottom line, so it fills the free space under the features and
+     only fades in under their last lines; a soft stone halo keeps every letter clear of the dots. Only the pins take
+     the pointer, and the text above them still wins. */
+  .is-h .export__text { position: relative; }
+  .is-h .export__text > :not(.export__map) { position: relative; z-index: 1; text-shadow: 0 0 3px var(--bg), 0 0 10px var(--bg); }
+  .is-h .export__map {
+    position: absolute; inset: 0; z-index: 0; display: flex; align-items: flex-end; justify-content: center; margin: 0;
+    pointer-events: none; container: exmap / size;
   }
-  html.is-h:not(.is-v) .map { --route-w: .25; width: min(100cqw, 100cqh * 3.2); height: min(100cqh, 100cqw / 1.9); aspect-ratio: auto; }
-  /* vertical version: the full text column under the features; the block (and the photo beside it) grows to fit */
-  .is-v .export__map { margin-top: 56px; }
-  /* the horizontal box may crop the top edge, so Ukraine's label sits right of its dot there */
-  html.is-h:not(.is-v) .map__pin--home > .map__label { left: calc(100% - 4px); right: auto; top: 50%; bottom: auto; transform: translateY(-50%); }
-  .is-v .map { --route-w: .3; aspect-ratio: 2.3; }
+  .is-h .map { --route-w: .25; width: min(100cqw, 100cqh * 2.11); aspect-ratio: 2.11; }
+  .is-h .map__pin { pointer-events: auto; }
+  .is-h .map__land { stroke-opacity: .13; }
+  .is-h .map__land--polar { stroke-opacity: .06; }
+  /* "Україна" stays labelled only where the map has room below the text (a tall column); on shorter screens its label
+     would sit on the features, so it shows on hover like the regions */
+  @container exmap (max-height: 759px) { .map__pin--home:not(:hover) > .map__label { opacity: 0; } }
 }
-@container exmap (max-height: 80px) { .map { display: none; } }
 
 /* =========================================================================
    Export map (built by tools/build_export_map.mjs) — every version. An equirectangular dotted world (≈2.1 : 1):
-   low-contrast graphite land dots, thin gold arcs from Ukraine to the seven supply regions, gold pins. The frame
-   covers the .map box like a photo (object-fit: cover, done with container units), so any box shape works and the
-   pins, placed in % of the frame, stay on their regions. Labels: Ukraine always; the regions on hover (desktop),
-   always on phones and tablets. Motion (main.js adds .in when the map enters the view): the arcs draw in one by one,
-   each pin appears as its arc arrives; on desktop the pins then pulse, slowly and staggered, while the map is on
-   screen (.is-live). Reduced motion: the static map.
+   low-contrast graphite land dots, thin gold arcs (70%) from Ukraine to the seven supply regions, gold pins. Desktop:
+   a background layer of the text column (above); phones and tablets: a compact 200px strip under the features. The
+   frame covers the .map box like a photo (object-fit: cover, container units), so the pins, placed in % of the frame,
+   stay on their regions. Labels: "Україна" always; the regions on hover (desktop), always on phones and tablets.
+   Motion (main.js adds .in when the map enters the view): the arcs draw in one by one, each pin appears as its arc
+   arrives; on desktop the pins then pulse, slowly and staggered, while the map is on screen (.is-live). Reduced
+   motion: the static map.
    ========================================================================= */
 .export__map { margin-top: 48px; }
 .map { position: relative; overflow: hidden; width: 100%; aspect-ratio: 2.11; container: map / size; }
-/* centred across; down the crop is weighted 30 / 70, so a low box loses Antarctica and the southern ocean first, not
-   Canada and Russia */
+/* centred across; down the crop is weighted 30 / 70, so a low box loses Antarctica and the southern ocean first */
 .map__frame { position: absolute; left: 50%; top: 0; width: max(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar); transform: translate(-50%, calc((100cqh - 100%) * .3)); }
 .map__svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .2; stroke-width: .56; stroke-linecap: round; }
-.map__land--polar { stroke-opacity: .1; }
+.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .16; stroke-width: .56; stroke-linecap: round; }
+.map__land--polar { stroke-opacity: .08; }
 /* the arcs: their width is in map units (one grid step), so each layout sets it for ≈1.2px on screen; a scaling stroke
    keeps the dash maths in pathLength units, which the draw-in needs */
-.map__route { fill: none; stroke: var(--gold); stroke-width: var(--route-w, .5); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.map__route { fill: none; stroke: var(--gold); stroke-opacity: .7; stroke-width: var(--route-w, .5); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
 /* pins: a 24px hit area around an 8px gold dot; the halo pulses (transform + opacity only) */
 .map__pin { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; }
 .map__pin::before, .map__pin::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--gold); }
+.map__pin::before { opacity: .8; }
 .map__pin::after { opacity: 0; animation: map-pulse 2.5s cubic-bezier(.33, 1, .68, 1) calc(var(--k, 0) * .36s) infinite; }
 .map:not(.is-live) .map__pin::after { animation-play-state: paused; }
-@keyframes map-pulse { 0% { opacity: .55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } }
+@keyframes map-pulse { 0% { opacity: .5; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } }
 /* Ukraine, where every arc starts: a bigger gold dot with a soft glow, never pulsing */
 .map__pin--home { z-index: 1; }
-.map__pin--home::before { inset: 6px; box-shadow: 0 0 0 4px rgb(184 145 58 / .2), 0 0 14px 4px rgb(184 145 58 / .35); }
+.map__pin--home::before { inset: 6px; opacity: 1; box-shadow: 0 0 0 4px rgb(184 145 58 / .2), 0 0 14px 4px rgb(184 145 58 / .35); }
 .map__pin--home::after { display: none; }
 /* labels: data-pos puts each one where it never covers a neighbour (t / b / l / r of its dot) */
 .map__label {
@@ -763,9 +766,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 [data-pos="r"] > .map__label { left: calc(100% - 4px); top: 50%; transform: translateY(-50%); }
 .map__pin:hover { z-index: 2; }
 .map__pin:hover > .map__label, .map__pin--home > .map__label { opacity: 1; }
-/* phones and tablets: every label shows (small), no endless pulse */
+/* phones and tablets: a compact strip (only the polar edges and the ocean at the sides are cropped), every label
+   shows (small), no endless pulse */
 @media (max-width: 1023px) {
-  .map { aspect-ratio: 1.75; }   /* zoomed in a little: only the polar edges and the ocean at the sides are cropped */
+  .map { height: 200px; aspect-ratio: auto; }
   .map__label { opacity: 1; padding: 3px 5px; font-size: 9px; letter-spacing: .08em; }
   .map__pin::before { inset: 9px; }
   .map__pin--home::before { inset: 7px; }
@@ -776,9 +780,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .fade .map__pin:not(.map__pin--home) { transition: opacity .5s ease calc(1.3s + var(--k) * .28s); }
 .fade .map:not(.in) .map__route { stroke-dashoffset: 1; }
 .fade .map:not(.in) .map__pin:not(.map__pin--home) { opacity: 0; }
-@media (min-width: 1024px) {
-
-}
 
 
 /* =========================================================================
@@ -1057,6 +1058,7 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .export .export__photo { order: 1; margin: 0 0 40px; }
   .export .export__title { order: 2; }
   .export .export__body { order: 3; }
+  .export .export__map { order: 4; margin-top: 40px; }
   .export .features { margin-top: 48px; gap: 40px; }
 
   /* the language switch sits in the header next to the burger (the menu itself no longer repeats it) */

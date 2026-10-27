@@ -36,7 +36,7 @@ const REGIONS = [
   { key: 'map.africa', ua: 'Африка', lon: 21, lat: 3, pos: 'l' },
   { key: 'map.india', ua: 'Індія', lon: 78, lat: 21, pos: 'b' },
   { key: 'map.china', ua: 'Китай', lon: 106, lat: 34, pos: 't' },
-  { key: 'map.australia', ua: 'Австралія', lon: 134, lat: -25, pos: 'b' }
+  { key: 'map.australia', ua: 'Австралія', lon: 134, lat: -25, pos: 'l' }
 ];
 
 if (!fs.existsSync(CACHE)) {
