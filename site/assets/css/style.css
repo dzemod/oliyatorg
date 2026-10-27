@@ -617,10 +617,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .about__tabs { margin-top: 3vh; }
   .is-h .tabs__panels { margin-top: 1.6vh; }
   .is-h .tabs__tab { min-height: 36px; }
-  /* horizontal Export: the icon sits left of the title, so the two stacked features fit under a three-line heading */
-  html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; align-items: center; }
-  html.is-h:not(.is-v) .feature__title { margin-top: 0; }
-  html.is-h:not(.is-v) .feature__text { grid-column: 1 / -1; }
 }
 /* =========================================================================
    Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
@@ -680,18 +676,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
-
   /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
-     two features one under the other in the left half of the text column, spread over the photo's height. The first
-     starts at least 64px under the heading, the second at least 56px under the first; whatever height is left is
-     shared equally by those two gaps (auto margins), so the second feature's last line ends on the photo's bottom
-     line. The features grow a little with the screen height, so on tall screens the gaps stay moderate. */
-  html.is-h:not(.is-v) .export__body { display: flex; flex-direction: column; margin-top: clamp(20px, 6vh, 64px); }
-  html.is-h:not(.is-v) .features { flex: 1; display: flex; flex-direction: column; gap: clamp(20px, 5.2vh, 56px); width: 50%; min-width: min(100%, 20em); }
-  html.is-h:not(.is-v) .feature { margin-top: auto; }
-  html.is-h:not(.is-v) .feature__icon { width: clamp(30px, 4.4vh, 52px); height: clamp(30px, 4.4vh, 52px); }
-  html.is-h:not(.is-v) .feature__title { font-size: clamp(16px, 2.3vh, 26px); }
-  html.is-h:not(.is-v) .feature__text { font-size: clamp(16px, 2vh, 21px); max-width: 26em; }
+     two features form one compact group right under the heading — 56px under it, 48px apart (a little less on short
+     screens), never stretched; any free height stays at the bottom of the column. Each feature: the icon left of
+     the title, centred on it, and the description 12px under the title, in the title's column. */
+  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(40px, 6.5vh, 56px); }
+  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: 50%; min-width: min(100%, 22em); }
+  html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
+  html.is-h:not(.is-v) .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
+  html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(16px, 2.2vh, 24px); }
+  html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: var(--t-body); max-width: 26em; }
+
 }
 
 
