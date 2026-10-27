@@ -497,8 +497,8 @@
   /* ---------- Production steps ----------
      Desktop (horizontal page): one step is always active and the scroll drives it while the section is pinned (see
      onTrack); a click or keyboard focus jumps the scroll to that step, so its photo and text fade in beside the list.
-     Phones / tablets and "reduce motion": an accordion — tapping a step opens it (and closes the others), tapping the
-     one photo above the list shows the open step (one step is always open). ↑ ↓ Home End move between the step buttons. */
+     Phones / tablets and "reduce motion": an accordion — tapping a step opens it (and closes the others); one step is
+     always open, and the one photo above the list shows it. ↑ ↓ Home End move between the step buttons. */
   const steps = $$('.process__step');
   const heads = steps.map(s => $('.process__head', s));
   function activate(step) {
