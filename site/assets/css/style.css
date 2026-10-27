@@ -607,9 +607,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .export .export__title { font-size: var(--h2-size); }
   .is-h .export__body { flex: 1; min-height: 0; align-self: stretch; margin-top: 48px; }   /* 48px under the heading area */
   .is-h .features { width: 50%; align-content: start; gap: 40px; margin: 0; }
-  .is-h .feature__icon { width: clamp(30px, 3.6vh, 44px); height: clamp(30px, 3.6vh, 44px); }
-  .is-h .feature__title { margin-top: 2.2vh; font-size: clamp(16px, 2vh, 22px); }
-  .is-h .feature__text { margin-top: 1.2vh; font-size: var(--t-body); max-width: 24em; }
 }
 
 /* Short desktop screens (e.g. 1280×720 laptops) */
@@ -669,9 +666,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
      (40px apart), the last line on the photo's bottom line; the photo stretches to it. Each feature text takes the
      full column, so it runs on two lines at most. */
   /* Export: at least the screen under the header (photo and text column the same height); the map lies behind the text */
-  .is-v .export .export__body { margin-top: 48px; padding-top: 0; }
+  .is-v .export .export__body { margin-top: 56px; padding-top: 0; }
   .is-v .features { width: 100%; gap: 40px; }
-  .is-v .feature__text { max-width: 36em; }
   /* About, Export (both desktop versions): the text column stays on column 7 (the page's centre line); the photo
      grows to end --split before it */
   .is-h :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
@@ -691,36 +687,28 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
   /* Export, horizontal page only (html.is-h without .is-v, so neither the shared nor the vertical rules undo it): the
-     two features form one compact group right under the heading — 56px under it, 48px apart (a little less on short
-     screens), never stretched. Each feature: the icon left of the title, centred on it, and the description 12px
-     under the title, in the title's column. */
+     two features form one compact group right under the heading — 56px under it, 40px apart (a little less on short
+     screens), never stretched. Each feature (both desktop versions, .is-h): the icon left of the title, centred on it,
+     and the description 12px under the title, in the title's column — compact, so the map below keeps its room. */
   html.is-h:not(.is-v) .export { --feat-w: min(100%, clamp(420px, 29.2vw, 560px)); }   /* the text column: ≈560px at 1920 */
-  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(40px, 6.5vh, 56px); }
-  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(32px, 5.5vh, 48px); width: var(--feat-w); }
-  html.is-h:not(.is-v) .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
-  html.is-h:not(.is-v) .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
-  html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
-  html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
+  html.is-h:not(.is-v) .export__body { flex: none; margin-top: clamp(36px, 6vh, 56px); }
+  html.is-h:not(.is-v) .features { display: flex; flex-direction: column; gap: clamp(28px, 4.5vh, 40px); width: var(--feat-w); }
+  .is-h .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; }
+  .is-h .feature__icon { width: clamp(28px, 3.4vh, 40px); height: clamp(28px, 3.4vh, 40px); }
+  .is-h .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
+  .is-h .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
 
-  /* the map, both desktop versions: a background layer of the whole text column (the photo's top line to its bottom
-     line), behind the label, heading and features; it adds no height. The world keeps its proportions (contained,
-     never cropped), centred across and resting on the bottom line, so it fills the free space under the features and
-     only fades in under their last lines; a soft stone halo keeps every letter clear of the dots. Only the pins take
-     the pointer, and the text above them still wins. */
-  .is-h .export__text { position: relative; }
-  .is-h .export__text > :not(.export__map) { position: relative; z-index: 1; text-shadow: 0 0 3px var(--bg), 0 0 10px var(--bg); }
+  /* the map, both desktop versions: its own area under the features, never behind any text — the full text column
+     wide, from 32px under the last feature line down to the photo's bottom line. Size containment: it adds no height
+     (the column stays the photo's height), it just takes what is left. The world keeps its proportions (contained),
+     centred across and resting on the bottom line; with less than 160px left it is not shown. */
   .is-h .export__map {
-    position: absolute; inset: 0; z-index: 0; display: flex; align-items: flex-end; justify-content: center; margin: 0;
-    pointer-events: none; container: exmap / size;
+    flex: 1 1 0; min-height: 0; align-self: stretch; display: flex; align-items: flex-end; justify-content: center;
+    margin: 32px 0 0; container: exmap / size;
   }
   .is-h .map { --route-w: .25; width: min(100cqw, 100cqh * 2.11); aspect-ratio: 2.11; }
-  .is-h .map__pin { pointer-events: auto; }
-  .is-h .map__land { stroke-opacity: .13; }
-  .is-h .map__land--polar { stroke-opacity: .06; }
-  /* "Україна" stays labelled only where the map has room below the text (a tall column); on shorter screens its label
-     would sit on the features, so it shows on hover like the regions */
-  @container exmap (max-height: 759px) { .map__pin--home:not(:hover) > .map__label { opacity: 0; } }
 }
+@container exmap (max-height: 159px) { .map { display: none; } }
 
 /* =========================================================================
    Export map (built by tools/build_export_map.mjs) — every version. An equirectangular dotted world (≈2.1 : 1):
