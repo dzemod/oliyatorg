@@ -11,9 +11,6 @@
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-tight-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-tight-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-/* 600: only the active Production step on the vertical version (loaded when used) */
-@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-tight-cyrillic-600-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
-@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/inter-tight-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-cyrillic-400-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/inter-cyrillic-500-normal.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
@@ -343,11 +340,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .products__all { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
 }
 
-/* 5. Production — the head (label, heading, button; laid out like Products) and the four steps. Phones: an
-   accordion — each row is a button (number, title, arrow); the open step shows its photo and text under it.
-   The active row gets a darker, thicker underline and a straight arrow (→); the others ↗. */
-.process__media img { width: 100%; height: 100%; object-fit: cover; }
-.production__title em { display: block; }   /* "Чотири кроки" / "до бездоганної олії" */
+/* 5. Production — the head (label, heading, button; laid out like Products) and four separate step cards: a landscape
+   photo (sharp corners), a small gold number, the title and the full text. Phones: stacked; tablets: two columns;
+   desktop: one row (see the desktop section). Hover: the photo slowly zooms. */
+.production__title em { display: block; }   /* "Чотири кроки" / "до якісної олії" */
 .production__more { margin-top: 32px; }
 @media (min-width: 640px) {
   .production__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
@@ -355,23 +351,33 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .production .production__title { grid-column: 1; grid-row: 2; margin: 0; }
   .production__more { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
 }
-.process { margin-top: 48px; }
-.process__head {
-  display: flex; align-items: center; gap: 12px; width: 100%; padding: 20px 0; text-align: left;
-  border-bottom: 1px solid var(--line); transition: border-color .3s ease, box-shadow .3s ease;
+.steps { display: grid; gap: 56px; margin-top: 48px; }
+.step__media { position: relative; overflow: hidden; aspect-ratio: 3 / 2; }
+.step__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.step:hover .step__media img { transform: scale(1.04); }
+.step__num { margin-top: 20px; font: 600 13px/1 var(--sans); letter-spacing: .14em; font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
+.step__title { margin-top: 12px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; color: var(--fg); }
+.step__text { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
+@media (min-width: 640px) {
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px var(--gap); }
 }
-/* readable at small sizes: sans gold numbers, Inter Tight 500 titles in the full text colour */
-.process__num { flex: none; min-width: 30px; font: 600 14px/1 var(--sans); letter-spacing: .12em; color: var(--num); }
-.process__title { flex: 1; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; color: var(--fg); }
-.process__arrow { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--fg); stroke-width: 1.6; transform: rotate(-45deg); transition: transform .3s cubic-bezier(.65, 0, .35, 1); }
-/* thicker without moving the row: the border turns dark and an inset shadow adds a second pixel */
-.process__step.is-active .process__head { border-bottom-color: var(--gold); box-shadow: inset 0 -1px 0 var(--gold); }
-.process__step.is-active .process__arrow { transform: none; }
-.process__panel { display: none; padding: 20px 0 28px; }
-.process__step.is-active .process__panel { display: block; }
-.process__media { overflow: hidden; aspect-ratio: 3 / 2; }
-.process__text { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
-.process__count { display: none; }
+/* Production cards: motion. The cards play one after another, 0.15s apart (--i in index.html): the photo opens with a
+   wipe from the bottom (clip-path), then the number, title and text fade up. Desktop: all four when the section plays
+   (.in on the panel); phones and tablets: each card as it enters (.in on the card, main.js). Hover never waits on it:
+   the zoom is on the image, the wipe on its frame. */
+.anim .steps { visibility: hidden; }
+.step__num { --k: 0; }
+.step__title { --k: 1; }
+.step__text { --k: 2; }
+.fade.is-h .step { --sd: calc(var(--i, 0) * .15s); }
+.fade .step__media { transition: clip-path .9s cubic-bezier(.65, 0, .35, 1) var(--sd, 0s); }
+.fade :is(.step__num, .step__title, .step__text) {
+  transition: opacity .6s cubic-bezier(.33, 1, .68, 1) calc(var(--sd, 0s) + .45s + var(--k) * .08s),
+              transform .6s cubic-bezier(.33, 1, .68, 1) calc(var(--sd, 0s) + .45s + var(--k) * .08s);
+}
+.fade.is-h .production:not(.in) .step__media, .fade:not(.is-h) .step:not(.in) .step__media { clip-path: inset(100% 0 0 0); }
+.fade.is-h .production:not(.in) :is(.step__num, .step__title, .step__text),
+.fade:not(.is-h) .step:not(.in) :is(.step__num, .step__title, .step__text) { opacity: 0; transform: translateY(16px); }
 /* two lengths of one text (index.html): the full one on desktop, the short one on phones and tablets */
 .t-short { display: none; }
 @media (max-width: 1023px) {
@@ -482,7 +488,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* the lines (see :root): label on the top line, heading on the head line in a two-line area, so whatever follows
      with margin-top: var(--content-gap) starts on the content line */
   .is-h .panel:not(.hero) :is(.eyebrow, .pill) { margin-bottom: var(--label-gap); }
-  .is-h .panel :is(.about__title, .numbers__head .h2, .products__title, .production__title, .export__title) { height: var(--head-h); margin: 0; }
+  /* at least two lines high; a heading that wraps to a third line (narrow screens, English) pushes the content down
+     instead of running into it */
+  .is-h .panel :is(.about__title, .numbers__head .h2, .products__title, .production__title, .export__title) { min-height: var(--head-h); margin: 0; }
   .is-h .link { margin-top: 3vh; }
   /* section heads (label on the top line, then heading and intro) take the first 4 columns */
   .is-h .section-head { grid-column: 1 / 5; }
@@ -528,9 +536,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .tabs__tab { min-height: clamp(40px, 5vh, 56px); padding-bottom: .8vh; font-size: var(--t-caps); }
   .is-h .tabs__panels { margin-top: 2.4vh; }
   .is-h .tabs__panel { font-size: var(--t-body); }
-  /* rule: on desktop every tab text is ONE line across the full tabs row (so switching never changes the height);
-     keep the texts short enough — the ellipsis is only a safety net */
-  .tabs__panel { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* the tab texts share one grid cell, so the block keeps the tallest text's height and switching never changes it; on a
+     narrow column a text wraps to a second line instead of being cut */
+  .tabs__panel { width: 100%; }
   .is-h .about .h2.about__title { font-size: var(--h2-size); white-space: nowrap; }
   .is-h .about__body { width: 100%; max-width: none; margin-top: var(--content-gap); }   /* on the content line */
   .is-h .about__body .btn > span { white-space: nowrap; }
@@ -561,42 +569,27 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .card__title { margin-top: 1.2vh; font-size: var(--t-sub); }
 
   /* 5. Production — like Products: the head row on top (label on the top line, heading; the button on the right, on
-     the heading's bottom line, its right edge on the right margin), then two equal columns across the full content
-     width (the same gutter as the cards): the step list and the active step's photo with its 2-line text right under
-     it. The steps block fills the height left under the head: the list's four rows share it, the photo takes what
-     the text leaves — tops on one line, the last row's line and the text's last line on the bottom line. */
-  .is-h .panel.production { width: 100vw; display: flex; flex-direction: column; }   /* outranks the shared section grid */
-  .is-h .production__head { align-self: stretch; }   /* full width, so the button ends on the right margin */
+     the heading's bottom line, its right edge on the right margin), then the four step cards in one row on the grid,
+     equal width and height. A card is at least 280px wide: on narrow screens the horizontal page simply makes the
+     section wider than the screen, so the texts never get squeezed. The cards' parts share rows (subgrid), so every
+     number, title and text starts on one line. The photo is 3:2 when there is room; on a short screen it gives up
+     height first (minmax(0, auto)), so the texts always fit above the bottom line. */
+  .is-h .panel.production {   /* outranks the shared section grid */
+    --step-w: max(280px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
+    width: max(100vw, calc(2 * var(--pad) + 4 * var(--step-w) + 3 * var(--gap))); display: flex; flex-direction: column;
+  }
+  .is-h .production__head { align-self: flex-start; width: calc(100vw - 2 * var(--pad)); }   /* one screen wide, so the button ends on the first screen's right margin even when the section is wider */
   .is-h .production__head .eyebrow { margin-bottom: 3.2vh; }
   .is-h .production .production__title { font-size: var(--h2-size); }
-  .is-h .process {
-    --pt: var(--t-body);                                  /* step text size */
-    position: relative; flex: 1; min-height: 0; align-self: stretch; margin: var(--content-gap) 0 0; padding: 0 calc(50% + var(--gap) / 2) 0 0;
-    display: grid; grid-template-rows: repeat(4, minmax(0, 1fr));
+  .is-h .steps {
+    flex: 1; min-height: 0; align-self: stretch; margin: var(--content-gap) 0 0;
+    grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, auto) auto auto auto; align-content: start; gap: 0 var(--gap);
   }
-  .is-h .process__step { display: flex; }
-  .is-h .process__head { padding: 0; cursor: pointer; }
-  .is-h .process__step:first-child .process__head { border-top: 1px solid var(--line); }   /* the list visibly starts on the content line */
-  .is-h .process__num { font-size: clamp(13px, 1.35vh, 15px); }
-  .is-h .process__title { font-size: var(--t-sub); line-height: 1.2; white-space: nowrap; }
-  .is-h .process__arrow { width: clamp(20px, 2.1vh, 24px); height: clamp(20px, 2.1vh, 24px); }
-  .is-h .process__step .process__panel {   /* as specific as the phone rule that shows the open step */
-    position: absolute; top: 0; right: 0; bottom: 0; width: calc(50% - var(--gap) / 2); padding: 0;
-    display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: clamp(16px, 1.8vh, 20px);
-    opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s;
-  }
-  .is-h .process__step.is-active .process__panel { opacity: 1; visibility: visible; transition: opacity .5s var(--ease) .05s; }
-  .is-h .process__media { position: relative; width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; }
-  .is-h .process__media img { position: absolute; inset: 0; }
-  /* always 2 lines (fixed height, so switching steps never jumps); the measure keeps every text on two balanced lines */
-  .is-h .process__text { width: 100%; max-width: 30em; height: calc(2 * 1.55 * var(--pt)); margin: 0; font-size: var(--pt); line-height: 1.55; text-wrap: balance; }
-  /* the step counter ("02 / 04") on the right of the text line: the steps follow the scroll while the section is pinned */
-  .is-h .process__count {
-    display: block; position: absolute; right: 0; bottom: 0; line-height: calc(1.55 * var(--pt));
-    font-size: var(--t-caps); font-weight: 500; letter-spacing: .12em; font-variant-numeric: tabular-nums; color: var(--fg-2);
-  }
-  .is-h .process__count b { font-weight: 600; color: var(--num); }
-  .is-h .process__text { max-width: min(30em, calc(100% - 8em)); }   /* clear of the counter */
+  .is-h .step { display: grid; grid-row: span 4; grid-template-rows: subgrid; min-height: 0; }
+  .is-h .step__media { align-self: stretch; justify-self: stretch; min-height: 0; aspect-ratio: 4 / 3; }   /* stretch both ways: the full card width, and the row may make the 4:3 frame shorter */
+  .is-h .step__num { margin-top: clamp(14px, 2.4vh, 28px); font-size: clamp(12px, 1.3vh, 14px); }
+  .is-h .step__title { margin-top: clamp(8px, 1.3vh, 14px); font-size: var(--t-sub); }
+  .is-h .step__text { margin-top: clamp(6px, 1vh, 12px); font-size: var(--t-body); line-height: 1.55; }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
      then 48px under the heading the two features one under the other, 40px apart, left-aligned with the heading
@@ -615,10 +608,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* Short desktop screens (e.g. 1280×720 laptops) */
 @media (min-width: 1024px) and (max-height: 760px) {
   :root { --h2-size: 42px; --content-gap: 4vh; }
-  .is-h .about__body .btn { margin-top: 3.5vh; }
-  .is-h .about__tabs { padding-top: 2.5vh; }
   .is-h .text { font-size: 16px; }
   .is-h .section-head .text { display: none; }
+  /* everything still fits between the lines down to 1280×720 at 125% zoom (≈1024×576): tighter gaps in About (the
+     vertical version keeps its own), and on the horizontal page Export's two features side by side */
+  .is-h .about__body .btn { margin-top: 3vh; }
+  .is-h .about__body .text { line-height: 1.6; }
+  .is-h .about__tabs { margin-top: 3vh; }
+  .is-h .tabs__panels { margin-top: 1.6vh; }
+  .is-h .tabs__tab { min-height: 36px; }
+  html.is-h:not(.is-v) .export__body { margin-top: 4vh; }
+  html.is-h:not(.is-v) .features { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
 }
 /* =========================================================================
    Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
@@ -642,9 +642,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .numbers .stats { flex: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
   .is-v .numbers .stat { justify-content: flex-start; }
   .is-v .scroller { height: auto; overflow: visible; }
-  .is-v .track { display: block; width: auto; height: auto; will-change: auto; }   /* no transform: Production pins with position: fixed */
-  .is-v .panel:not(.hero) { height: calc(100vh - var(--header-h)); }
-  .is-v .contacts { min-height: 0; }
+  .is-v .track { display: block; width: auto; height: auto; will-change: auto; }
+  /* at least the screen under the header, taller when the content needs it: never a fixed height */
+  .is-v .panel:not(.hero) { height: auto; min-height: calc(100vh - var(--header-h)); }
+  .is-v .panel.contacts:not(.hero) { min-height: 0; }   /* as tall as its content */
 
   /* photo left, text right (About, Export): the text column spans the photo exactly — the label on the photo's top
      line, the last line on its bottom line. The column is compact (label → heading 24, heading → content at least 40,
@@ -670,92 +671,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
      grows to end --split before it */
   .is-h :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
 
-  /* Production (both desktop versions, so .is-h) — pinned while the scroll walks through the four steps (main.js: the
-     vertical pin, or the horizontal track's hold). Left: the active step's photo, 55% of
-     the content width, top line to bottom line, with the counter on its bottom. Right (--split after it): label,
-     heading, button, and the step list down to the bottom line; the active step opens its text under it (accordion).
-     The header, the list, its rows' panels are display: contents, so heads and texts sit on the section's grid and
-     the photos are placed against the section.
-     Step change: the new photo wipes in from the bottom over the old one (clip-path, 0.7s power2.inOut) while its
-     image settles from 106%; the old one stays under it until the wipe ends. One gold line moves to the new step
-     (main.js sets its translateY). Every text keeps the same reserved height, so the list never changes height. */
-  .is-h .panel.production {
-    --photo-w: calc((100vw - 2 * var(--pad)) * .55);
-    --row: clamp(40px, 6.2vh, 72px);
-    --pt: var(--t-body);
-    --desc-pad: clamp(6px, 1.2vh, 14px);
-    --desc-h: calc(var(--desc-lines, 2) * 1.55 * var(--pt) + 2 * var(--desc-pad));
-    --wipe: cubic-bezier(.45, 0, .55, 1);   /* power2.inOut */
-    display: grid; grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto minmax(0, 1fr) repeat(4, auto);
-    padding-left: calc(var(--pad) + var(--photo-w) + var(--split));
-  }
-  .is-h .production__head, .is-h .production .process, .is-h .production .process__step .process__panel { display: contents; }
-  .is-h .production .process__step .process__panel { visibility: visible; transition: none; }   /* the photos and texts hide themselves */
-  .is-h .production__head .eyebrow { grid-row: 1; margin: 0 0 var(--label-gap); }
-  .is-h .production .production__title { grid-row: 2; }
-  .is-h .production .production__more { grid-area: 3 / 1; align-self: start; justify-self: start; margin: clamp(16px, 2.6vh, 32px) 0 0; }
-  .is-h .production .process__step {
-    display: grid; grid-column: 1; grid-template-rows: var(--row) 0px; overflow: hidden;
-    transition: grid-template-rows .5s var(--wipe);
-  }
-  .is-h .production .process__step.is-active { grid-template-rows: var(--row) var(--desc-h); }
-  .is-h .production .process__step:nth-child(1) { grid-row: 5; }
-  .is-h .production .process__step:nth-child(2) { grid-row: 6; }
-  .is-h .production .process__step:nth-child(3) { grid-row: 7; }
-  .is-h .production .process__step:nth-child(4) { grid-row: 8; }
-  .is-h .production .process__head { padding: 0; gap: 20px; }
-  .is-h .production .process__step.is-active .process__head { border-bottom-color: var(--line); box-shadow: none; }
-  .is-h .production .process__title { font-weight: 400; color: var(--fg-2); transition: color .3s ease; }
-  .is-h .production .process__head:hover .process__title { color: var(--fg); }
-  .is-h .production .process__step.is-active .process__title { font-weight: 600; color: var(--fg); }
-  /* the step text, under its title (past the number) */
-  .is-h .production .process__step .process__text {
-    min-height: 0; height: auto; max-width: none; margin: 0; padding: var(--desc-pad) 0 var(--desc-pad) 50px;
-    font-size: var(--pt); line-height: 1.55; text-wrap: pretty; opacity: 0; transition: opacity .25s ease;
-  }
-  .is-h .production .process__step.is-active .process__text { opacity: 1; transition: opacity .45s ease .15s; }
-  /* the gold line under the active step's title: one element, moved by main.js */
-  .is-h .production .process__marker {
-    display: block; position: relative; z-index: 1; grid-area: 5 / 1; align-self: start; height: 2px; background: var(--gold);   /* shares the first row's cell */
-    transform: translateY(calc(var(--row) - 2px)); transition: transform .7s var(--wipe); pointer-events: none;
-  }
-  /* the photos, stacked: the active one on top and open; the others closed from the top, so each opens bottom → top */
-  .is-h .production .process__step .process__media {
-    position: absolute; top: var(--top); bottom: var(--bottom); left: var(--pad); width: var(--photo-w); height: auto;
-    z-index: 1; overflow: hidden; clip-path: inset(100% 0 0 0);
-    transition: clip-path 0s .7s, opacity .6s ease, transform .6s ease;   /* closes only once the next has covered it */
-  }
-  .is-h .production .process__step.is-active .process__media {
-    z-index: 2; clip-path: inset(0 0 0 0); transition: clip-path .7s var(--wipe), opacity .6s ease, transform .6s ease;
-  }
-  .is-h .production .process__media img { transform: scale(1.06); transition: transform 0s .7s; }
-  .is-h .production .process__step.is-active .process__media img { transform: none; transition: transform .9s cubic-bezier(.33, 1, .68, 1); }
-  /* a light shade at the bottom of the photo, for the counter */
-  .is-h .production .process__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--shade) / .45), rgb(var(--shade) / 0) 32%); }
-  .is-h .production .process__count {
-    position: absolute; z-index: 3; top: auto; right: auto; left: calc(var(--pad) + clamp(20px, 2.2vw, 40px)); bottom: calc(var(--bottom) + clamp(16px, 2.6vh, 36px));
-    font: 500 var(--t-numcap)/1 var(--display); letter-spacing: .04em; color: var(--stone-75);
-  }
-  .is-h .production .process__count b {
-    display: inline-block; margin-right: .12em; font: 400 clamp(44px, 7vh, 88px)/.74 var(--display); letter-spacing: var(--track);
-    font-variant-numeric: lining-nums tabular-nums; color: var(--stone);
-  }
+  /* Production (vertical): the section is as tall as its content; the four cards share the content width (no
+     minimum: the page never scrolls sideways) and keep their 3:2 photos */
+  .is-v .panel.production { width: auto; }
+  .is-v .steps { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto auto; }
+  /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
+     the section grows instead, so the titles never run into the next section */
+  .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
 }
-/* narrower desktops: the step texts get three lines */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .is-h .panel.production { --desc-lines: 3; }
-}
-@media (min-width: 1024px) {
-  /* Partnership: on the photo, the label and heading sit in the upper part and the button in the lower part, both the
-     same distance in from the section's lines (never on the photo's bottom edge); on the right, the contact rows
-     start level with the heading (main.js: --contacts-line) and the footer ends level with the button's bottom
-     (main.js: --contacts-end, from the section's bottom), so both columns share one top and one bottom */
-  .is-v .contacts__cta-inner { --inset: clamp(24px, 9vh, 120px); top: calc(var(--top) + var(--inset)); bottom: calc(var(--bottom) + var(--inset)); }
-  .is-v .contacts__side { padding-bottom: calc(var(--contacts-end, var(--bottom)) - var(--bottom)); }
-  .is-v .foot { margin-top: clamp(32px, 5vh, 56px); }
-}
-.process__marker { display: none; }   /* vertical version only */
 
 
 /* =========================================================================
@@ -916,39 +839,56 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
 @media (max-width: 1023px) { .foot__versions { justify-self: start; } }
 
 @media (min-width: 1024px) {
-  /* Between the two lines. This screen follows the header menu instead of the column grid
-     (main.js measures --nav-left, the left edge of "Головна"):
-     · the photo: full height from the screen's left edge, at most half the screen, ending 48px before the menu;
-     · the contacts and footer: from the menu's left edge to the page margin (= the right edge of UA / EN). */
-  .contacts {
-    display: grid; grid-template-columns: repeat(12, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap);
-    min-height: 100vh; padding: var(--top) var(--pad) var(--bottom);
+  /* Two columns that share the section's top and bottom lines. This screen follows the header menu instead of the
+     column grid (main.js measures --nav-left, the left edge of "Головна"):
+     · the photo: from the screen's left edge, at most half the screen, ending 48px before the menu (but never narrower
+       than 36% of the screen, so the heading always fits — on narrow screens the menu then simply runs over the photo);
+       the label "Співпраця" on the top line, the heading under it, the button on the bottom line;
+     · the contacts and footer: from the menu's left edge to the page margin (= the right edge of UA / EN); the first
+       contact row starts on the top line, level with the label, and the footer ends on the bottom line.
+     The photo stretches to the section's height. The vertical version is as tall as the content of the taller column;
+     the horizontal page is one screen tall and the contact rows spread over the free height. */
+  .panel.contacts {
+    --cta-w: max(36vw, min(50vw, calc(var(--nav-left, 50vw) - 48px)));
+    display: grid; grid-template-columns: var(--cta-w) minmax(0, 1fr); grid-template-rows: auto;
+    --cta-gap: max(clamp(40px, 4vw, 80px), calc(var(--nav-left, 50vw) - var(--cta-w)));
+    column-gap: var(--cta-gap);
+    height: auto; min-height: 0; padding: 0 var(--pad) 0 0;
   }
-  .contacts__cta { position: absolute; top: 0; bottom: 0; left: 0; width: min(50%, calc(var(--nav-left, 50vw) - 48px)); min-height: 0; align-items: stretch; container-type: inline-size; }
-  /* inside the photo: label on the global top line, button on the global bottom line, left edge = the page margin */
-  .contacts__cta-inner { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: var(--top) 8cqi var(--bottom) var(--pad); }
-  .contacts__cta-inner .btn { margin-top: auto; }
-  /* like the hero: up to its size, and "нашим партнером?" (≈8.6em in Inter Tight 500) always fits the photo */
-  .contacts__title { font-size: clamp(30px, min(8.5vh, calc((92cqi - var(--pad)) / 8.8)), 112px); line-height: 1.05; }
+  .contacts__cta { position: relative; align-self: stretch; align-items: stretch; min-height: 0; container-type: inline-size; }
+  .contacts .contacts__cta-inner {   /* outranks the hero's photo-text placement */
+    position: relative; inset: auto; display: flex; flex-direction: column; align-items: flex-start; width: 100%;
+    padding: var(--top) 8cqi var(--bottom) var(--pad);
+  }
+  .contacts .contacts__cta-inner .btn { margin-top: auto; }
+  /* like the hero: up to its size, and "нашим партнером?" (≈8.6em in Inter Tight 500) always fits the photo; the
+     button keeps at least this gap under the heading */
+  .contacts .contacts__title { margin: 2.6vh 0 clamp(32px, 6vh, 72px); font-size: clamp(30px, min(8.5vh, calc((92cqi - var(--pad)) / 8.8)), 112px); line-height: 1.05; }
 
-  .contacts__side { grid-column: 1 / -1; align-self: stretch; margin-left: calc(var(--nav-left, 50vw) - var(--pad)); padding: calc(var(--contacts-line, var(--content)) - var(--top)) 0 0; }   /* the first row's top line level with the heading's cap top (main.js) */
-  /* rows from the content line, the footer on the bottom line: compact enough to fit between them */
-  /* the four rows share the height from the content line to the footer (each at least its padding), so they spread
-     over the column on any screen height; the value scales with the height, the small label is centred on it */
-  .contact-rows { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .contact-row { flex: 1; grid-template-columns: minmax(90px, 20%) minmax(0, 1fr); align-items: center; padding: clamp(8px, 1.3vh, 44px) 0; }
+  .contacts__side { display: flex; flex-direction: column; align-self: stretch; min-height: 0; padding: var(--top) 0 var(--bottom); }
+  /* the four rows share the height down to the footer (each at least its padding), so they spread over the column */
+  .contact-rows { flex: 1 0 auto; display: flex; flex-direction: column; }
+  .contact-row { flex: 1 0 auto; grid-template-columns: minmax(90px, 20%) minmax(0, 1fr); align-items: center; padding: clamp(12px, 2vh, 32px) 0; }
   .contact-row dt { padding-top: 0; font-size: var(--t-caps); }
-  .contact-row dd { font-size: clamp(24px, 3.1vh, 34px); line-height: 1.15; }
+  .contact-row dd { font-size: clamp(22px, 3.1vh, 34px); line-height: 1.15; }
 
-  .foot { margin-top: clamp(40px, 7.4vh, 80px); padding-top: 0; grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "ver ver" "lang copy"; align-items: end; row-gap: 1.6vh; }
-  .foot__nav { display: flex; flex-wrap: wrap; gap: 0 clamp(20px, 2vw, 40px); }   /* the menu in one row */
+  /* footer: two rows in the markup's order — the menu with UA / EN on its right, then the copyright with the version
+     links on the right. A flex row that wraps: the menu takes the line (it wraps its own items when the column is
+     narrow), so the copyright always starts a new line; nothing is placed on top of anything else. */
+  .foot {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    gap: clamp(12px, 2vh, 24px) 32px; margin-top: clamp(32px, 6vh, 72px); padding-top: 0;
+  }
+  .foot__nav { flex: 1 1 calc(100% - 160px); display: flex; flex-wrap: wrap; gap: 0 clamp(18px, 1.8vw, 36px); }
   .foot__nav a { padding: .5vh 0; font-size: clamp(13px, 1.45vh, 16px); }
-  /* UA / EN and the copyright: no extra button height, so their text (not a taller box) ends on the bottom line, level with the button */
-  .foot .lang { line-height: 1; }
-  .foot .lang__btn { min-height: 0; }
-  .foot__copy { align-self: end; text-align: right; line-height: 1; }
+  .foot .lang { flex: none; line-height: 1; }
+  .foot .lang__btn { min-height: 32px; }
+  .foot .lang__btn:last-child { padding-right: 0; }   /* "EN" ends on the right margin */
+  .foot__copy { line-height: 1.4; }
+  .foot__versions { margin-left: auto; text-align: right; line-height: 1.4; }
 
-  .is-h .contacts { width: 100vw; height: 100vh; }
+  html.is-h .panel.contacts { column-gap: var(--cta-gap); padding: 0 var(--pad) 0 0; }   /* outrank the shared section frame */
+  html.is-h:not(.is-v) .panel.contacts { width: 100vw; height: 100vh; grid-template-rows: minmax(0, 1fr); }   /* horizontal page: one screen */
 }
 
 /* ---------- Contact form popup (native <dialog>) ---------- */
@@ -989,7 +929,7 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .export .export__title, .contacts .contacts__title { margin: 0; }
   .hero .hero__lead, .about .about__body .text { margin: 28px 0 0; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
-  .products .cards, .production .process, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
+  .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
   .products .cards { gap: 64px; }
@@ -997,7 +937,6 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .card .card__title { margin-top: 12px; }
 
   /* rows: more air in each */
-  .process .process__head { padding: 32px 0; }
   .contacts .contact-row { padding: 32px 0; }
 
   /* buttons: the full content width, the arrow box on the left, the label centred in the rest */
@@ -1050,7 +989,7 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .logo { height: 64px; }
 
   /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */
-  .card .card__title, .process .process__title { font-size: 22px; font-weight: 500; }
+  .card .card__title, .step .step__title { font-size: 22px; font-weight: 500; }
   .card .card__meta, .contact-row dt, .tabs .tabs__tab { font-size: 12px; font-weight: 600; }
   .stat .stat__label { font-weight: 500; }
 
@@ -1066,23 +1005,3 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
 }
-
-/* =========================================================================
-   Production on phones, tablets and "reduce motion" desktops (html:not(.is-h)): one photo on top (the active step's,
-   the photos stacked in one cell and cross-faded), then the steps as an accordion with the open step's text under it.
-   The rows and panels are display: contents, so every photo, head and text sits on the list's own grid.
-   ========================================================================= */
-html:not(.is-h) .process { display: grid; grid-template-columns: minmax(0, 1fr); }
-html:not(.is-h) .process__step, html:not(.is-h) .process__step .process__panel { display: contents; }
-html:not(.is-h) .process__step .process__media { grid-area: 1 / 1; margin-bottom: 16px; opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility 0s .4s; }
-html:not(.is-h) .process__step.is-active .process__media { opacity: 1; visibility: visible; transition: opacity .4s ease; }
-html:not(.is-h) .process__step:nth-child(1) .process__head { grid-row: 2; }
-html:not(.is-h) .process__step:nth-child(2) .process__head { grid-row: 4; }
-html:not(.is-h) .process__step:nth-child(3) .process__head { grid-row: 6; }
-html:not(.is-h) .process__step:nth-child(4) .process__head { grid-row: 8; }
-html:not(.is-h) .process__step:nth-child(1) .process__text { grid-row: 3; }
-html:not(.is-h) .process__step:nth-child(2) .process__text { grid-row: 5; }
-html:not(.is-h) .process__step:nth-child(3) .process__text { grid-row: 7; }
-html:not(.is-h) .process__step:nth-child(4) .process__text { grid-row: 9; }
-html:not(.is-h) .process__step .process__text { display: none; margin: 0; padding: 16px 0 24px; }
-html:not(.is-h) .process__step.is-active .process__text { display: block; }
