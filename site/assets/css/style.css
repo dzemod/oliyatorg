@@ -628,11 +628,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    --split: the gap between a photo and the text beside it (About, Export, Production): 80px at 1920, ≈57px at 1366.
    ========================================================================= */
 @media (min-width: 1024px) {
-  html.is-v {
-    --vgap: calc(100vw * 140 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px;
+  /* both desktop versions (the photo-beside-text sections and Production below use them) */
+  html.is-h {
     --split: clamp(48px, calc(100vw * 80 / 1920), 80px);
     --half: calc(6 * var(--col) + 5 * var(--gap));   /* half the content width: columns 1–6 or 7–12 */
   }
+  html.is-v { --vgap: calc(100vw * 140 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px; }
+
+  /* Numbers (vertical only): the figures right under the heading (≈90px), and the section only as tall as its content */
+  html.is-v .panel.numbers { height: auto; }   /* outranks .is-v .panel:not(.hero) */
+  .is-v .numbers__inner { position: relative; inset: auto; }
+  .is-v .numbers .numbers__head .h2 { height: auto; }
+  .is-v .numbers .stats { flex: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .is-v .numbers .stat { justify-content: flex-start; }
   .is-v .scroller { height: auto; overflow: visible; }
   .is-v .track { display: block; width: auto; height: auto; will-change: auto; }   /* no transform: Production pins with position: fixed */
   .is-v .panel:not(.hero) { height: calc(100vh - var(--header-h)); }
@@ -658,10 +666,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .export .export__body { margin-top: 48px; padding-top: 0; }
   .is-v .features { width: 100%; gap: 40px; }
   .is-v .feature__text { max-width: 36em; }
-  /* the text column stays on column 7 (the page's centre line); the photo grows to end --split before it */
-  .is-v :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
+  /* About, Export (both desktop versions): the text column stays on column 7 (the page's centre line); the photo
+     grows to end --split before it */
+  .is-h :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
 
-  /* Production — pinned while the scroll walks through the four steps (main.js). Left: the active step's photo, 55% of
+  /* Production (both desktop versions, so .is-h) — pinned while the scroll walks through the four steps (main.js: the
+     vertical pin, or the horizontal track's hold). Left: the active step's photo, 55% of
      the content width, top line to bottom line, with the counter on its bottom. Right (--split after it): label,
      heading, button, and the step list down to the bottom line; the active step opens its text under it (accordion).
      The header, the list, its rows' panels are display: contents, so heads and texts sit on the section's grid and
@@ -669,7 +679,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
      Step change: the new photo wipes in from the bottom over the old one (clip-path, 0.7s power2.inOut) while its
      image settles from 106%; the old one stays under it until the wipe ends. One gold line moves to the new step
      (main.js sets its translateY). Every text keeps the same reserved height, so the list never changes height. */
-  .is-v .panel.production {
+  .is-h .panel.production {
     --photo-w: calc((100vw - 2 * var(--pad)) * .55);
     --row: clamp(40px, 6.2vh, 72px);
     --pt: var(--t-body);
@@ -680,61 +690,61 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     grid-template-rows: auto auto auto minmax(0, 1fr) repeat(4, auto);
     padding-left: calc(var(--pad) + var(--photo-w) + var(--split));
   }
-  .is-v .production__head, .is-v .production .process, .is-v .production .process__step .process__panel { display: contents; }
-  .is-v .production .process__step .process__panel { visibility: visible; transition: none; }   /* the photos and texts hide themselves */
-  .is-v .production__head .eyebrow { grid-row: 1; margin: 0 0 var(--label-gap); }
-  .is-v .production .production__title { grid-row: 2; }
-  .is-v .production .production__more { grid-area: 3 / 1; align-self: start; justify-self: start; margin: clamp(16px, 2.6vh, 32px) 0 0; }
-  .is-v .production .process__step {
+  .is-h .production__head, .is-h .production .process, .is-h .production .process__step .process__panel { display: contents; }
+  .is-h .production .process__step .process__panel { visibility: visible; transition: none; }   /* the photos and texts hide themselves */
+  .is-h .production__head .eyebrow { grid-row: 1; margin: 0 0 var(--label-gap); }
+  .is-h .production .production__title { grid-row: 2; }
+  .is-h .production .production__more { grid-area: 3 / 1; align-self: start; justify-self: start; margin: clamp(16px, 2.6vh, 32px) 0 0; }
+  .is-h .production .process__step {
     display: grid; grid-column: 1; grid-template-rows: var(--row) 0px; overflow: hidden;
     transition: grid-template-rows .5s var(--wipe);
   }
-  .is-v .production .process__step.is-active { grid-template-rows: var(--row) var(--desc-h); }
-  .is-v .production .process__step:nth-child(1) { grid-row: 5; }
-  .is-v .production .process__step:nth-child(2) { grid-row: 6; }
-  .is-v .production .process__step:nth-child(3) { grid-row: 7; }
-  .is-v .production .process__step:nth-child(4) { grid-row: 8; }
-  .is-v .production .process__head { padding: 0; gap: 20px; }
-  .is-v .production .process__step.is-active .process__head { border-bottom-color: var(--line); box-shadow: none; }
-  .is-v .production .process__title { font-weight: 400; color: var(--fg-2); transition: color .3s ease; }
-  .is-v .production .process__head:hover .process__title { color: var(--fg); }
-  .is-v .production .process__step.is-active .process__title { font-weight: 600; color: var(--fg); }
+  .is-h .production .process__step.is-active { grid-template-rows: var(--row) var(--desc-h); }
+  .is-h .production .process__step:nth-child(1) { grid-row: 5; }
+  .is-h .production .process__step:nth-child(2) { grid-row: 6; }
+  .is-h .production .process__step:nth-child(3) { grid-row: 7; }
+  .is-h .production .process__step:nth-child(4) { grid-row: 8; }
+  .is-h .production .process__head { padding: 0; gap: 20px; }
+  .is-h .production .process__step.is-active .process__head { border-bottom-color: var(--line); box-shadow: none; }
+  .is-h .production .process__title { font-weight: 400; color: var(--fg-2); transition: color .3s ease; }
+  .is-h .production .process__head:hover .process__title { color: var(--fg); }
+  .is-h .production .process__step.is-active .process__title { font-weight: 600; color: var(--fg); }
   /* the step text, under its title (past the number) */
-  .is-v .production .process__step .process__text {
+  .is-h .production .process__step .process__text {
     min-height: 0; height: auto; max-width: none; margin: 0; padding: var(--desc-pad) 0 var(--desc-pad) 50px;
     font-size: var(--pt); line-height: 1.55; text-wrap: pretty; opacity: 0; transition: opacity .25s ease;
   }
-  .is-v .production .process__step.is-active .process__text { opacity: 1; transition: opacity .45s ease .15s; }
+  .is-h .production .process__step.is-active .process__text { opacity: 1; transition: opacity .45s ease .15s; }
   /* the gold line under the active step's title: one element, moved by main.js */
-  .is-v .production .process__marker {
+  .is-h .production .process__marker {
     display: block; position: relative; z-index: 1; grid-area: 5 / 1; align-self: start; height: 2px; background: var(--gold);   /* shares the first row's cell */
     transform: translateY(calc(var(--row) - 2px)); transition: transform .7s var(--wipe); pointer-events: none;
   }
   /* the photos, stacked: the active one on top and open; the others closed from the top, so each opens bottom → top */
-  .is-v .production .process__step .process__media {
+  .is-h .production .process__step .process__media {
     position: absolute; top: var(--top); bottom: var(--bottom); left: var(--pad); width: var(--photo-w); height: auto;
     z-index: 1; overflow: hidden; clip-path: inset(100% 0 0 0);
     transition: clip-path 0s .7s, opacity .6s ease, transform .6s ease;   /* closes only once the next has covered it */
   }
-  .is-v .production .process__step.is-active .process__media {
+  .is-h .production .process__step.is-active .process__media {
     z-index: 2; clip-path: inset(0 0 0 0); transition: clip-path .7s var(--wipe), opacity .6s ease, transform .6s ease;
   }
-  .is-v .production .process__media img { transform: scale(1.06); transition: transform 0s .7s; }
-  .is-v .production .process__step.is-active .process__media img { transform: none; transition: transform .9s cubic-bezier(.33, 1, .68, 1); }
+  .is-h .production .process__media img { transform: scale(1.06); transition: transform 0s .7s; }
+  .is-h .production .process__step.is-active .process__media img { transform: none; transition: transform .9s cubic-bezier(.33, 1, .68, 1); }
   /* a light shade at the bottom of the photo, for the counter */
-  .is-v .production .process__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--shade) / .45), rgb(var(--shade) / 0) 32%); }
-  .is-v .production .process__count {
+  .is-h .production .process__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--shade) / .45), rgb(var(--shade) / 0) 32%); }
+  .is-h .production .process__count {
     position: absolute; z-index: 3; top: auto; right: auto; left: calc(var(--pad) + clamp(20px, 2.2vw, 40px)); bottom: calc(var(--bottom) + clamp(16px, 2.6vh, 36px));
     font: 500 var(--t-numcap)/1 var(--display); letter-spacing: .04em; color: var(--stone-75);
   }
-  .is-v .production .process__count b {
+  .is-h .production .process__count b {
     display: inline-block; margin-right: .12em; font: 400 clamp(44px, 7vh, 88px)/.74 var(--display); letter-spacing: var(--track);
     font-variant-numeric: lining-nums tabular-nums; color: var(--stone);
   }
 }
 /* narrower desktops: the step texts get three lines */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .is-v .panel.production { --desc-lines: 3; }
+  .is-h .panel.production { --desc-lines: 3; }
 }
 @media (min-width: 1024px) {
   /* Partnership: on the photo, the label and heading sit in the upper part and the button in the lower part, both the

@@ -168,11 +168,12 @@
   const production = $('#production');
   const stepsOf = $$('.process__step', production || document);
   const counterNum = $('.process__count b');
-  // vertical version: one gold line under the active step's title. Every row above the active one is closed, so that
+  const desktopSteps = horizontal || vertical;
+  // desktop (both versions): one gold line under the active step's title. Every row above the active one is closed, so that
   // title's bottom is (i + 1) row heights below the list's top — the line moves there (transform only, CSS transition)
   const marker = $('.process__marker', production || document);
   const placeMarker = () => {
-    if (vertical && marker && stepsOf.length) marker.style.transform = `translateY(${(activeStep + 1) * $('.process__head', stepsOf[0]).offsetHeight - 2}px)`;
+    if (desktopSteps && marker && stepsOf.length) marker.style.transform = `translateY(${(activeStep + 1) * $('.process__head', stepsOf[0]).offsetHeight - 2}px)`;
   };
   let activeStep = 0;
   const setStep = i => {
@@ -185,8 +186,8 @@
     placeMarker();
     if (counterNum) {
       counterNum.textContent = String(i + 1).padStart(2, '0');
-      // vertical version: the big number rises into place (compositor only)
-      if (vertical && !reduceMotion && counterNum.animate) {
+      // desktop: the number on the photo rises into place (compositor only)
+      if (desktopSteps && !reduceMotion && counterNum.animate) {
         counterNum.animate([{ opacity: 0, transform: 'translateY(.12em)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.22, .61, .36, 1)' });
       }
     }
@@ -202,6 +203,14 @@
   // Reload when crossing the desktop breakpoint so the right mode is built.
   const desktopMq = matchMedia('(min-width: 1024px)');
   desktopMq.addEventListener('change', () => { if (!reduceMotion) location.reload(); });
+
+  // Both desktop versions: the step list is display: contents (its rows sit on the section's grid), so it can't fade
+  // in itself — its parts do
+  const stepList = production && $('.process', production);
+  if ((horizontal || vertical) && stepList && stepList.hasAttribute('data-reveal')) {
+    stepList.removeAttribute('data-reveal');
+    $$('.process__head, .process__count, .process__media', stepList).forEach(el => el.setAttribute('data-reveal', ''));
+  }
 
   if (horizontal) {
     gsap.registerPlugin(ScrollTrigger);
@@ -243,6 +252,7 @@
         logo: mid(logoLink),
         nav: navItems.map(mid)
       };
+      placeMarker();   // the step rows' height follows the screen height
     }
     // scroll offset s → track x: straight up to Production, still while pinned, then on again
     const xAt = s => s <= geo.pre ? s : s <= geo.pre + geo.hold ? geo.pre : s - geo.hold;
@@ -347,12 +357,6 @@
     gsap.registerPlugin(ScrollTrigger);
     const header = $('#header');
     const step = () => Math.round(innerHeight * .5);
-    // the list is display: contents here (its rows sit on the section's grid), so it can't fade in itself: its parts do
-    const list = $('.process', production);
-    if (list && list.hasAttribute('data-reveal')) {
-      list.removeAttribute('data-reveal');
-      $$('.process__head, .process__count, .process__media', list).forEach(el => el.setAttribute('data-reveal', ''));
-    }
     const pin = ScrollTrigger.create({
       trigger: production,
       pin: true,
