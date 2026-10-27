@@ -688,44 +688,80 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-h:not(.is-v) .feature__title { margin: 0; font-size: clamp(17px, 2.22vh, 24px); }   /* 24px at 1920×1080 */
   html.is-h:not(.is-v) .feature__text { grid-column: 2; margin-top: 12px; font-size: clamp(16px, 1.76vh, 19px); max-width: none; }   /* 19px */
 
-  /* the dotted world map under the features: the column's width, the rest of the height down to the photo's bottom
-     line (its bottom on that line); on short screens it shrinks, and below 72px of room it is left out. The map keeps
-     its aspect ratio (container units), so the pins, placed in % over it, always sit on their regions. */
+
+  /* horizontal: the map takes the full text column (from the label's left edge to the right margin) and the rest of
+     the height, its bottom on the photo's bottom line. Its box may be from 1.9 : 1 to 3.2 : 1 — the world inside
+     covers it (only the polar edges get cropped, never Ukraine or Australia); on a lower box the map gets narrower
+     instead, and below 80px of room it is left out. */
   html.is-h:not(.is-v) .export__map {
-    display: flex; align-items: flex-end; flex: 1; min-height: 0; width: var(--feat-w); margin-top: clamp(24px, 4.5vh, 48px);
-    container-type: size;
+    display: flex; align-items: flex-end; flex: 1; min-height: 0; align-self: stretch; margin-top: clamp(24px, 4.5vh, 48px);
+    container: exmap / size;
   }
+  html.is-h:not(.is-v) .map { --route-w: .25; width: min(100cqw, 100cqh * 3.2); height: min(100cqh, 100cqw / 1.9); aspect-ratio: auto; }
+  /* vertical version: the full text column under the features; the block (and the photo beside it) grows to fit */
+  .is-v .export__map { margin-top: 56px; }
+  /* the horizontal box may crop the top edge, so Ukraine's label sits right of its dot there */
+  html.is-h:not(.is-v) .map__pin--home > .map__label { left: calc(100% - 4px); right: auto; top: 50%; bottom: auto; transform: translateY(-50%); }
+  .is-v .map { --route-w: .3; aspect-ratio: 2.3; }
 }
-/* the map (built by tools/build_export_map.mjs): low-contrast graphite land dots, thin gold routes from Ukraine and
-   pulsing gold pins with labels on hover. Horizontal page only — everywhere else it is not shown at all. */
-.export__map { display: none; }
-.map { position: relative; width: min(100cqw, 100cqh * var(--ar)); }
-.map__svg { display: block; width: 100%; height: auto; overflow: visible; }
-.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .2; stroke-width: 3.2; stroke-linecap: round; }
-.map__route { fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .85; }
-/* pins: a 24px hit area around an 8px gold dot; the halo pulses (transform + opacity only), one after another */
+@container exmap (max-height: 80px) { .map { display: none; } }
+
+/* =========================================================================
+   Export map (built by tools/build_export_map.mjs) — every version. An equirectangular dotted world (≈2.1 : 1):
+   low-contrast graphite land dots, thin gold arcs from Ukraine to the seven supply regions, gold pins. The frame
+   covers the .map box like a photo (object-fit: cover, done with container units), so any box shape works and the
+   pins, placed in % of the frame, stay on their regions. Labels: Ukraine always; the regions on hover (desktop),
+   always on phones and tablets. Motion (main.js adds .in when the map enters the view): the arcs draw in one by one,
+   each pin appears as its arc arrives; on desktop the pins then pulse, slowly and staggered, while the map is on
+   screen (.is-live). Reduced motion: the static map.
+   ========================================================================= */
+.export__map { margin-top: 48px; }
+.map { position: relative; overflow: hidden; width: 100%; aspect-ratio: 2.11; container: map / size; }
+/* centred across; down the crop is weighted 30 / 70, so a low box loses Antarctica and the southern ocean first, not
+   Canada and Russia */
+.map__frame { position: absolute; left: 50%; top: 0; width: max(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar); transform: translate(-50%, calc((100cqh - 100%) * .3)); }
+.map__svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.map__land { fill: none; stroke: var(--graphite); stroke-opacity: .2; stroke-width: .56; stroke-linecap: round; }
+.map__land--polar { stroke-opacity: .1; }
+/* the arcs: their width is in map units (one grid step), so each layout sets it for ≈1.2px on screen; a scaling stroke
+   keeps the dash maths in pathLength units, which the draw-in needs */
+.map__route { fill: none; stroke: var(--gold); stroke-width: var(--route-w, .5); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+/* pins: a 24px hit area around an 8px gold dot; the halo pulses (transform + opacity only) */
 .map__pin { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; }
 .map__pin::before, .map__pin::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--gold); }
 .map__pin::after { opacity: 0; animation: map-pulse 2.5s cubic-bezier(.33, 1, .68, 1) calc(var(--k, 0) * .36s) infinite; }
-.export:not(.is-live) .map__pin::after { animation-play-state: paused; }   /* main.js: only while the section is on screen */
+.map:not(.is-live) .map__pin::after { animation-play-state: paused; }
 @keyframes map-pulse { 0% { opacity: .55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } }
-/* Ukraine, where every route starts: a darker, still dot */
-.map__pin--home::before { inset: 7px; background: var(--gold-ink); box-shadow: 0 0 0 2px var(--bg); }
+/* Ukraine, where every arc starts: a bigger gold dot with a soft glow, never pulsing */
+.map__pin--home { z-index: 1; }
+.map__pin--home::before { inset: 6px; box-shadow: 0 0 0 4px rgb(184 145 58 / .2), 0 0 14px 4px rgb(184 145 58 / .35); }
 .map__pin--home::after { display: none; }
+/* labels: data-pos puts each one where it never covers a neighbour (t / b / l / r of its dot) */
 .map__label {
-  position: absolute; left: 50%; bottom: calc(100% - 2px); padding: 5px 9px; white-space: nowrap;
-  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: var(--fg);
+  position: absolute; padding: 5px 8px; white-space: nowrap; pointer-events: none;
+  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: var(--fg);
   background: var(--stone); border: 1px solid var(--line);
-  opacity: 0; transform: translate(-50%, 4px); transition: opacity .25s ease, transform .25s ease; pointer-events: none;
+  opacity: 0; transition: opacity .25s ease;
 }
-.map__pin:hover .map__label { opacity: 1; transform: translate(-50%, 0); }
-.map__pin:hover { z-index: 1; }
-@container (max-height: 72px) { .map { display: none; } }
-/* motion: when the section plays (.in), the routes draw in one by one, then each pin appears as its route arrives */
-.fade .map__route { transition: stroke-dashoffset 1.3s cubic-bezier(.65, 0, .35, 1) calc(.5s + var(--k) * .28s); }
-.fade .map__pin { transition: opacity .5s ease calc(1.5s + var(--k, -1) * .28s); }
-.fade .panel.export:not(.in) .map__route { stroke-dashoffset: 1; }
-.fade .panel.export:not(.in) .map__pin { opacity: 0; }
+[data-pos="t"] > .map__label { left: 50%; bottom: calc(100% - 4px); transform: translateX(-50%); }
+[data-pos="b"] > .map__label { left: 50%; top: calc(100% - 4px); transform: translateX(-50%); }
+[data-pos="l"] > .map__label { right: calc(100% - 4px); top: 50%; transform: translateY(-50%); }
+[data-pos="r"] > .map__label { left: calc(100% - 4px); top: 50%; transform: translateY(-50%); }
+.map__pin:hover { z-index: 2; }
+.map__pin:hover > .map__label, .map__pin--home > .map__label { opacity: 1; }
+/* phones and tablets: every label shows (small), no endless pulse */
+@media (max-width: 1023px) {
+  .map { aspect-ratio: 1.75; }   /* zoomed in a little: only the polar edges and the ocean at the sides are cropped */
+  .map__label { opacity: 1; padding: 3px 5px; font-size: 9px; letter-spacing: .08em; }
+  .map__pin::before { inset: 9px; }
+  .map__pin--home::before { inset: 7px; }
+  .map__pin::after { display: none; }
+}
+/* motion */
+.fade .map__route { transition: stroke-dashoffset 1.3s cubic-bezier(.65, 0, .35, 1) calc(.3s + var(--k) * .28s); }
+.fade .map__pin:not(.map__pin--home) { transition: opacity .5s ease calc(1.3s + var(--k) * .28s); }
+.fade .map:not(.in) .map__route { stroke-dashoffset: 1; }
+.fade .map:not(.in) .map__pin:not(.map__pin--home) { opacity: 0; }
 @media (min-width: 1024px) {
 
 }
