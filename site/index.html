@@ -306,10 +306,11 @@
         </ol>
       </section>
 
-      <!-- 6. ESG — a numbered accordion: label and heading, then four rows (photo · number · title, and in the open row
-           its text). The texts are the brief's ESG block (point 13), split into four rows. Row 01 is open; a click, a tap or
-           (desktop) a hover opens a row and closes the others (main.js). Closed rows show a thin 16:5 strip of the photo,
-           the open row the 4:3 photo. Photos: generated (tools/generate_image.mjs), no real plant. -->
+      <!-- 6. ESG — a compact accordion: label and heading, then four rows (photo · line icon · title, and in the open
+           row its text · a round +/× toggle). The texts are the brief's ESG block (point 13), split into four rows. Row 01
+           is open; scrolling opens the row at the middle of the screen, a click or tap opens any row (main.js). Closed rows
+           show a thin 16:5 strip of the photo, the open row the 4:3 photo. Photos: generated (tools/generate_image.mjs),
+           no real plant. -->
       <section class="panel esg" id="esg" data-tone="base" aria-labelledby="esg-title">
         <header class="esg__head">
           <p class="eyebrow" data-reveal><span data-i18n="esg.eyebrow">ESG</span></p>
@@ -321,9 +322,9 @@
             <figure class="esg-row__media" aria-hidden="true">
               <img src="assets/img/esg-solar-800.webp" srcset="assets/img/esg-solar-800.webp 800w, assets/img/esg-solar-1600.webp 1600w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1600" height="1200" loading="lazy" decoding="async">
             </figure>
-            <span class="esg-row__num" aria-hidden="true">01</span>
+            <span class="esg-row__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="14" r="5"/><path d="M14 2.5v3M14 22.5v3M2.5 14h3M22.5 14h3M5.87 5.87l2.12 2.12M22.13 5.87l-2.12 2.12M5.87 22.13l2.12-2.12M22.13 22.13l-2.12-2.12"/></svg></span>
             <div class="esg-row__content">
-              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-1" aria-expanded="true" aria-controls="esg-panel-1" data-i18n="esg.r1.title">Сонячна електростанція&nbsp;— 1,8&nbsp;мегавата</button></h3>
+              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-1" aria-expanded="true" aria-controls="esg-panel-1"><span class="esg-row__label" data-i18n="esg.r1.title">Сонячна електростанція&nbsp;— 1,8&nbsp;мегавата</span><span class="esg-row__toggle" aria-hidden="true"></span></button></h3>
               <div class="esg-row__panel" id="esg-panel-1" role="region" aria-labelledby="esg-btn-1">
                 <p class="esg-row__text" data-i18n="esg.r1.text">На&nbsp;підприємстві працює сонячна електростанція потужністю 1,8&nbsp;мегавата.</p>
               </div>
@@ -334,9 +335,9 @@
             <figure class="esg-row__media" aria-hidden="true">
               <img src="assets/img/esg-husk-800.webp" srcset="assets/img/esg-husk-800.webp 800w, assets/img/esg-husk-1600.webp 1600w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1600" height="1200" loading="lazy" decoding="async">
             </figure>
-            <span class="esg-row__num" aria-hidden="true">02</span>
+            <span class="esg-row__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5c5 4.5 6.5 11.5 0 21-6.5-9.5-5-16.5 0-21Z"/><path d="M14 9.5v10"/></svg></span>
             <div class="esg-row__content">
-              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-2" aria-expanded="false" aria-controls="esg-panel-2" data-i18n="esg.r2.title">Генератор на&nbsp;лушпинні соняшнику&nbsp;— 1,5&nbsp;мегавата</button></h3>
+              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-2" aria-expanded="false" aria-controls="esg-panel-2"><span class="esg-row__label" data-i18n="esg.r2.title">Генератор на&nbsp;лушпинні соняшнику&nbsp;— 1,5&nbsp;мегавата</span><span class="esg-row__toggle" aria-hidden="true"></span></button></h3>
               <div class="esg-row__panel" id="esg-panel-2" role="region" aria-labelledby="esg-btn-2" hidden>
                 <p class="esg-row__text" data-i18n="esg.r2.text">Генератор електроенергії потужністю 1,5&nbsp;мегавата працює на&nbsp;лушпинні соняшнику. Ми&nbsp;прагнемо мінімізувати використання викопних видів палива, зокрема природного газу.</p>
               </div>
@@ -346,9 +347,9 @@
             <figure class="esg-row__media" aria-hidden="true">
               <img src="assets/img/esg-island-800.webp" srcset="assets/img/esg-island-800.webp 800w, assets/img/esg-island-1600.webp 1600w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1600" height="1200" loading="lazy" decoding="async">
             </figure>
-            <span class="esg-row__num" aria-hidden="true">03</span>
+            <span class="esg-row__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3 6.5 16h7l-1 9 9-13h-7l1-9Z"/></svg></span>
             <div class="esg-row__content">
-              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-3" aria-expanded="false" aria-controls="esg-panel-3" data-i18n="esg.r3.title">Енергетичний острів</button></h3>
+              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-3" aria-expanded="false" aria-controls="esg-panel-3"><span class="esg-row__label" data-i18n="esg.r3.title">Енергетичний острів</span><span class="esg-row__toggle" aria-hidden="true"></span></button></h3>
               <div class="esg-row__panel" id="esg-panel-3" role="region" aria-labelledby="esg-btn-3" hidden>
                 <p class="esg-row__text" data-i18n="esg.r3.text">Компанія Оліяторг послідовно впроваджує принципи сталого розвитку та&nbsp;енергоефективності й&nbsp;надалі розвиває власну енергетичну інфраструктуру. Наша стратегічна мета —&nbsp;створення енергетичного острова, який забезпечить підприємству максимальну енергетичну незалежність.</p>
               </div>
@@ -358,9 +359,9 @@
             <figure class="esg-row__media" aria-hidden="true">
               <img src="assets/img/esg-community-800.webp" srcset="assets/img/esg-community-800.webp 800w, assets/img/esg-community-1600.webp 1600w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1600" height="1200" loading="lazy" decoding="async">
             </figure>
-            <span class="esg-row__num" aria-hidden="true">04</span>
+            <span class="esg-row__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="9.5" r="3.5"/><path d="M3.5 23c0-4 2.9-6.5 6.5-6.5s6.5 2.5 6.5 6.5"/><circle cx="19.5" cy="10.5" r="3"/><path d="M18.5 16.6c3.4-.3 6 2 6 6.4"/></svg></span>
             <div class="esg-row__content">
-              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-4" aria-expanded="false" aria-controls="esg-panel-4" data-i18n="esg.r4.title">Соціальна відповідальність</button></h3>
+              <h3 class="esg-row__heading"><button class="esg-row__btn" type="button" id="esg-btn-4" aria-expanded="false" aria-controls="esg-panel-4"><span class="esg-row__label" data-i18n="esg.r4.title">Соціальна відповідальність</span><span class="esg-row__toggle" aria-hidden="true"></span></button></h3>
               <div class="esg-row__panel" id="esg-panel-4" role="region" aria-labelledby="esg-btn-4" hidden>
                 <p class="esg-row__text" data-i18n="esg.r4.text">Ми віримо, що відповідальний бізнес —&nbsp;це не&nbsp;лише якісна продукція та&nbsp;ефективне виробництво, а&nbsp;й&nbsp;внесок у&nbsp;розвиток місцевої громади. Оліяторг підтримує спорт, культуру та&nbsp;місцеві ініціативи, сприяючи створенню можливостей для розвитку людей і&nbsp;зміцненню громади.</p>
               </div>

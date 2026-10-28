@@ -285,17 +285,19 @@
   });
 
   /* ---------- ESG accordion: one row open at a time ----------
-     A click / tap (or, on desktop, a short hover) opens a row and closes the others. The rows and the sections below
-     slide to their new places with a transform (FLIP: measure, change, invert, play), the photo opens with clip-path
-     and the text fades up — no animated layout properties. Hover waits for the pointer to move after each change, so
-     rows sliding under a still pointer never open themselves. */
+     ONE state: `current`, the open row's index. open(k) sets .is-open, aria-expanded and the panel's hidden on every row
+     from it, so photo, text, icon, toggle and button can never disagree. Rows open by scrolling (the row under the middle
+     of the screen, IntersectionObserver — no pinning, the page scrolls freely) or by a click / tap / Enter anywhere on
+     a row. The row being opened keeps its place on screen (the scroll position absorbs the rows above growing or
+     shrinking), and the rows and sections below slide to their new places with a transform (FLIP), the photo opens with
+     clip-path and the text fades up — no animated layout properties. Reduced motion: the same switch, instantly. */
   const accordion = $('[data-accordion]');
   if (accordion) {
     const rows = $$('[data-esg-row]', accordion);
     const sec = accordion.closest('.panel');
     const after = [];
     for (let el = sec.nextElementSibling; el; el = el.nextElementSibling) after.push(el);
-    let current = rows.findIndex(r => r.classList.contains('is-open'));
+    let current = -1, quietUntil = 0;
     const set = (r, on) => {
       r.classList.toggle('is-open', on);
       $('.esg-row__btn', r).setAttribute('aria-expanded', String(on));
@@ -303,12 +305,19 @@
     };
     const open = k => {
       if (k === current) return;
+      const first = current < 0;
       const moving = [...rows, ...after];
       const before = moving.map(el => el.getBoundingClientRect().top);
-      rows[k].classList.add('is-entering');
+      const anchor = before[k];
+      if (!reduceMotion && !first) rows[k].classList.add('is-entering');
       rows.forEach((r, i) => set(r, i === k));
       current = k;
-      if (reduceMotion) { rows[k].classList.remove('is-entering'); return; }
+      if (first) return;
+      // the opened row stays where it was: rows above it closing never pull it (and the page) away from the reader
+      const shift = rows[k].getBoundingClientRect().top - anchor;
+      if (shift) window.scrollBy({ top: shift, behavior: 'instant' });
+      quietUntil = performance.now() + 600;   // the scroll observer ignores the switch's own movement
+      if (reduceMotion) return;
       moving.forEach((el, i) => {
         const d = before[i] - el.getBoundingClientRect().top;
         if (!d) return;
@@ -325,24 +334,20 @@
         });
       }));
     };
-    rows.forEach((r, k) => r.addEventListener('click', () => open(k)));   // the whole row; the button gives keyboard access
-    // desktop hover: after a short pause, and only once the pointer has really moved since the last change
-    const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)');
-    let timer = 0, px = 0, py = 0, lockX = -1e4, lockY = -1e4;
-    accordion.addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; });
-    rows.forEach((r, k) => {
-      r.addEventListener('pointerenter', e => {
-        if (!fine.matches) return;
-        px = e.clientX; py = e.clientY;
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          if (Math.hypot(px - lockX, py - lockY) < 24) return;
-          lockX = px; lockY = py;
-          open(k);
-        }, 160);
-      });
-      r.addEventListener('pointerleave', () => clearTimeout(timer));
-    });
+    open(Math.max(0, rows.findIndex(r => r.classList.contains('is-open'))));   // row 01 when the section first appears
+    // the whole row is clickable; the button inside gives keyboard access (Enter / Space click it)
+    rows.forEach((r, k) => r.addEventListener('click', () => { open(k); quietUntil = performance.now() + 900; }));
+    // scrolling: whenever a row (or the section, after a jump) crosses the screen's middle line, the row closest to
+    // that line becomes the open one
+    if ('IntersectionObserver' in window) {
+      const mid = new IntersectionObserver(() => {
+        if (performance.now() < quietUntil) return;
+        const m = innerHeight / 2;
+        const dist = rows.map(r => { const b = r.getBoundingClientRect(); return b.top > m ? b.top - m : Math.max(0, m - b.bottom); });
+        open(dist.indexOf(Math.min(...dist)));
+      }, { rootMargin: '-50% 0px -50% 0px' });
+      [sec, ...rows].forEach(el => mid.observe(el));
+    }
   }
 
   /* ---------- Certificates slider (home): one card per step ----------

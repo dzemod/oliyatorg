@@ -297,31 +297,45 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* ESG — a numbered accordion. Phones and tablets: number + title per row; the open row adds its 4:3 photo (full
-   width) and its text. Desktop (below): photo · number · title / text on the 12-column grid. Dividers: 1px. */
+/* ESG — a compact accordion. Phones and tablets: line icon + title + round toggle on one line; the open row adds its
+   4:3 photo (full width) and its text. Desktop (below): photo · icon · title / text · toggle on the 12-column grid.
+   One state (main.js): the open row gets .is-open — photo, text, icon, toggle and aria-expanded all follow it. */
 .esg .esg__title { margin-bottom: 0; }
 .esg-list { margin-top: 56px; }
-.esg-row { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; padding: 22px 0; cursor: pointer;
+.esg-row { position: relative; display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 16px; padding: 24px 0; cursor: pointer;
   transition: transform .5s cubic-bezier(.33, 1, .68, 1); }   /* power2.out; main.js slides the rows (FLIP) */
-.esg-row + .esg-row::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: rgb(239 236 230 / .14); }
-.esg-row__num { grid-column: 1; grid-row: 1; font: 400 20px/1.3 var(--sans); font-variant-numeric: lining-nums tabular-nums; color: var(--text-muted); }
+.esg-row + .esg-row::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
+/* 28px line icons (stroke 1.5px), centred on the title's first 26px line */
+.esg-row__icon { grid-column: 1; grid-row: 1; margin-top: -1px; color: var(--accent); }
+.esg-row__icon svg { display: block; }
 .esg-row__content { display: contents; }
 .esg-row__heading { grid-column: 2; grid-row: 1; font: inherit; }
 .esg-row__btn {
-  display: block; width: 100%; text-align: left; font: 500 20px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase;
-  color: var(--text); transition: color .25s ease;
+  display: block; width: 100%; padding-right: 56px; text-align: left; font: 500 20px/1.3 var(--sans); letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text); cursor: pointer;
 }
-.esg-row__btn:hover, .esg-row:hover .esg-row__btn { color: var(--accent); }
-.esg-row.is-open .esg-row__btn { color: var(--text); }
+.esg-row__label { transition: color .25s ease; }
+.esg-row:hover .esg-row__label { color: var(--accent); }
+/* the toggle: a 40px circle at the row's right edge, centred on the title's first line; "+" turns 45° into a gold "×" */
+.esg-row__toggle {
+  position: absolute; top: 17px; right: 0; width: 40px; height: 40px; border: 1px solid var(--corner); border-radius: 50%;
+  color: var(--text); transition: transform .3s ease, color .3s ease, border-color .3s ease;
+}
+.esg-row__toggle::before, .esg-row__toggle::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 1.5px; margin: -.75px 0 0 -7px; background: currentColor;
+}
+.esg-row__toggle::after { transform: rotate(90deg); }
+.esg-row.is-open .esg-row__toggle { transform: rotate(45deg); color: var(--accent); border-color: var(--accent); }
 .esg-row__media { grid-column: 1 / -1; grid-row: 2; display: none; margin-top: 20px; aspect-ratio: 4 / 3; overflow: hidden; }
 .esg-row.is-open .esg-row__media { display: block; }
 .esg-row__media img { width: 100%; height: 100%; object-fit: cover; transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), opacity .5s cubic-bezier(.33, 1, .68, 1); }
 .esg-row__panel { grid-column: 1 / -1; grid-row: 3; }
-.esg-row__text { max-width: 560px; margin-top: 20px; font-size: 17px; line-height: 1.65; color: var(--text-body);
+.esg-row__text { max-width: 620px; margin-top: 16px; font-size: 17px; line-height: 1.65; color: var(--text-body);
   transition: opacity .5s cubic-bezier(.33, 1, .68, 1), transform .5s cubic-bezier(.33, 1, .68, 1); }
-/* the moment a row opens (main.js): its photo wipes open from the top and its text fades up */
+/* the moment a row opens (main.js): its photo wipes open from the top and its text fades up 12px */
 .esg-row.is-entering .esg-row__media img { clip-path: inset(0 0 100% 0); opacity: 0; transition: none; }
 .esg-row.is-entering .esg-row__text { opacity: 0; transform: translateY(12px); transition: none; }
+@media (max-width: 639px) { .panel.esg { padding-left: 24px; padding-right: 24px; } }
 
 /* Certificates — cards on --surface (the sections around them are --bg), no border: padding 32px; a 6px gold square +
    the tag (14px); the thumbnail (contained, on --surface-2, one fixed height); the title (20px, 2 lines at most) and the
@@ -778,15 +792,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
     .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
   }
-  /* ESG: the heading at most 8 columns; each row on the 12-column grid — photo 1–3, number 5, title / text 7–12; the
-     divider spans 5–12. Closed rows: a 16:5 strip of the photo; the open row: 4:3. The image is always drawn 4:3 and
+  /* ESG: the heading at most 8 columns; each row on the 12-column grid — photo 1–3, icon 4, title / text 5–11, toggle
+     12; the divider spans 4–12. Closed rows: a 16:5 strip of the photo; the open row: 4:3. The image is always drawn 4:3 and
      clip-path + transform show its middle strip, so opening and closing animate without changing the image's size;
      main.js slides the rows below (transform). */
   html.is-v .panel.esg { display: block; min-height: 0; }
   .is-v .esg .esg__title { min-height: 0; max-width: calc(8 * var(--col) + 7 * var(--gap)); margin: 0; }
   .is-v .esg-list { margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
-  .esg-row { grid-template-columns: repeat(12, var(--col)); column-gap: var(--gap); padding: 28px 0; }
-  .esg-row + .esg-row::before { left: calc(4 * (var(--col) + var(--gap))); }
+  .esg-row { grid-template-columns: repeat(12, var(--col)); column-gap: var(--gap); padding: 24px 0; }
+  .esg-row + .esg-row::before { left: calc(3 * (var(--col) + var(--gap))); }
   .esg-row__media {
     grid-column: 1 / 4; grid-row: 1 / span 2; display: block; position: relative; margin: 0; aspect-ratio: 16 / 5;
     overflow: visible; container-type: inline-size;
@@ -799,9 +813,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
   .esg-row.is-open .esg-row__media img { transform: none; clip-path: inset(0); }
   .esg-row.is-entering .esg-row__media img { transform: translateY(-21.875cqw); clip-path: inset(21.875cqw 0 21.875cqw 0); opacity: 1; }
-  .esg-row__num { grid-column: 5; grid-row: 1; }
-  .esg-row__content { display: block; grid-column: 7 / 13; grid-row: 1 / span 2; }
-  .esg-row__text { margin-top: 16px; }
+  .esg-row__icon { grid-column: 4; }
+  .esg-row__content { display: block; grid-column: 5 / 12; grid-row: 1 / span 2; }
+  .esg-row__btn { padding-right: 0; }
+  .esg-row__text { margin-top: 12px; }
 
   /* Certificates: as tall as their content; the thumbnails on the content line, like the ESG content */
   html.is-v .panel.certs, html.is-v .panel.page-hero { min-height: 0; }
