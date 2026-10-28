@@ -7,24 +7,24 @@
   <meta name="description" data-i18n-attr="content:meta.desc" content="Оліяторг — український виробник і експортер соняшникової олії. Натуральна переробка, подвійне пресування, принципи ESG.">
   <meta name="theme-color" content="#EFECE6">
   <!-- link previews (Telegram, Viber, Facebook, LinkedIn, X) -->
-  <!-- TODO: confirm with client — the final domain; then make og:image and og:url absolute (https://<domain>/…), which Facebook and LinkedIn require -->
+  <!-- TODO: confirm with client — the final domain; then move og:image / twitter:image to it (absolute URLs: Facebook and LinkedIn require them) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Оліяторг">
   <meta property="og:locale" content="uk_UA">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:title" content="Оліяторг — соняшникова олія з України">
   <meta property="og:description" content="Український виробник і експортер соняшникової олії та макухи, заснований у 1991 році. Подвійне пресування без хімічних розчинників.">
-  <meta property="og:image" content="assets/brand/og-image.jpg">
+  <meta property="og:image" content="https://oliyatorg.vercel.app/assets/brand/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Логотип Оліяторг на тлі соняшникового поля">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://oliyatorg.vercel.app/assets/brand/og-image.jpg">
   <link rel="icon" href="assets/brand/mark-01.svg" type="image/svg+xml">
   <link rel="icon" href="assets/brand/favicon-01-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/brand/favicon-01-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
 
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <!-- fonts are self-hosted Google Fonts (assets/fonts, @font-face in style.css): Inter Tight for headings and numbers,
        Inter for the rest. Every Cyrillic face is preloaded (≈7 KB each), so the first screen never swaps after it has painted -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-tight-cyrillic-400-normal.woff2" crossorigin>
@@ -35,19 +35,13 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=121">
+  <link rel="stylesheet" href="assets/css/style.css?v=122">
   <script>
-    // Decide the scroll mode before first paint. One page, two versions (for the review): index.html scrolls sideways
-    // on desktop, vertical.html (the same file, served by a rewrite in vercel.json) scrolls top to bottom.
-    // html.mode-v: the vertical version (any width; the footer link reads it).
-    // html.is-h: the designed desktop layout (wide screens without "reduce motion"); with html.is-v the sections stack
-    // vertically instead of on the sideways track. Phones and tablets are the same page in both versions.
+    // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
+    // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
     document.documentElement.classList.add('js');
-    var verticalVersion = /vertical/.test(location.pathname + location.search);
-    if (verticalVersion) document.documentElement.classList.add('mode-v');
     if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.classList.add('is-h');
-      if (verticalVersion) document.documentElement.classList.add('is-v');
+      document.documentElement.classList.add('is-h', 'is-v');
     }
     // animated elements wait hidden for main.js (html.anim); if it never takes over, show everything after 3 s
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -95,7 +89,7 @@
     </button>
   </header>
 
-  <!-- ============ HORIZONTAL TRACK (desktop) / normal flow (mobile) ============ -->
+  <!-- ============ PAGE ============ -->
   <div class="scroller" id="top">
     <main class="track" id="track">
 
@@ -176,7 +170,7 @@
       <!-- Numbers: from the client's website, oil tanks updated to 5 000 t by brief.txt -->
       <!-- TODO: confirm with client --> <!-- export countries / partners count, if they should replace two of these figures -->
       <section class="panel numbers" data-theme="dark" data-tone="photo" aria-labelledby="numbers-title">
-        <div class="numbers__bg" aria-hidden="true" data-parallax>
+        <div class="numbers__bg" aria-hidden="true">
           <picture>
             <source type="image/webp" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.webp 800w, assets/img/numbers-seeds-macro-1400.webp 1400w, assets/img/numbers-seeds-macro-2400.webp 2400w">
             <img src="assets/img/numbers-seeds-macro-1400.jpg" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.jpg 800w, assets/img/numbers-seeds-macro-1400.jpg 1400w, assets/img/numbers-seeds-macro-2400.jpg 2400w" alt="" width="1400" height="1050" loading="lazy" decoding="async">
@@ -251,8 +245,7 @@
 
       <!-- 5. PRODUCTION — the head row like Products (label and heading on the left, the button on the right on the heading's
            bottom line), then four separate step cards: a landscape photo, a small gold number, the title and the text.
-           Desktop: the four cards in one row (on narrow screens the horizontal page widens the section, so the cards keep
-           their size); phones: stacked. Motion: the cards play one after another (style.css, "Production cards"). -->
+           Desktop: the four cards in one row (a 2 × 2 grid below ≈1480px); phones: stacked. Motion: the cards play one after another (style.css, "Production cards"). -->
       <!-- Steps: from brief.txt (incoming control, two-stage mechanical pressing without solvents, oil + press cake for feed) and the website (certified lab, oil tanks) -->
       <!-- TODO: confirm with client --> <!-- exact production steps (cleaning / drying? stages of the pressing) -->
       <section class="panel production" id="production" data-tone="stone" aria-labelledby="production-title">
@@ -318,7 +311,7 @@
            and a big number with its caption at the bottom right. Phones: photo, heading, features, number. -->
       <section class="panel export" id="export" data-tone="light" aria-labelledby="export-title">
         <!-- the plant photo (not a port or trucks): no delivery method is confirmed -->
-        <figure class="export__photo" data-parallax data-reveal>
+        <figure class="export__photo" data-reveal>
           <picture>
             <source type="image/webp" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.webp 800w, assets/img/production-tanks-1400.webp 1400w, assets/img/production-tanks-2400.webp 2400w">
             <img src="assets/img/production-tanks-1400.jpg" sizes="(min-width: 1024px) 145vh, 170vw" srcset="assets/img/production-tanks-800.jpg 800w, assets/img/production-tanks-1400.jpg 1400w, assets/img/production-tanks-2400.jpg 2400w" alt="Елеватор і резервуари заводу серед соняшникових полів" data-i18n-attr="alt:alt.tanks" width="1400" height="781" loading="lazy" decoding="async">
@@ -398,8 +391,6 @@
               <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
             </div>
             <p class="foot__copy">© <span data-year>2026</span> <span data-i18n="footer.copy">Оліяторг. Усі права захищено</span></p>
-            <!-- REVIEW ONLY (remove after the client's choice): switch between the two versions of the page -->
-            <p class="foot__versions"><a href="./" data-version="h" data-i18n="footer.vH">Горизонтальна версія</a> / <a href="vertical.html" data-version="v" data-i18n="footer.vV">Вертикальна версія</a></p>
           </footer>
         </div>
       </section>
@@ -407,7 +398,7 @@
     </main>
   </div>
 
-  <!-- Contact form popup (outside the track, so the horizontal transform never affects it) -->
+  <!-- Contact form popup -->
   <dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
     <div class="modal__box">
       <button class="modal__close" type="button" data-modal-close aria-label="Закрити" data-i18n-attr="aria-label:ui.close">
@@ -443,17 +434,8 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=34"></script>
-  <!-- Desktop (horizontal page): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are
-       CSS transitions and the count-up is a few requestAnimationFrame steps, so no GSAP there.
-       Inserted in order (async = false). -->
-  <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=41';
-    (document.documentElement.classList.contains('is-h')
-      ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
-      : [mainSrc]).forEach(function (src) {
-      var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s);
-    });
-  </script>
+  <script src="assets/js/i18n.js?v=35"></script>
+  <!-- the fades are CSS transitions and the count-up is a few requestAnimationFrame steps: no animation library -->
+  <script src="assets/js/main.js?v=42"></script>
 </body>
 </html>

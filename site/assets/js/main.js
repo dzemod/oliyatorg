@@ -119,7 +119,6 @@
 
   /* ---------- Contacts screen: the photo ends before the header menu starts ---------- */
   // CSS reads --nav-left (desktop only) and keeps a gap, so no menu item ever meets the photo at any width.
-  // Runs before the scroll set-up below, so every later ScrollTrigger refresh measures the final layout.
   const navList = $('.nav__list');
   const fitContacts = () => root.style.setProperty('--nav-left', Math.round(navList.getBoundingClientRect().left) + 'px');
   fitContacts();
@@ -127,140 +126,14 @@
   document.addEventListener('langchange', fitContacts);
   document.fonts && document.fonts.ready.then(fitContacts);
 
-  /* ---------- Scroll mode ---------- */
-  const track = $('#track');
-  const scroller = $('.scroller');
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);   // the desktop page needs both (phones don't load GSAP)
-  // No GSAP (CDN blocked) → fall back to the normal vertical page.
-  if (root.classList.contains('is-h') && !hasGsap) root.classList.remove('is-h', 'is-v');
-  // html.is-h: the designed desktop layout; with html.is-v (vertical.html) it scrolls top to bottom, else sideways
+  /* ---------- Layout ---------- */
+  // html.is-v (set in <head>): the designed desktop layout, its sections stacked top to bottom
   const vertical = root.classList.contains('is-v');
-  const horizontal = root.classList.contains('is-h') && !vertical;
   const sections = $$('.panel');
-  let hTween = null;
-  // horizontal page: the sections' reveal plays, run from the track update when a section's left edge passes 70%
-  let pendingReveals = null;
-  let trackUpdate = () => {};
 
-  // Reload when crossing the desktop breakpoint so the right mode is built.
+  // Reload when crossing the desktop breakpoint so the right layout is built.
   const desktopMq = matchMedia('(min-width: 1024px)');
   desktopMq.addEventListener('change', () => { if (!reduceMotion) location.reload(); });
-
-  if (horizontal) {
-    gsap.registerPlugin(ScrollTrigger);
-    const distance = () => Math.max(0, track.scrollWidth - innerWidth);
-    const logoLink = $('.header__logo');
-    // dark zones inside a panel (the contacts photo) come first, so they win over their light panel
-    const panels = [...$$('.panel [data-theme="dark"]'), ...$$('.panel')];
-    // each menu item and the language switch get their own colour, so while a dark and a light section
-    // meet under the menu every item matches the section right behind it
-    const navItems = [...$$('.nav__list li'), $('.nav .lang')];
-    const frames = $$('[data-parallax]').map(fig => {
-      const img = $('img', fig);
-      if (!img) return null;
-      fig.classList.add('has-parallax');
-      return { fig, set: gsap.quickSetter(img, 'xPercent'), v: null };
-    }).filter(Boolean);
-
-    // Everything the track needs per frame is measured once per refresh (load, resize, fonts,
-    // language), so scrolling itself only does arithmetic on the scroll offset — no layout reads.
-    let geo = null;
-    function measure() {
-      const x0 = track.getBoundingClientRect().left;
-      const box = el => { const r = el.getBoundingClientRect(); return { l: r.left - x0, w: r.width }; };
-      const mid = el => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
-      geo = {
-        vw: innerWidth,
-        dist: distance(),
-        panels: panels.map(p => ({ ...box(p), dark: p.dataset.theme === 'dark' })),
-        secs: sections.map(box),
-        frames: frames.map(f => box(f.fig)),
-        logo: mid(logoLink),
-        nav: navItems.map(mid)
-      };
-    }
-    const darkAt = x => { const p = geo.panels.find(p => x >= p.l && x < p.l + p.w); return !!p && p.dark; };
-    let logoDark = null;
-    const navDark = navItems.map(() => null);
-    const setX = gsap.quickSetter(track, 'x', 'px');
-    const scroll = { s: 0 };   // the one scrubbed value: the scroll offset into the pinned page
-    measure();
-
-    function onTrack() {
-      if (!geo) return;
-      const x = -Math.min(scroll.s, geo.dist);
-      setX(x);
-      // section reveals: a section plays once its left edge passes 70% of the screen
-      if (pendingReveals) pendingReveals.forEach((play, k) => {
-        if (play && geo.secs[k].l + x < geo.vw * .7) { pendingReveals[k] = null; play(); }
-      });
-      // Gentle parallax inside photo frames: -4% when the frame enters on the right, +4% as it leaves on the left
-      frames.forEach((f, i) => {
-        const { l, w } = geo.frames[i];
-        const t = Math.min(1, Math.max(0, (geo.vw - l - x) / (geo.vw + w)));
-        const v = Math.round((-4 + 8 * t) * 100) / 100;
-        if (v !== f.v) { f.v = v; f.set(v); }
-      });
-      // Logo and each menu item switch to light colours over a dark area — instantly, only on change
-      const ld = darkAt(geo.logo - x);
-      if (ld !== logoDark) logoLink.classList.toggle('on-dark', logoDark = ld);
-      navItems.forEach((el, i) => {
-        const d = darkAt(geo.nav[i] - x);
-        if (d !== navDark[i]) el.classList.toggle('on-dark', navDark[i] = d);
-      });
-    }
-
-    // The only ScrollTrigger: pins the page and scrubs one value, the scroll offset, over the track's length; onTrack
-    // maps it to the track's x and the reveals. The tween's onUpdate also runs while the scrub glides on after the
-    // wheel stops, so no extra scroll listeners or tickers are needed.
-    hTween = gsap.to(scroll, {
-      s: () => geo.dist,
-      ease: 'none',
-      onUpdate: onTrack,
-      scrollTrigger: {
-        trigger: scroller,
-        pin: true,
-        scrub: 1,
-        end: () => { measure(); return '+=' + geo.dist; },   // re-measured on every refresh, before the tween reads geo
-        invalidateOnRefresh: true,
-        onRefresh: onTrack
-      }
-    });
-    onTrack();
-    trackUpdate = onTrack;
-
-    // Trackpad: horizontal swipe moves the page too. Passive, so the browser never waits for this
-    // handler before scrolling (sideways overscroll is off in CSS, nothing to prevent).
-    addEventListener('wheel', e => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && !e.ctrlKey) scrollBy(0, e.deltaX);
-    }, { passive: true });
-
-    // Keyboard: ← → move one step (↑ ↓ PageUp/Down/Space work natively)
-    addEventListener('keydown', e => {
-      if (e.target.closest('input, textarea, select, [contenteditable]')) return;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        scrollBy({ top: (e.key === 'ArrowRight' ? 1 : -1) * innerWidth * 0.6, behavior: 'smooth' });
-      }
-    });
-
-    // Tab focus: bring the focused element on screen through the page scroll (never let the
-    // browser scroll the clipped container sideways — that would shift the whole track)
-    scroller.addEventListener('scroll', () => { scroller.scrollLeft = 0; });
-    document.addEventListener('focusin', e => {
-      if (!track.contains(e.target)) return;
-      const r = e.target.getBoundingClientRect();
-      if (r.left >= 0 && r.right <= innerWidth) return;
-      const st = hTween.scrollTrigger;
-      const x = r.left - track.getBoundingClientRect().left;
-      scrollTo({ top: Math.max(st.start, Math.min(st.start + x - innerWidth * 0.3, st.end)), behavior: 'auto' });
-    });
-
-    // Fonts and images change widths → recalculate
-    document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
-    addEventListener('load', () => ScrollTrigger.refresh());
-    document.addEventListener('langchange', () => ScrollTrigger.refresh());
-  }
 
   /* ---------- Motion: one calm sequence per section, once ----------
      Every animated block carries [data-reveal] (the hero's: [data-hero]). The inline script in <head> adds html.anim
@@ -271,8 +144,7 @@
      (power2.out). The motion itself is a CSS transition of opacity (+ a 16px rise on desktop), so the compositor runs
      it and no script works per frame. The section's numbers count up from the same trigger. Everything is built once
      (never again on resize or language change) and each trigger is removed after it fires.
-       · desktop, horizontal page: the track update (onTrack) plays a section when its left edge passes 70%
-       · desktop, vertical version: an IntersectionObserver, with the same 16px rise
+       · desktop: an IntersectionObserver, with a 16px rise
        · phones and tablets: an IntersectionObserver; opacity only, no movement
        · hero: the same sequence on load · reduced motion: none of this, the final state at once */
   const animOn = root.classList.contains('anim');
@@ -310,8 +182,7 @@
   if (!root.classList.contains('is-h')) $$('.contacts__cta [data-reveal]').forEach(el => el.removeAttribute('data-reveal'));
   const restore =() => $$('.stat__num').forEach(el => { const s = el.parentNode.querySelector('.sr-only'); if (s) el.textContent = s.textContent; });
   try {
-    const canTrigger = horizontal ? hasGsap : 'IntersectionObserver' in window;
-    if (!animOn || reduceMotion || !canTrigger) endAnim();
+    if (!animOn || reduceMotion || !('IntersectionObserver' in window)) endAnim();
     else {
       // every section's order is read before anything is written: one layout, no thrashing
       const orders = sections.map(ordered);
@@ -321,18 +192,12 @@
         return () => { sec.classList.add('in'); if (count) count(.2); };
       });
       root.classList.add('fade');
-      if (horizontal) {
-        // played from the track update (onTrack), so the Production hold never shifts a trigger
-        pendingReveals = sections.map((sec, k) => sec.classList.contains('hero') ? null : plays[k]);
-        trackUpdate();   // a page reloaded mid-way plays what is already on screen
-      } else {
-        const io = new IntersectionObserver(entries => entries.forEach(en => {
-          if (!en.isIntersecting) return;
-          io.unobserve(en.target);
-          plays[sections.indexOf(en.target)]();
-        }), { rootMargin: '0px 0px -15% 0px' });
-        sections.forEach(sec => { if (!sec.classList.contains('hero')) io.observe(sec); });
-      }
+      const io = new IntersectionObserver(entries => entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        io.unobserve(en.target);
+        plays[sections.indexOf(en.target)]();
+      }), { rootMargin: '0px 0px -15% 0px' });
+      sections.forEach(sec => { if (!sec.classList.contains('hero')) io.observe(sec); });
       // Production cards (style.css): on desktop the section's .in plays all four, one after another; on phones and
       // tablets they are stacked, so each card plays on its own as it enters
       if (!root.classList.contains('is-h')) {
@@ -360,19 +225,12 @@
   const hero = $('.hero');
   if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
 
-  /* ---------- Anchor links (work in both modes) ---------- */
+  /* ---------- Anchor links ---------- */
   function scrollToTarget(id) {
     const target = id === 'top' ? null : document.getElementById(id);
     const behavior = reduceMotion ? 'auto' : 'smooth';
     if (!target) return scrollTo({ top: 0, behavior });
-    if (horizontal) {
-      const st = hTween.scrollTrigger;
-      const panel = target.closest('.panel') || target;
-      const x = panel.getBoundingClientRect().left - track.getBoundingClientRect().left;
-      scrollTo({ top: Math.min(st.start + x, st.end), behavior });
-    } else {
-      target.scrollIntoView({ behavior });
-    }
+    target.scrollIntoView({ behavior });
   }
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href^="#"]');
@@ -385,7 +243,7 @@
 
   /* ---------- Hero video: desktop only, never with "reduce motion" ---------- */
   const video = $('.hero__video');
-  if (video && (horizontal || vertical) && !reduceMotion) {
+  if (video && vertical && !reduceMotion) {
     // starts after the page has loaded, so it never competes with the first screen's poster, fonts and images
     const start = () => {
       video.src = innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
@@ -421,10 +279,9 @@
     });
   });
 
-  /* ---------- Header colours (vertical page) ---------- */
+  /* ---------- Header colours ---------- */
   // Light text over the hero, solid stone bar once the hero has scrolled under the header.
-  // (The horizontal page switches the logo and menu per section in onTrack above.)
-  if (!horizontal) {
+  {
     const header = $('#header');
     const hero = $('.hero');
     const paint = overHero => {
@@ -455,7 +312,7 @@
     $$('[data-modal-close]', modal).forEach(b => b.addEventListener('click', close));
     modal.addEventListener('click', e => { if (e.target === modal) close(); });
     modal.addEventListener('close', () => root.classList.remove('modal-open'));
-    // the page behind must not scroll (no overflow:hidden — hiding the scrollbar would shift the horizontal track)
+    // the page behind must not scroll (no overflow:hidden — hiding the scrollbar would shift the page sideways)
     const block = e => {
       if (!root.classList.contains('modal-open')) return;
       const box = e.target.closest('.modal__box, textarea'); // these scroll themselves (contained in CSS)

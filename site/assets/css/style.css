@@ -1,7 +1,7 @@
 /* =========================================================================
    Оліяторг — home page
-   Mobile-first vertical layout. The horizontal desktop layout lives under
-   html.is-h (set in <head> for ≥1024px without "reduce motion").
+   Mobile-first vertical layout. The designed desktop layout lives under
+   html.is-h.is-v (set in <head> for ≥1024px without "reduce motion").
    ========================================================================= */
 
 /* Self-hosted Google Fonts (the @fontsource copies of Inter Tight and Inter; Cyrillic + Latin subsets, only the weights
@@ -65,7 +65,7 @@
 
   /* ---------- Layout system: the ONE place for margins, grid and alignment lines ----------
      Phones/tablets: every section has the same top/bottom padding, so labels sit at the same
-     distance from the section top. Desktop (horizontal page): every section is a grid of --col
+     distance from the section top. Desktop: every section is a grid of --col
      columns; labels and first photos start on the --top line, the last photo / text / cards end on
      the --bottom line. Sections use only these variables — never their own offsets. */
   --pad: 20px;              /* left/right inner margin (also the header's) */
@@ -419,7 +419,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* ---------- Motion (main.js) ----------
    One marker for every animated block: [data-reveal] (the hero: [data-hero]). html.anim (set in <head>) hides them
-   only until main.js has given them their start states; without JS, GSAP or motion they are simply visible.
+   only until main.js has given them their start states; without JS or motion they are simply visible.
    main.js adds .rv (with its --d delay in the section's order) and html.fade, and .in to each section as it enters;
    the blocks then fade in with a CSS transition (compositor only): desktop with a 16px rise, phones and tablets opacity only. */
 .anim :is([data-hero], [data-reveal]) { visibility: hidden; }
@@ -442,7 +442,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 
 /* =========================================================================
-   Desktop — shared (horizontal + reduced-motion vertical)
+   Desktop — shared (designed layout + reduced-motion layout)
    ========================================================================= */
 @media (min-width: 1024px) {
   :root { --header-h: 88px; }
@@ -465,14 +465,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 
 /* =========================================================================
-   Desktop horizontal mode (html.is-h)
+   Desktop layout (html.is-h; stacked by html.is-v below)
    Every section is a grid of --col columns between the --top and --bottom lines (see :root).
    Blocks are placed by whole columns; photos run from the top line to the bottom line.
    ========================================================================= */
 @media (min-width: 1024px) {
   .is-h body { overflow: hidden auto; }
-  .is-h .scroller { height: 100vh; overflow: hidden; overflow: clip; }
-  .is-h .track { display: flex; flex-wrap: nowrap; height: 100vh; width: max-content; will-change: transform; }
   .is-h .panel { flex: none; height: 100vh; padding: 0; overflow: hidden; }
 
   /* the shared section frame: one row between the two lines, columns from the grid */
@@ -570,15 +568,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* 5. Production — like Products: the head row on top (label on the top line, heading; the button on the right, on
      the heading's bottom line, its right edge on the right margin), then the four step cards in one row on the grid,
-     equal width and height. A card is at least 315px wide (the descriptions keep two lines, see below): on narrow screens the horizontal page simply makes the
-     section wider than the screen, so the texts never get squeezed. The cards' parts share rows (subgrid), so every
+     equal width and height (the width: see "Production" below). The cards' parts share rows (subgrid), so every
      number, title and text starts on one line. The photo is 3:2 when there is room; on a short screen it gives up
      height first (minmax(0, auto)), so the texts always fit above the bottom line. */
-  .is-h .panel.production {   /* outranks the shared section grid */
-    --step-w: max(315px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
-    width: max(100vw, calc(2 * var(--pad) + 4 * var(--step-w) + 3 * var(--gap))); display: flex; flex-direction: column;
-  }
-  .is-h .production__head { align-self: flex-start; width: calc(100vw - 2 * var(--pad)); }   /* one screen wide, so the button ends on the first screen's right margin even when the section is wider */
+  .is-h .panel.production { display: flex; flex-direction: column; }   /* outranks the shared section grid */
+  .is-h .production__head { align-self: flex-start; width: calc(100vw - 2 * var(--pad)); }   /* the button ends on the right margin */
   .is-h .production__head .eyebrow { margin-bottom: 3.2vh; }
   .is-h .production .production__title { font-size: var(--h2-size); }
   .is-h .steps {
@@ -591,7 +585,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .step__title { margin-top: clamp(8px, 1.3vh, 14px); font-size: var(--t-sub); }
   /* every description exactly two lines: balanced, a fixed two-line height (the cards align), and on a narrow card
      (1366, 125% zoom) the size follows the card width (--step-w; 4.6% of it: the longest line, ≈41 characters, fits) a
-     little below the body size instead of wrapping to a third line; on a wide card (the vertical 2 × 2 grid) the
+     little below the body size instead of wrapping to a third line; on a wide card (the 2 × 2 grid) the
      measure is capped at 24em, so the text still runs on two lines */
   .is-h .step__text {
     margin-top: clamp(6px, 1vh, 12px); font-size: clamp(14px, calc(var(--step-w) * .046), var(--t-body)); line-height: 1.55;
@@ -599,7 +593,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
 
   /* 6. Export — like About: photo (cols 1–5) line to line; text column (cols 7–12): label and heading on their lines,
-     then the three features (see "Export (both desktop versions)" below) */
+     then the three features (see "Export" below) */
   .is-h .panel.export { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   .is-h .export__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; margin: 0; }
   .is-h .export__text { grid-column: 7 / 13; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
@@ -611,37 +605,29 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   :root { --h2-size: 42px; --content-gap: 4vh; }
   .is-h .text { font-size: 16px; }
   .is-h .section-head .text { display: none; }
-  /* everything still fits between the lines down to 1280×720 at 125% zoom (≈1024×576): tighter gaps in About (the
-     vertical version keeps its own) */
-  .is-h .about__body .btn { margin-top: 3vh; }
   .is-h .about__body .text { line-height: 1.6; }
-  .is-h .about__tabs { margin-top: 3vh; }
-  .is-h .tabs__panels { margin-top: 1.6vh; }
   .is-h .tabs__tab { min-height: 36px; }
 }
 /* =========================================================================
-   Vertical version (vertical.html → html.is-h.is-v): the same desktop sections and layout lines, stacked top to
-   bottom instead of on the sideways track. Each section fills at least the screen under the solid header (100vh
+   Desktop, stacked (html.is-h.is-v): the desktop sections and layout lines, stacked top to bottom. Each section fills at least the screen under the solid header (100vh
    minus the header). Every section keeps half the section gap above and below its content, so the gap between two
    sections' content is the same everywhere: 140px at 1920, scaled with the width (≈100px at 1366).
    --split: the gap between a photo and the text beside it (About, Export, Production): 80px at 1920, ≈57px at 1366.
    ========================================================================= */
 @media (min-width: 1024px) {
-  /* both desktop versions (the photo-beside-text sections and Production below use them) */
+  /* the photo-beside-text sections and Production below use them */
   html.is-h {
     --split: clamp(48px, calc(100vw * 80 / 1920), 80px);
     --half: calc(6 * var(--col) + 5 * var(--gap));   /* half the content width: columns 1–6 or 7–12 */
   }
   html.is-v { --vgap: calc(100vw * 140 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px; }
 
-  /* Numbers (vertical only): the figures right under the heading (≈90px), and the section only as tall as its content */
+  /* Numbers: the figures right under the heading (≈90px), and the section only as tall as its content */
   html.is-v .panel.numbers { height: auto; }   /* outranks .is-v .panel:not(.hero) */
   .is-v .numbers__inner { position: relative; inset: auto; }
   .is-v .numbers .numbers__head .h2 { height: auto; }
   .is-v .numbers .stats { flex: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
   .is-v .numbers .stat { justify-content: flex-start; }
-  .is-v .scroller { height: auto; overflow: visible; }
-  .is-v .track { display: block; width: auto; height: auto; will-change: auto; }
   /* at least the screen under the header, taller when the content needs it: never a fixed height */
   .is-v .panel:not(.hero) { height: auto; min-height: calc(100vh - var(--header-h)); }
   .is-v .panel.contacts:not(.hero) { min-height: 0; }   /* as tall as its content */
@@ -660,11 +646,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .about__tabs { margin-top: 40px; }
   .is-v .tabs__panels { margin-top: 16px; }
   /* Export: at least the screen under the header (photo and text column the same height); the features: see below */
-  /* About, Export (both desktop versions): the text column stays on column 7 (the page's centre line); the photo
+  /* About, Export: the text column stays on column 7 (the page's centre line); the photo
      grows to end --split before it */
   .is-h :is(.about__photo, .export__photo) { grid-column: 1 / 7; margin-right: calc(var(--split) - var(--gap)); }
 
-  /* Production (vertical): the section is as tall as its content; the four cards share the content width (no
+  /* Production: the section is as tall as its content; the four cards share the content width (no
      minimum: the page never scrolls sideways) and keep their 3:2 photos */
   .is-v .panel.production { width: auto; --step-w: calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4); }
   .is-v .steps { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto auto; }
@@ -675,10 +661,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
     .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
   }
-  /* Products (vertical): the photos fill the screen's free height, but never get shorter than this — on a short screen
+  /* Products: the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
-  /* Export (both desktop versions): three features (geography, partnership, quality) in one group under the heading —
+  /* Export: three features (geography, partnership, quality) in one group under the heading —
      ≈60px under it and ≈56px apart at 1080 (both follow the screen height). Each feature: the icon left of the title, centred on
      it, and the description 12px under the title, in the title's column, one or two lines. The sizes follow the
      screen height, so the group fills the column down to about the photo's bottom line on any screen. */
@@ -702,12 +688,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .hero__video { display: none; }
 }
 
-/* ---------- Added: parallax frames + per-element header colours (horizontal) ---------- */
-.has-parallax { overflow: hidden; }
-/* own layer: moving it never repaints the long track around it */
-.has-parallax img { width: 108%; max-width: none; margin-left: -4%; will-change: transform; }
-/* the horizontal page colours the logo and each menu item on its own (main.js) */
-.header__logo.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { color: var(--stone); }
+/* ---------- Header over the hero (main.js sets .on-dark) ---------- */
 @media (min-width: 1024px) { .header.on-dark { color: var(--stone); } }
 
 
@@ -757,16 +738,13 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* menu highlight: active/hovered item and active language turn gold —
    dark gold on stone, light gold over the hero video, photos and olive blocks */
 .header { --nav-accent: var(--gold-ink); }
-.header.on-dark, .nav__list li.on-dark, .nav .lang.on-dark { --nav-accent: var(--gold-light); }
+.header.on-dark { --nav-accent: var(--gold-light); }
 @media (max-width: 1023px) {
-  .nav, .nav .on-dark { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
+  .nav { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
 }
 .nav__list a, .nav .lang__btn { transition: color .2s ease; }
 .nav__list a[href]:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
 .nav .lang__btn[aria-pressed="true"], .header__lang .lang__btn[aria-pressed="true"] { color: var(--nav-accent); }
-
-/* sideways trackpad swipes scroll the page instead of triggering browser back/forward */
-.is-h, .is-h body { overscroll-behavior-x: none; }
 
 /* =========================================================================
    Buttons — one style everywhere, light and dark backgrounds alike: filled light soft gold with dark graphite text
@@ -833,7 +811,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contact-row__cta:hover svg { transform: translateX(.18em); }
 
 /* footer: menu in two columns, language, copyright (the header logo is the only logo on this screen) */
-.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy" "ver"; gap: 24px; margin-top: 44px; align-items: start; }
+.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
 .foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
 .foot__nav a[href]:hover { color: var(--hover); }
@@ -844,12 +822,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .foot .lang__btn { min-width: 0; padding: 0 10px; }
 .foot .lang__btn:first-child { padding-left: 0; }
 .foot__copy { grid-area: copy; font-size: 13px; color: var(--fg-2); }
-/* REVIEW ONLY: the switch between the horizontal and the vertical version (remove with its markup after the choice) */
-.foot__versions { grid-area: ver; justify-self: end; font-size: 12px; line-height: 1; color: var(--fg-2); opacity: .7; }
-.foot__versions a { transition: color .2s ease; }
-.foot__versions a:hover { color: var(--hover); }
-html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [data-version="v"] { color: var(--fg); }
-@media (max-width: 1023px) { .foot__versions { justify-self: start; } }
 
 @media (min-width: 1024px) {
   /* Two columns that share the section's top and bottom lines. This screen follows the header menu instead of the
@@ -859,8 +831,7 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
        the label "Співпраця" on the top line, the heading under it, the button on the bottom line;
      · the contacts and footer: from the menu's left edge to the page margin (= the right edge of UA / EN); the first
        contact row starts on the top line, level with the label, and the footer ends on the bottom line.
-     The photo stretches to the section's height. The vertical version is as tall as the content of the taller column;
-     the horizontal page is one screen tall and the contact rows spread over the free height. */
+     The photo stretches to the section's height. The section is as tall as the content of the taller column. */
   .panel.contacts {
     --cta-w: max(36vw, min(50vw, calc(var(--nav-left, 50vw) - 48px)));
     display: grid; grid-template-columns: var(--cta-w) minmax(0, 1fr); grid-template-rows: auto;
@@ -885,8 +856,7 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .contact-row dt { padding-top: 0; font-size: var(--t-caps); }
   .contact-row dd { font-size: clamp(22px, 3.1vh, 34px); line-height: 1.15; }
 
-  /* footer: two rows in the markup's order — the menu with UA / EN on its right, then the copyright with the version
-     links on the right. A flex row that wraps: the menu takes the line (it wraps its own items when the column is
+  /* footer: two rows in the markup's order — the menu with UA / EN on its right, then the copyright. A flex row that wraps: the menu takes the line (it wraps its own items when the column is
      narrow), so the copyright always starts a new line; nothing is placed on top of anything else. */
   .foot {
     display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
@@ -898,10 +868,8 @@ html:not(.mode-v) .foot__versions [data-version="h"], .mode-v .foot__versions [d
   .foot .lang__btn { min-height: 32px; }
   .foot .lang__btn:last-child { padding-right: 0; }   /* "EN" ends on the right margin */
   .foot__copy { line-height: 1.4; }
-  .foot__versions { margin-left: auto; text-align: right; line-height: 1.4; }
 
   html.is-h .panel.contacts { column-gap: var(--cta-gap); padding: 0 var(--pad) 0 0; }   /* outrank the shared section frame */
-  html.is-h:not(.is-v) .panel.contacts { width: 100vw; height: 100vh; grid-template-rows: minmax(0, 1fr); }   /* horizontal page: one screen */
 }
 
 /* ---------- Contact form popup (native <dialog>) ---------- */

@@ -102,8 +102,6 @@ window.I18N = {
     'form.error': 'Could not send. Please write to us by e-mail',
 
     'footer.copy': 'Oliyatorg. All rights reserved',
-    'footer.vH': 'Horizontal version',
-    'footer.vV': 'Vertical version',
 
 
     'alt.sunset': 'Sunflower field at sunset',
