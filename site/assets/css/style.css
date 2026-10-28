@@ -1146,3 +1146,26 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
 }
+
+/* =========================================================================
+   Partnership call — the gold accent block (with ESG, the only accent backgrounds on the site). The label, heading
+   and button sit on --accent (first, so the label stays on the top line); the photo follows under them in its natural colours (no shade), filling the rest of
+   the column. Contrast (WCAG AA) on the gold: heading #0E0E0D 6.6:1 · label #0E0E0D at 76% 4.6:1 (at 70% it would be
+   4.1:1) · button label --text on #0E0E0D 16.4:1, on the #222220 hover 13.5:1.
+   ========================================================================= */
+[data-tone="accent"] { --fg: #0E0E0D; --label: #0E0E0D; --corner: rgb(14 14 13 / .76); --focus: #0E0E0D; }
+.contacts .contacts__cta { flex-direction: column; align-items: stretch; min-height: 0; background: var(--accent); color: #0E0E0D; }
+.contacts .contacts__cta-inner { order: -1; min-height: 0; padding-top: 72px; padding-bottom: 72px; }
+.contacts .contacts__cta-inner .btn { margin-top: 40px; }
+.contacts .contacts__cta .contacts__title { color: #0E0E0D; }
+.contacts__cta .eyebrow { color: rgb(14 14 13 / .76); }
+.contacts .contacts__photo { position: relative; inset: auto; flex: 1 0 auto; aspect-ratio: 4 / 3; }
+.contacts .contacts__photo::after { content: none; }
+.contacts .contacts__photo img { position: absolute; inset: 0; }
+.contacts__cta .btn > span { background: #0E0E0D; color: var(--text); }
+.contacts__cta .btn:hover > span { background: #222220; }
+@media (min-width: 1024px) {
+  .contacts .contacts__cta-inner { padding-top: var(--top); padding-bottom: clamp(48px, 7vh, 96px); }
+  .contacts .contacts__cta-inner .btn { margin-top: clamp(32px, 5vh, 56px); }
+  .contacts .contacts__photo { aspect-ratio: auto; min-height: 36vh; }
+}
