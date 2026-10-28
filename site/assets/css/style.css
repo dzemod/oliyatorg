@@ -177,11 +177,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .header {
   position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 0 var(--pad); color: var(--text); transition: background-color .25s ease;
+  padding: 0 var(--pad); color: var(--text); background: var(--bg); box-shadow: 0 1px 0 var(--line);
 }
-/* transparent over the hero photo; once the hero has scrolled under it (main.js), the page colour at 85% — no blur */
-.header.is-solid { background: rgb(14 14 13 / .85); box-shadow: 0 1px 0 var(--line); }
-.header:not(.is-solid) { --fg-2: rgb(239 236 230 / .9); }   /* over the photo: the inactive language at full strength */
+/* the header is solid --bg at all times, on every page and over the hero: nothing shows through it */
 .header__logo { display: flex; align-items: center; min-height: 44px; position: relative; z-index: 2; }
 
 .nav__list a { position: relative; font-size: 14px; font-weight: 500; letter-spacing: .04em; }
@@ -220,7 +218,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .nav__list a::after { display: none; }
   .nav .lang { margin-top: 28px; font-size: 16px; }
   .nav .lang__btn { min-width: 52px; min-height: 48px; }
-  .menu-open .header { background: transparent; box-shadow: none; }
+  .menu-open .header { box-shadow: none; }
   .menu-open { overflow: hidden; }
 }
 
@@ -1077,7 +1075,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* the language switch sits in the header next to the burger (the menu itself no longer repeats it) */
   .header__lang { display: flex; margin-left: auto; margin-right: 4px; position: relative; z-index: 2; }
   .header__lang .lang__btn { min-width: 36px; min-height: 44px; }
-  .menu-open .header { background: transparent; }
   .nav .lang { display: none; }
 
   /* Partnership: a full-screen photo like the hero — label and heading at the top, the button at the bottom */
