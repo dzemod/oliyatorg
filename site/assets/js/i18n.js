@@ -21,7 +21,6 @@ window.I18N = {
     'nav.home': 'Home',
     'nav.products': 'Products',
     'nav.production': 'Production',
-    'nav.certificates': 'Certificates',
     'nav.contacts': 'Contacts',
 
     'hero.eyebrow': 'Sunflower oil from Ukraine',
@@ -126,7 +125,7 @@ window.I18N = {
     'cert.iso-22000-tuv.issuer': "TÜV Thüringen",
     'cert.organic-eu-organic-standard.title': "Organic production — Regulation (EU) 2018/848",
     'cert.organic-eu-organic-standard.issuer': "Organic Standard",
-    'cert.organic-usda-etko.title': "Organic certificate — USDA, 7 CFR Part 205",
+    'cert.organic-usda-etko.title': "Organic certificate — USDA, 7&nbsp;CFR Part&nbsp;205",
     'cert.organic-usda-etko.issuer': "ETKO",
     'cert.gmp-plus-sgs.title': "GMP+ Feed Safety Assurance",
     'cert.gmp-plus-sgs.issuer': "SGS",

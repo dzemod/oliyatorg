@@ -890,7 +890,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .foot__logo { grid-area: logo; display: inline-flex; justify-self: start; }
 .foot__logo img { width: auto; height: 80px; }
 .foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "logo" "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
-.foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
+.foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(2, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
 .foot__nav a[href]:hover { color: var(--hover); }
 /* pages still in development: listed in the menus, but not links yet (no href) */
