@@ -326,13 +326,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* Certificates — cards on --surface (the sections around them are --bg): padding 32px, thin L-shaped corner marks (24px, 1px, --corner) at
    the four corners instead of a border; a 6px accent square + the tag; the thumbnail (contained, on --surface-2, one
    fixed height); the title (20px, 2 lines at most) and the scope (16px, 4 lines at most). Hover: up 4px, the corner
-   marks turn gold (0.25s). Home: centred head, four cards in one row whose parts share rows (subgrid), so titles and
-   descriptions start on the same lines; the button centred under them. certificates.html: a list of wide cards. */
-.certs__head { text-align: center; }
-.certs__head .eyebrow { margin: 0 auto 22px; }
+   marks turn gold (0.25s). Home: the head on the left line, four cards in one row whose parts share rows (subgrid), so titles and
+   descriptions start on the same lines; the button under them. certificates.html: a list of wide cards. */
+.certs__head .eyebrow { margin: 0 0 22px; }
 .certs__head .certs__title { margin: 0; }
-.certs .certs__lead { max-width: 34em; margin: 24px auto 0; }
-.certs__more { display: flex; justify-content: center; margin-top: 48px; }
+.certs .certs__lead { max-width: 34em; margin: 24px 0 0; }
+.certs__more { display: flex; margin-top: 48px; }
 .cert-grid { display: grid; gap: 24px; margin-top: 48px; }
 .cert { display: grid; }
 .cert__card {
