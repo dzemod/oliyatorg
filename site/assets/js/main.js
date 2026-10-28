@@ -284,6 +284,50 @@
     });
   });
 
+  /* ---------- Certificates: language-specific files + lightbox ---------- */
+  // A certificate that exists in two languages (Halal) carries its English files in data-*-en: the thumbnail, the
+  // large image and the PDF follow the site language.
+  const certFile = (el, k) => (lang === 'en' && el.dataset[k + 'En']) || el.dataset[k];
+  const certThumbs = () => $$('[data-srcset-en]').forEach(el => { $('img', el).srcset = lang === 'en' ? el.dataset.srcsetEn : el.dataset.srcsetUk; });
+  certThumbs();
+  document.addEventListener('langchange', certThumbs);
+
+  const lightbox = $('#cert-lightbox');
+  if (lightbox && lightbox.showModal) {
+    const certs = $$('[data-cert]');
+    const img = $('.lightbox__img', lightbox), title = $('.lightbox__title', lightbox), pdf = $('.lightbox__pdf', lightbox);
+    let k = 0;
+    const show = i => {
+      k = (i + certs.length) % certs.length;
+      const el = certs[k], name = $('.cert__title', el).textContent;
+      img.classList.remove('is-ready');
+      img.onload = () => img.classList.add('is-ready');
+      img.src = certFile(el, 'large');
+      img.alt = name;
+      title.textContent = name;
+      pdf.href = certFile(el, 'pdf');
+    };
+    certs.forEach((el, i) => el.addEventListener('click', () => { show(i); lightbox.showModal(); root.classList.add('modal-open'); }));
+    $$('[data-lightbox-step]', lightbox).forEach(b => b.addEventListener('click', () => show(k + +b.dataset.lightboxStep)));
+    $('[data-lightbox-close]', lightbox).addEventListener('click', () => lightbox.close());
+    // a click on the dark area around the image closes it (Esc: native <dialog>)
+    lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target.matches('.lightbox__figure')) lightbox.close(); });
+    lightbox.addEventListener('close', () => root.classList.remove('modal-open'));
+    lightbox.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(k + (e.key === 'ArrowRight' ? 1 : -1)); }
+    });
+    // phones: swipe left / right
+    let x0 = null;
+    lightbox.addEventListener('touchstart', e => { x0 = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+    lightbox.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 50) show(k + (dx < 0 ? 1 : -1));
+    });
+    document.addEventListener('langchange', () => { if (lightbox.open) show(k); });
+  }
+
   /* ---------- Contact form popup ---------- */
   // Native <dialog>: Esc closes it and keeps focus inside. A click on the dark area outside the box closes it too.
   const modal = $('#contact-modal');

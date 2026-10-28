@@ -34,6 +34,7 @@
   --olive: #4A4A3A;                    /* dark blocks, dark sections, footer, photo tints */
   --night: #171612;                    /* the ESG section */
   --stone-80: rgb(239 236 230 / .8);   /* body text on night */
+  --stone-deep: #E4DFD6;               /* soft frame behind certificate thumbnails */
   --gold: #B8913A;                     /* accent marks: label dots, thin accent lines, active tab / step */
   --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
   --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
@@ -319,6 +320,58 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .esg .esg__stats { margin-top: 56px; }
 .esg__subtitle { margin-top: 80px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; }
 .esg .esg__social { margin-top: 20px; max-width: 640px; }
+
+/* Certificates (home block + certificates.html): head row like Products, portrait thumbnails on a soft frame, the
+   issuer and the title under each; a click opens the lightbox */
+.certs__head .certs__title { margin: 22px 0 0; }
+.certs__all { margin-top: 32px; }
+.cert-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 16px; margin-top: 48px; }
+.cert__open { display: block; width: 100%; text-align: left; }
+.cert__media { display: block; aspect-ratio: 1 / 1.414; padding: 9%; background: var(--stone-deep); overflow: hidden; }
+.cert__media img { width: 100%; height: 100%; object-fit: contain; transition: transform 1.2s var(--ease); }
+.cert__open:hover .cert__media img { transform: scale(1.04); }
+.cert__issuer { display: block; margin-top: 16px; }
+.cert__title { display: block; margin-top: 6px; font: 500 17px/1.3 var(--display); letter-spacing: -.01em; }
+.cert__open:hover .cert__title { color: var(--hover); }
+@media (min-width: 640px) {
+  .certs__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
+  .certs__head .eyebrow { grid-column: 1; justify-self: start; margin-bottom: 22px; }
+  .certs__head .certs__title { grid-column: 1; grid-row: 2; margin: 0; }
+  .certs__all { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
+  .cert-grid { gap: 48px var(--gap); }
+  .cert-grid--home { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cert-grid--page { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1480px) { .cert-grid--page { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* certificates.html: a short hero under the header */
+.page-hero.panel { padding-top: calc(var(--header-h) + 64px); }
+.page-hero .page-hero__title { margin: 0; }
+.page-hero .page-hero__lead { margin-top: 28px; }
+
+/* lightbox: the large certificate on a dark screen, its title and the PDF link under it */
+.lightbox {
+  width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 24px;
+  border: 0; background: rgb(var(--shade) / .9); color: var(--stone); --fg: var(--stone); --hover: var(--gold-light); --focus: rgb(239 236 230 / .65);
+  overscroll-behavior: contain;
+}
+.lightbox[open] { display: grid; place-items: center; animation: modal-fade .3s ease; }
+.lightbox::backdrop { background: transparent; }
+.lightbox__figure { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; height: 100%; margin: 0; justify-content: center; }
+.lightbox__img { width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 140px); background: var(--white); opacity: 0; transition: opacity .3s ease; }
+.lightbox__img.is-ready { opacity: 1; }
+.lightbox__cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 28px; text-align: center; font-size: 16px; }
+.lightbox__title { font: 500 18px/1.3 var(--display); }
+.lightbox__pdf { margin-top: 0; }
+.lightbox__close, .lightbox__nav { position: fixed; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; color: var(--stone); transition: color .2s ease; }
+.lightbox__close:hover, .lightbox__nav:hover { color: var(--gold-light); }
+.lightbox__close { top: 12px; right: 12px; }
+.lightbox__nav { top: 50%; transform: translateY(-50%); }
+.lightbox__nav--prev { left: 12px; }
+.lightbox__nav--next { right: 12px; }
+.lightbox svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+@media (max-width: 1023px) { .lightbox__nav { display: none; } }   /* phones and tablets: swipe */
+@media (min-width: 1024px) { .lightbox { padding: 32px 96px; } }
 
 /* 4. Products — after the Interos "blog" layout: label and two-line heading on the left, the "all products"
    button on the right on the heading's bottom line (its right edge = the third card's right edge), then three
@@ -677,6 +730,18 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .esg__subtitle { grid-column: 1 / 5; grid-row: 3; margin-top: 80px; font-size: clamp(24px, 3.2vh, 36px); }
   .is-v .esg .esg__social { grid-column: 6 / 13; grid-row: 3; margin-top: 80px; }
 
+  /* Certificates: as tall as their content; the thumbnails on the content line, like the ESG content */
+  html.is-v .panel.certs, html.is-v .panel.page-hero { min-height: 0; }
+  .is-v .certs .certs__title { font-size: var(--h2-size); }
+  .is-v .certs__head { width: 100%; }
+  .is-v .certs .cert-grid { margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .is-v .cert__title { font-size: clamp(17px, 2vh, 22px); }
+  .is-v .cert__issuer { font-size: var(--t-caps); font-weight: 600; }
+  /* certificates.html hero: under the header, the heading as large as the key numbers' */
+  html.is-v .panel.page-hero { display: block; padding-top: calc(var(--header-h) + var(--vgap)); }
+  .is-v .page-hero .page-hero__title { font-size: clamp(48px, 8vh, 108px); max-width: 14em; }
+  .is-v .page-hero .page-hero__lead { margin-top: 32px; }
+
   /* Products: the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
@@ -926,6 +991,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
   .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
   .esg .esg__title { margin: 0; }
+  .certs .certs__title { margin: 0; }
+  .certs .certs__all { margin-top: 40px; }
+  .certs .cert-grid { margin-top: 56px; }
   .esg .esg__text { margin-top: 28px; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
@@ -980,7 +1048,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* one heading size for every section (≈26px at 375, so no heading runs over 2–3 lines); the hero keeps its own
      size (see .hero__title): exactly three lines, each phrase on one line */
   .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
-  .esg .esg__title, .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
+  .esg .esg__title, .certs .certs__title, .page-hero .page-hero__title, .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
   .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
 
   /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */
@@ -999,4 +1067,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* contact rows: the label above the value, so the value gets the full width */
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
+  /* certificates: the button full width */
+  .certs .certs__all { display: flex; width: 100%; }
+  .certs .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
 }

@@ -34,7 +34,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=122">
+  <link rel="stylesheet" href="assets/css/style.css?v=123">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
@@ -367,7 +367,51 @@
         </div>
       </section>
 
-      <!-- 8. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
+      <!-- 8. CERTIFICATES — the head row like Products (label and heading left, the button right on the heading's bottom
+           line), then four certificates (the client's PDFs, first page; all five on certificates.html). A click opens the
+           lightbox (main.js). Data: assets/certificates/certificates.json. -->
+      <section class="panel certs" id="certificates" data-tone="light" aria-labelledby="certs-title">
+        <header class="certs__head">
+          <p class="eyebrow" data-reveal><span data-i18n="certs.eyebrow">Сертифікати</span></p>
+          <h2 class="h2 certs__title" id="certs-title" data-reveal data-i18n="certs.title">Підтверджена <em>якість</em></h2>
+          <a class="btn certs__all" href="certificates.html" data-reveal>
+            <span data-i18n="certs.all">Усі сертифікати</span>
+            <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+          </a>
+        </header>
+        <ul class="cert-grid cert-grid--home">
+          <li class="cert" data-reveal>
+            <button class="cert__open" type="button" data-cert data-large="assets/certificates/iso-22000-tuv-1600.webp" data-pdf="assets/certificates/iso-22000-tuv.pdf">
+              <span class="cert__media"><img src="assets/certificates/iso-22000-tuv-600.webp" srcset="assets/certificates/iso-22000-tuv-600.webp 600w, assets/certificates/iso-22000-tuv-1600.webp 1600w" sizes="(min-width: 640px) 22vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="caption cert__issuer" data-i18n="cert.iso-22000-tuv.issuer">TÜV Thüringen</span>
+              <span class="cert__title" data-i18n="cert.iso-22000-tuv.title">ISO 22000:2018</span>
+            </button>
+          </li>
+          <li class="cert" data-reveal>
+            <button class="cert__open" type="button" data-cert data-large="assets/certificates/organic-eu-organic-standard-1600.webp" data-pdf="assets/certificates/organic-eu-organic-standard.pdf">
+              <span class="cert__media"><img src="assets/certificates/organic-eu-organic-standard-600.webp" srcset="assets/certificates/organic-eu-organic-standard-600.webp 600w, assets/certificates/organic-eu-organic-standard-1600.webp 1600w" sizes="(min-width: 640px) 22vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="caption cert__issuer" data-i18n="cert.organic-eu-organic-standard.issuer">Organic Standard</span>
+              <span class="cert__title" data-i18n="cert.organic-eu-organic-standard.title">Органічне виробництво — Регламент (ЄС) 2018/848</span>
+            </button>
+          </li>
+          <li class="cert" data-reveal>
+            <button class="cert__open" type="button" data-cert data-large="assets/certificates/organic-usda-etko-1600.webp" data-pdf="assets/certificates/organic-usda-etko.pdf">
+              <span class="cert__media"><img src="assets/certificates/organic-usda-etko-600.webp" srcset="assets/certificates/organic-usda-etko-600.webp 600w, assets/certificates/organic-usda-etko-1600.webp 1600w" sizes="(min-width: 640px) 22vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="caption cert__issuer" data-i18n="cert.organic-usda-etko.issuer">ETKO</span>
+              <span class="cert__title" data-i18n="cert.organic-usda-etko.title">Органічний сертифікат — USDA, 7 CFR Part 205</span>
+            </button>
+          </li>
+          <li class="cert" data-reveal>
+            <button class="cert__open" type="button" data-cert data-large="assets/certificates/gmp-plus-sgs-1600.webp" data-pdf="assets/certificates/gmp-plus-sgs.pdf">
+              <span class="cert__media"><img src="assets/certificates/gmp-plus-sgs-600.webp" srcset="assets/certificates/gmp-plus-sgs-600.webp 600w, assets/certificates/gmp-plus-sgs-1600.webp 1600w" sizes="(min-width: 640px) 22vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="caption cert__issuer" data-i18n="cert.gmp-plus-sgs.issuer">SGS</span>
+              <span class="cert__title" data-i18n="cert.gmp-plus-sgs.title">GMP+ Feed Safety Assurance</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 9. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
       <section class="panel contacts" id="contacts" data-tone="dark" data-theme="dark" aria-labelledby="contacts-title">
         <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it) -->
         <div class="contacts__cta" data-theme="dark" data-tone="photo">
@@ -458,8 +502,28 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=35"></script>
+  <!-- Certificate lightbox (main.js): the large image, its title and the PDF; ← → / Esc on desktop, swipe on phones -->
+  <dialog class="lightbox" id="cert-lightbox" aria-labelledby="lightbox-title">
+    <button class="lightbox__close" type="button" data-lightbox-close aria-label="Закрити" data-i18n-attr="aria-label:ui.close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+    </button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-step="-1" aria-label="Попередній сертифікат" data-i18n-attr="aria-label:certs.prev">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+    </button>
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" alt="" width="1600" height="2263">
+      <figcaption class="lightbox__cap">
+        <span class="lightbox__title" id="lightbox-title"></span>
+        <a class="link lightbox__pdf" href="#" download data-i18n="certs.pdf">Завантажити PDF</a>
+      </figcaption>
+    </figure>
+    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-step="1" aria-label="Наступний сертифікат" data-i18n-attr="aria-label:certs.next">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+    </button>
+  </dialog>
+
+  <script src="assets/js/i18n.js?v=36"></script>
   <!-- the fades are CSS transitions and the count-up is a few requestAnimationFrame steps: no animation library -->
-  <script src="assets/js/main.js?v=42"></script>
+  <script src="assets/js/main.js?v=43"></script>
 </body>
 </html>

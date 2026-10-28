@@ -5,6 +5,8 @@
 window.I18N = {
   en: {
     'meta.title': 'Oliyatorg — sunflower oil from Ukraine',
+    'meta.certsTitle': 'Certificates — Oliyatorg',
+    'meta.certsDesc': 'Oliyatorg certificates: ISO 22000, organic production (EU, USDA), GMP+, Halal.',
     'meta.desc': 'Oliyatorg is a Ukrainian producer and exporter of sunflower oil. Natural processing, double pressing, ESG principles.',
 
     'ui.skip': 'Skip to content',
@@ -111,6 +113,25 @@ window.I18N = {
     'esg.s2': 'megawatts — sunflower husk generator',
     'esg.socialTitle': 'Social responsibility',
     'esg.social': 'We believe that responsible business is not only about quality products and efficient production, but also about contributing to the development of the local community. Oliyatorg supports sport, culture and local initiatives, helping to create opportunities for people to grow and to strengthen the community.',
+
+    'certs.eyebrow': 'Certificates',
+    'certs.title': 'Confirmed <em>quality</em>',
+    'certs.all': 'All certificates',
+    'certs.pdf': 'Download PDF',
+    'certs.prev': 'Previous certificate',
+    'certs.next': 'Next certificate',
+    'certsPage.title': 'Quality is not an option. <em>It is our standard</em>',
+    'certsPage.lead': 'Quality begins with the careful selection of raw materials and is ensured at every stage of production.',
+    'cert.iso-22000-tuv.title': "ISO 22000:2018",
+    'cert.iso-22000-tuv.issuer': "TÜV Thüringen",
+    'cert.organic-eu-organic-standard.title': "Organic production — Regulation (EU) 2018/848",
+    'cert.organic-eu-organic-standard.issuer': "Organic Standard",
+    'cert.organic-usda-etko.title': "Organic certificate — USDA, 7 CFR Part 205",
+    'cert.organic-usda-etko.issuer': "ETKO",
+    'cert.gmp-plus-sgs.title': "GMP+ Feed Safety Assurance",
+    'cert.gmp-plus-sgs.issuer': "SGS",
+    'cert.halal.title': "Halal certificate",
+    'cert.halal.issuer': "Certification Centre “Halal”",
 
     'footer.copy': 'Oliyatorg. All rights reserved',
 

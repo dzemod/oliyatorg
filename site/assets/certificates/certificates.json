@@ -1,0 +1,31 @@
+{
+  "_about": "The client's certificates (images/certificates-raw, from the zip). Titles and issuers are taken from each certificate's first page. Files per certificate: <file>.pdf, <file>-600.webp (thumbnail), <file>-1600.webp (large) — built by tools/render_certificates.mjs. The Halal certificate exists in two languages: the Ukrainian file on the UA site, the English one on the EN site.",
+  "certificates": [
+    {
+      "file": "iso-22000-tuv",
+      "title": { "uk": "ISO 22000:2018", "en": "ISO 22000:2018" },
+      "issuer": { "uk": "TÜV Thüringen", "en": "TÜV Thüringen" }
+    },
+    {
+      "file": "organic-eu-organic-standard",
+      "title": { "uk": "Органічне виробництво — Регламент (ЄС) 2018/848", "en": "Organic production — Regulation (EU) 2018/848" },
+      "issuer": { "uk": "Organic Standard", "en": "Organic Standard" }
+    },
+    {
+      "file": "organic-usda-etko",
+      "title": { "uk": "Органічний сертифікат — USDA, 7 CFR Part 205", "en": "Organic certificate — USDA, 7 CFR Part 205" },
+      "issuer": { "uk": "ETKO", "en": "ETKO" }
+    },
+    {
+      "file": "gmp-plus-sgs",
+      "title": { "uk": "GMP+ Feed Safety Assurance", "en": "GMP+ Feed Safety Assurance" },
+      "issuer": { "uk": "SGS", "en": "SGS" }
+    },
+    {
+      "file": { "uk": "halal-uk", "en": "halal-en" },
+      "language": { "halal-uk": "uk", "halal-en": "en" },
+      "title": { "uk": "Сертифікат «Халяль»", "en": "Halal certificate" },
+      "issuer": { "uk": "Центр сертифікації «Халяль»", "en": "Certification Centre “Halal”" }
+    }
+  ]
+}

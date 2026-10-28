@@ -17,3 +17,7 @@ temporary screenshots/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Raw client archives (certificates source)
+images/certificates-raw/
+*.zip
