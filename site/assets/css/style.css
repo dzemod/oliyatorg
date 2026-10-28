@@ -24,40 +24,32 @@
 @font-face { font-family: "Inter Fallback"; src: local("Arial"); size-adjust: 107%; ascent-override: 90.5%; descent-override: 22.5%; line-gap-override: 0%; }
 
 :root {
-  /* palette "Olive oil & stone" — the ONE place for colours; everything else uses these variables.
-     Contrast (WCAG): graphite on stone 12.2:1 · graphite 70% 5.0:1 · stone on olive 7.6:1 · stone 75% on olive 5.2:1.
-     The accent #B8913A is only 2.5:1 on stone, so it is used for non-text marks (label dots, lines, active underlines);
-     gold TEXT uses the same hue darker on stone and lighter on olive. */
-  --stone: #EFECE6;                    /* main background; light text on olive */
-  --graphite: #2B2A27;                 /* text */
-  --graphite-70: rgb(43 42 39 / .7);   /* secondary text (5.0:1 on stone) */
-  --olive: #4A4A3A;                    /* dark blocks, dark sections, footer, photo tints */
-  --night: #171612;                    /* the ESG section */
-  --stone-80: rgb(239 236 230 / .8);   /* body text on night */
-  --stone-deep: #E4DFD6;               /* soft frame behind certificate thumbnails */
-  --gold: #B8913A;                     /* accent marks: label dots, thin accent lines, active tab / step */
-  --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
-  --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
-  --gold-light: #D4BD89;               /* gold text on olive and over photos (4.9:1 on olive) */
-  --gold-soft: #E3CD98;                /* button fill (graphite text on it: 9.6:1) */
-  --btn-hover: #5E6B45;                /* button hover: muted olive green (white text on it: 5.6:1) */
-  --stone-75: rgb(239 236 230 / .75);  /* secondary light text on olive (5.2:1) */
-  --white: #FFFFFF;                    /* buttons on dark blocks, form fields */
-  --line: rgb(43 42 39 / .15);         /* lines and borders on stone */
-  --line-light: rgb(239 236 230 / .25);/* lines on olive */
-  --tint: 74 74 58;                    /* olive as RGB channels (modal backdrop): rgb(var(--tint) / a) */
-  --shade: 0 0 0;                      /* neutral black for photo overlays: rgb(var(--shade) / a), never olive */
-  --error: #A53C27;                    /* form errors only */
+  /* dark palette — the ONE place for colours; everything else uses these variables.
+     Contrast (WCAG AA): text on bg 16.9:1 · text-body on surface ≈ 9:1 · text-muted on bg 5.6:1, on surface 5.2:1,
+     on surface-2 4.6:1 · accent on bg 6.6:1, on surface 6.1:1 · bg-coloured text on the accent 6.6:1. */
+  --bg: #0E0E0D;                         /* page; every other section (tone "base") */
+  --surface: #181816;                    /* cards, alternate sections (tone "surface") */
+  --surface-2: #222220;                  /* inputs, secondary buttons, certificate frames */
+  --text: #EFECE6;                       /* headings */
+  --text-body: rgb(239 236 230 / .78);   /* running text */
+  --text-muted: #8F8A82;                 /* captions, secondary menu items */
+  --accent: #B8913A;                     /* the site's gold — accents only: labels, numbers, gold heading words, active
+                                            menu item, primary buttons */
+  --accent-hover: #D4BD89;               /* primary button hover: the same gold, lighter */
+  --corner: rgb(239 236 230 / .28);      /* thin decorative corner marks; label frames */
+  --line: rgb(239 236 230 / .14);        /* dividers and borders */
+  --white: #FFFFFF;                      /* the certificate image's own paper */
+  --shade: 0 0 0;                        /* neutral black for photo gradients: rgb(var(--shade) / a) */
+  --error: #E8846B;                      /* form errors only (6.4:1 on surface) */
 
-  /* tone tokens — what text, lines and backgrounds read. :root = the light (stone) tone;
-     dark blocks set the olive tone via [data-tone] (end of file). */
-  --bg: var(--stone);
-  --fg: var(--graphite);
-  --fg-2: var(--graphite-70);
-  --label: var(--gold);
-  --em: var(--gold-text);
-  --num: var(--gold-ink);
-  --hover: var(--gold-ink);         /* link hover colour */
+  /* tone tokens — what each section's text, lines and background read (tones: end of file) */
+  --fg: var(--text);
+  --fg-2: var(--text-muted);
+  --body: var(--text-body);
+  --label: var(--accent);
+  --em: var(--accent);
+  --num: var(--accent);
+  --hover: var(--accent);           /* link hover colour */
 
   --display: "Inter Tight", "Inter Tight Fallback", "Segoe UI", Arial, sans-serif;   /* headings and big numbers */
   --sans: "Inter", "Inter Fallback", "Segoe UI", Arial, sans-serif;                    /* body, labels, buttons, menu */
@@ -126,9 +118,8 @@ h1, h2, h3, p { margin: 0; }
 em { font-style: normal; }   /* the gold second part of headings: colour only, never italic */
 /* focus: a subtle thin outline for keyboard navigation only (main.js sets data-input="mouse" on pointer use,
    so a click never leaves a frame, even where a browser would otherwise show :focus-visible) */
-:focus-visible { outline: 1px solid var(--focus, rgb(43 42 39 / .5)); outline-offset: 4px; }
+:focus-visible { outline: 1px solid var(--focus, rgb(239 236 230 / .65)); outline-offset: 4px; }
 [data-input="mouse"] :focus-visible { outline: none; }
-[data-tone="dark"], [data-tone="photo"] { --focus: rgb(239 236 230 / .65); }
 
 /* no orphans: headings and labels balance their lines, running text avoids a lone last word */
 h1, h2, h3, dt, .eyebrow, .pill, .caption, .card__meta { text-wrap: balance; }
@@ -136,7 +127,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 .skip {
   position: fixed; left: 12px; top: -60px; z-index: 200; padding: 10px 16px;
-  background: var(--graphite); color: var(--stone); font-size: 14px;
+  background: var(--accent); color: var(--bg); font-size: 14px;
 }
 .skip:focus { top: 12px; }
 
@@ -144,11 +135,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* section labels: a small framed label with a dot (sharp corners); text and border follow the section tone */
 .eyebrow, .pill {
   display: flex; width: fit-content; align-items: center; gap: 10px; height: 38px; padding: 0 18px;   /* block box: no line-box offset above it */
-  border: 1px solid var(--line); font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--fg);
+  border: 1px solid var(--corner); font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--fg);
 }
 .eyebrow::before, .pill::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--label); }
-/* over photos and dark sections the 25% line is too faint for a frame */
-[data-tone="dark"] :is(.eyebrow, .pill), [data-tone="photo"] :is(.eyebrow, .pill) { border-color: rgb(239 236 230 / .45); }
+/* over photos the frame is a little stronger */
+[data-tone="photo"] :is(.eyebrow, .pill) { border-color: rgb(239 236 230 / .45); }
 
 .h2 {
   font-family: var(--display); font-weight: 400;
@@ -158,7 +149,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .h2 em { color: var(--em); }
 .h2--light { color: var(--fg); }
 
-.text { font-size: 17px; line-height: 1.7; max-width: 34em; }
+.text { font-size: 17px; line-height: 1.7; max-width: 34em; color: var(--body); }
 .text + .text { margin-top: 14px; }
 .text--muted, .text--light { color: var(--fg-2); }
 
@@ -186,10 +177,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .header {
   position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 0 var(--pad); color: var(--graphite);
+  padding: 0 var(--pad); color: var(--text); transition: background-color .25s ease;
 }
-/* solid stone from the start: the original logo is not readable over the hero photo */
-.header.is-solid { background: var(--stone); box-shadow: 0 1px 0 var(--line); color: var(--graphite); }
+/* transparent over the hero photo; once the hero has scrolled under it (main.js), the page colour at 85% — no blur */
+.header.is-solid { background: rgb(14 14 13 / .85); box-shadow: 0 1px 0 var(--line); }
+.header:not(.is-solid) { --fg-2: rgb(239 236 230 / .9); }   /* over the photo: the inactive language at full strength */
 .header__logo { display: flex; align-items: center; min-height: 44px; position: relative; z-index: 2; }
 
 .nav__list a { position: relative; font-size: 14px; font-weight: 500; letter-spacing: .04em; }
@@ -219,7 +211,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 @media (max-width: 1023px) {
   .nav {
     position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center;
-    padding: calc(var(--header-h) + 20px) 28px 40px; background: var(--stone); color: var(--graphite);
+    padding: calc(var(--header-h) + 20px) 28px 40px; background: var(--bg); color: var(--text);
     opacity: 0; visibility: hidden; transition: opacity .4s var(--ease), visibility 0s .4s;
   }
   .nav.is-open { opacity: 1; visibility: visible; transition: opacity .4s var(--ease); }
@@ -228,7 +220,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .nav__list a::after { display: none; }
   .nav .lang { margin-top: 28px; font-size: 16px; }
   .nav .lang__btn { min-width: 52px; min-height: 48px; }
-  .menu-open .header { color: var(--graphite); background: transparent; box-shadow: none; }
+  .menu-open .header { background: transparent; box-shadow: none; }
   .menu-open { overflow: hidden; }
 }
 
@@ -239,25 +231,18 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* 1. Hero */
 .hero {
   min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end;
-  padding-top: calc(var(--header-h) + 40px); padding-bottom: 48px; color: var(--stone); overflow: hidden; background: var(--bg);
+  padding-top: calc(var(--header-h) + 40px); padding-bottom: 48px; color: var(--text); overflow: hidden; background: var(--bg);
 }
 .hero__media { position: absolute; inset: 0; }
 .hero__media img, .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero__video { opacity: 0; transition: opacity 1.2s var(--ease); }
 .hero__video.is-ready { opacity: 1; }
-/* neutral shade, darker behind the text (≈45–50%), ≈10–15% elsewhere, plus a light band under the header menu:
-   the video keeps its colours. Phones: the text fills the lower half; desktop: the lower left. */
+/* the photo keeps its colours: a soft gradient only where text sits — the bottom (heading, lead, button) and a thin
+   band under the transparent header menu */
 .hero__media::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 16%),
-              linear-gradient(to top, rgb(var(--shade) / .5), rgb(var(--shade) / .4) 35%, rgb(var(--shade) / 0) 75%), rgb(var(--shade) / .12);
-}
-@media (min-width: 1024px) {
-  .hero__media::after {
-    background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 16%),
-                linear-gradient(to right, rgb(var(--shade) / .42), rgb(var(--shade) / 0) 75%),
-                linear-gradient(to top, rgb(var(--shade) / .35), rgb(var(--shade) / 0) 70%), rgb(var(--shade) / .1);
-  }
+  background: linear-gradient(to bottom, rgb(var(--shade) / .62), rgb(var(--shade) / .3) 10%, rgb(var(--shade) / 0) 24%),
+              linear-gradient(to top, rgb(var(--shade) / .78), rgb(var(--shade) / .55) 40%, rgb(var(--shade) / 0) 78%);
 }
 .hero__inner { position: relative; z-index: 1; }
 /* exactly three lines: the size is capped so the longest phrase ("Відповідальне виробництво." ≈ 12.6em in Inter Tight 500)
@@ -265,8 +250,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .hero__title { margin: 18px 0 20px; font: 500 min(64px, calc((100vw - 2 * var(--pad)) / 12.8))/1.05 var(--display); letter-spacing: var(--track); }
 .hero__title .line { display: block; overflow: hidden; padding-bottom: .04em; }
 .hero__title .line > * { display: inline-block; white-space: nowrap; }   /* each phrase on one line: no lone word */
-.hero__title em { color: var(--gold-light); }
-.hero__lead { max-width: 30em; margin-bottom: 28px; font-size: 16px; line-height: 1.6; color: var(--stone); }   /* full stone: readable over any video frame */
+.hero__title em { color: var(--accent); }
+.hero__lead { max-width: 30em; margin-bottom: 28px; font-size: 16px; line-height: 1.6; color: var(--text); }   /* full text colour: readable over any video frame */
 .hero__hint { display: none; }
 
 /* 2. About — after the Veltom reference: one large photo, then the text column (label, heading, short text,
@@ -288,12 +273,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding-bottom: 6px;
   font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); transition: color .3s ease;
 }
-.tabs__tab::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: 0; transition: opacity .3s ease; }
+.tabs__tab::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .3s ease; }
 .tabs__tab:hover, .tabs__tab[aria-selected="true"] { color: var(--fg); }
 .tabs__tab[aria-selected="true"]::before { opacity: 1; }
 .tabs__panels { display: grid; margin-top: 20px; }
 .tabs__panel {
-  grid-area: 1 / 1; font-size: 16px; line-height: 1.6; color: var(--fg-2);
+  grid-area: 1 / 1; font-size: 16px; line-height: 1.6; color: var(--body);
   opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility 0s .45s;
 }
 .tabs__panel.is-active { opacity: 1; visibility: visible; transition: opacity .45s var(--ease) .1s; }
@@ -302,10 +287,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .numbers { color: var(--fg); overflow: hidden; }
 .numbers__bg { position: absolute; inset: 0; }
 .numbers__bg img { width: 100%; height: 100%; object-fit: cover; }
-/* busy macro photo: an even, stronger neutral shade (≈68%) turns the seeds into a calm dark texture behind the text */
+/* the text covers the whole photo here: a gradient from the bottom (the figures) that stays soft at the top (heading) */
 .numbers__bg::after {
   content: ""; position: absolute; inset: 0;
-  background: rgb(var(--shade) / .68);
+  background: linear-gradient(to top, rgb(var(--shade) / .8), rgb(var(--shade) / .55) 50%, rgb(var(--shade) / .4));
 }
 .numbers__inner { position: relative; }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
@@ -314,9 +299,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* ESG — night background, stone headings, body at 80%; gold label, figures and accent from the dark tone */
-.esg[data-tone] { --bg: var(--night); }   /* outranks the dark tone (end of file) */
-.esg .text { color: var(--stone-80); }
+/* ESG */
 .esg .esg__stats { margin-top: 56px; }
 .esg__subtitle { margin-top: 80px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; }
 .esg .esg__social { margin-top: 20px; max-width: 640px; }
@@ -327,7 +310,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .certs__all { margin-top: 32px; }
 .cert-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 16px; margin-top: 48px; }
 .cert__open { display: block; width: 100%; text-align: left; }
-.cert__media { display: block; aspect-ratio: 1 / 1.414; padding: 9%; background: var(--stone-deep); overflow: hidden; }
+.cert__media { display: block; aspect-ratio: 1 / 1.414; padding: 9%; background: var(--surface-2); overflow: hidden; }
 .cert__media img { width: 100%; height: 100%; object-fit: contain; transition: transform 1.2s var(--ease); }
 .cert__open:hover .cert__media img { transform: scale(1.04); }
 .cert__issuer { display: block; margin-top: 16px; }
@@ -352,7 +335,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* lightbox: the large certificate on a dark screen, its title and the PDF link under it */
 .lightbox {
   width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 24px;
-  border: 0; background: rgb(var(--shade) / .9); color: var(--stone); --fg: var(--stone); --hover: var(--gold-light); --focus: rgb(239 236 230 / .65);
+  border: 0; background: rgb(14 14 13 / .94); color: var(--text);
   overscroll-behavior: contain;
 }
 .lightbox[open] { display: grid; place-items: center; animation: modal-fade .3s ease; }
@@ -363,8 +346,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .lightbox__cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 28px; text-align: center; font-size: 16px; }
 .lightbox__title { font: 500 18px/1.3 var(--display); }
 .lightbox__pdf { margin-top: 0; }
-.lightbox__close, .lightbox__nav { position: fixed; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; color: var(--stone); transition: color .2s ease; }
-.lightbox__close:hover, .lightbox__nav:hover { color: var(--gold-light); }
+.lightbox__close, .lightbox__nav { position: fixed; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; color: var(--text); transition: color .25s ease; }
+.lightbox__close:hover, .lightbox__nav:hover { color: var(--accent); }
 .lightbox__close { top: 12px; right: 12px; }
 .lightbox__nav { top: 50%; transform: translateY(-50%); }
 .lightbox__nav--prev { left: 12px; }
@@ -412,7 +395,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .step:hover .step__media img { transform: scale(1.04); }
 .step__num { margin-top: 20px; font: 600 13px/1 var(--sans); letter-spacing: .14em; font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
 .step__title { margin-top: 12px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; color: var(--fg); }
-.step__text { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
+.step__text { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--body); }
 @media (min-width: 640px) {
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px var(--gap); }
 }
@@ -447,29 +430,30 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .export__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 74% 50%; }   /* the wide plant photo: keep the silos and tanks in the tall frame */
 .export__title em { display: block; }
 .features { display: grid; gap: 40px; margin-top: 48px; }
-.feature__icon { display: block; width: 36px; height: 36px; fill: none; stroke: var(--gold-ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.feature__icon { display: block; width: 36px; height: 36px; fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .feature__icon * { vector-effect: non-scaling-stroke; }   /* the same thin line at any size */
 .feature__title { margin-top: 18px; font: 500 18px/1.3 var(--sans); color: var(--fg); }
-.feature__text { margin-top: 8px; max-width: 26em; font-size: 15px; line-height: 1.6; color: var(--fg-2); }
+.feature__text { margin-top: 8px; max-width: 26em; font-size: 16px; line-height: 1.6; color: var(--body); }
 
 /* 7. Contacts + footer: the screen itself is styled at the end of the file; the form lives in the popup */
-.form { display: grid; gap: 6px 24px; margin-top: 48px; padding: 28px 22px; background: var(--white); }
+.form { display: grid; gap: 12px 16px; margin-top: 48px; padding: 28px 22px; background: var(--surface); }
 .field { position: relative; }
 .field input, .field textarea {
-  width: 100%; padding: 26px 0 10px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
-  background: transparent; color: var(--graphite); font: 400 17px/1.4 var(--sans); outline: none; resize: vertical;
+  width: 100%; padding: 26px 16px 10px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  background: var(--surface-2); color: var(--text); font: 400 17px/1.4 var(--sans); outline: none; resize: vertical;
+  transition: border-color .25s ease;
 }
 .field textarea { min-height: 96px; }
-.field input:focus, .field textarea:focus { border-color: var(--graphite); }
+.field input:focus, .field textarea:focus { border-color: var(--accent); }
 .field label {
-  position: absolute; left: 0; top: 26px; font-size: 16px; color: var(--graphite-70); pointer-events: none;
+  position: absolute; left: 16px; top: 18px; font-size: 16px; color: var(--text-muted); pointer-events: none;
   transform-origin: left top; transition: transform .3s var(--ease);
 }
 .field input:focus + label, .field input:not(:placeholder-shown) + label,
-.field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-20px) scale(.78); color: var(--gold-ink); }
+.field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-12px) scale(.78); color: var(--accent); }
 .field.is-invalid input { border-color: var(--error); }
 .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 22px; }
-.form__status { font-size: 14px; color: var(--graphite-70); }
+.form__status { font-size: 16px; color: var(--text-muted); }
 .form__status.is-error { color: var(--error); }
 
 /* ---------- Motion (main.js) ----------
@@ -569,11 +553,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* same bottom as the hero button (last child of .hero__inner) → text baseline and line sit on its bottom border */
   .is-h .hero__hint {
     position: absolute; right: var(--pad); bottom: var(--bottom); z-index: 1; display: flex; align-items: flex-end; gap: 14px; line-height: 1;
-    font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--stone);
+    font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--text);
   }
   .is-h .hero__hint span { position: relative; top: 2px; } /* drops the 12px font's descent so the letters' bottom meets the border's bottom */
   .is-h .hero__hint i { position: relative; width: 64px; height: 1px; background: rgb(239 236 230 / .55); overflow: hidden; }
-  .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--gold-light); animation: hint 2.4s var(--ease) infinite; }
+  .is-h .hero__hint i::after { content: ""; position: absolute; inset: 0; background: var(--accent); animation: hint 2.4s var(--ease) infinite; }
   .is-h .hero.is-away .hero__hint i::after { animation: none; }   /* main.js: the hero is off screen */
   @keyframes hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
@@ -755,7 +739,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .feature { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(14px, 1.6vh, 18px); }
   .is-h .feature__icon { width: clamp(24px, 4vh, 46px); height: clamp(24px, 4vh, 46px); }
   .is-h .feature__title { margin: 0; font-size: clamp(16px, 2.75vh, 30px); }
-  .is-h .feature__text { grid-column: 2; margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(14px, 2.05vh, 22px); line-height: 1.55; max-width: none; }
+  .is-h .feature__text { grid-column: 2; margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(16px, 2.05vh, 22px); line-height: 1.55; max-width: none; }
   @media (max-height: 640px) { .is-h .features { gap: 16px; } }   /* very short screens (125% zoom on 1366): it still fits */
 }
 
@@ -801,37 +785,26 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* =========================================================================
    Section tones — one solid colour per section, straight edges between them
    ========================================================================= */
-[data-tone="stone"] { --bg: var(--stone); }
-[data-tone="dark"], [data-tone="photo"] {
-  --bg: var(--olive); --fg: var(--stone); --fg-2: var(--stone-75); --label: var(--gold); --em: var(--gold-light); --num: var(--gold-light);
-  --line: var(--line-light); --hover: var(--gold-light);
-}
+/* neighbouring sections alternate: "base" (the page colour) and "surface"; over photos the text is full strength */
+[data-tone="surface"] { --bg: var(--surface); }
+[data-tone="photo"] { --body: var(--text); --fg-2: rgb(239 236 230 / .8); }
 .panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
-@media (max-width: 1023px) {
-  .nav { --fg: var(--graphite); --fg-2: var(--graphite-70); --line: rgb(43 42 39 / .15); }
-}
-
-/* menu highlight: active/hovered item and active language turn gold —
-   dark gold on stone, light gold over the hero video, photos and olive blocks */
-.header { --nav-accent: var(--gold-ink); }
-@media (max-width: 1023px) {
-  .nav { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
-}
+/* menu highlight: the active / hovered item and the active language turn gold */
+.header { --nav-accent: var(--accent); }
 .nav__list a, .nav .lang__btn { transition: color .2s ease; }
 .nav__list a[href]:hover, .nav__list a[aria-current] { color: var(--nav-accent); }
 .nav .lang__btn[aria-pressed="true"], .header__lang .lang__btn[aria-pressed="true"] { color: var(--nav-accent); }
 
 /* =========================================================================
-   Buttons — one style everywhere, light and dark backgrounds alike: filled light soft gold with dark graphite text
-   and arrow, sharp corners; on hover (0.25s) muted olive green with white text and arrow, and the arrow snaps in place
-   from ↗ to → (transform only, 0.25s ease-out, no delay). A separate square arrow box, 2px apart, always the same
-   colours as the text box. (Graphite on the soft gold: 9.6:1; white on the olive green: 5.6:1; the soft gold also
-   stands out on olive and over photos.) These are the only button rules for colour and motion.
+   Buttons — primary: the gold accent fill with page-coloured text and arrow (6.6:1), lighter gold on hover;
+   secondary (.btn--secondary): surface-2 fill with the text colour. Sharp corners; on hover (0.25s) the arrow snaps
+   in place from ↗ to → (transform only, ease-out, no delay). A separate square arrow box, 2px apart, always the same
+   colours as the text box. These are the only button rules for colour and motion.
    ========================================================================= */
 .btn { padding: 0; gap: 2px; background: none; border: 0; min-height: 0; vertical-align: top; }
 .btn > span {
-  height: 54px; background: var(--gold-soft); color: var(--graphite);
+  height: 54px; background: var(--accent); color: var(--bg);
   transition: background-color .25s ease-out, color .25s ease-out;
 }
 .btn > span { display: flex; align-items: center; padding: 0 28px; }
@@ -839,7 +812,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    the icon's arrow is drawn centred on (12, 12), so rotating the whole svg turns it around the arrow's own centre */
 .btn > .btn__box { order: -1; flex: none; width: 54px; padding: 0; justify-content: center; }
 .btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .25s ease-out; }
-.btn:hover > span { background: var(--btn-hover); color: var(--white); }
+.btn:hover > span { background: var(--accent-hover); }
+.btn--secondary > span { background: var(--surface-2); color: var(--text); }
+.btn--secondary:hover > span { background: #2E2E2B; color: var(--accent); }   /* 5.0:1 */
 .btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover .btn__arrow { transform: rotate(-45deg); }
@@ -853,23 +828,22 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contacts { padding: 0; }
 
 /* photo half */
-.contacts__cta { position: relative; display: flex; align-items: flex-start; overflow: hidden; color: var(--stone); background: var(--olive); }
+.contacts__cta { position: relative; display: flex; align-items: flex-start; overflow: hidden; color: var(--text); background: var(--surface); }
 .contacts__photo { position: absolute; inset: 0; }
 .contacts__photo img { width: 100%; height: 100%; object-fit: cover; }
-/* neutral shade. Phones: the text covers the whole short photo, so an even ≈40%; desktop: darker behind the label
-   (top) and the heading and button (bottom), light in the middle */
+/* soft gradients only where the text sits: the label and heading (top) and the button (bottom) */
 .contacts__photo::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgb(var(--shade) / .45), rgb(var(--shade) / .32));
+  background: linear-gradient(to bottom, rgb(var(--shade) / .55), rgb(var(--shade) / .2) 50%, rgb(var(--shade) / .5));
 }
 @media (min-width: 1024px) {
   .contacts__photo::after {
-    background: linear-gradient(to bottom, rgb(var(--shade) / .3), rgb(var(--shade) / 0) 45%, rgb(var(--shade) / 0) 55%, rgb(var(--shade) / .35)), rgb(var(--shade) / .12);
+    background: linear-gradient(to bottom, rgb(var(--shade) / .5), rgb(var(--shade) / 0) 45%, rgb(var(--shade) / 0) 60%, rgb(var(--shade) / .45));
   }
 }
 .contacts__cta-inner { position: relative; z-index: 1; padding: var(--sec-top) var(--pad) 56px; }  /* label at the same top as every section */
 .contacts__title {
-  margin: 18px 0 32px; max-width: 11.5em; color: var(--stone); text-wrap: balance;
+  margin: 18px 0 32px; max-width: 11.5em; color: var(--text); text-wrap: balance;
   /* capped so the last line "нашим партнером?" (≈ 10.9em, kept together) fits the column */
   font: 500 clamp(30px, 8vw, 48px)/1.08 var(--display); letter-spacing: var(--track);
 }
@@ -952,14 +926,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 
 /* ---------- Contact form popup (native <dialog>) ---------- */
-.modal { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: none; padding: 0; border: 0; background: transparent; color: var(--graphite); overflow: visible; }
-.modal::backdrop { background: rgb(var(--tint) / .75); }
+.modal { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: none; padding: 0; border: 0; background: transparent; color: var(--text); overflow: visible; }
+.modal::backdrop { background: rgb(var(--shade) / .75); }
 .modal__box {
   position: relative; max-height: calc(100svh - 32px); overflow: auto; overscroll-behavior: contain;
-  padding: clamp(32px, 5vw, 56px) clamp(22px, 5vw, 56px) clamp(28px, 4vw, 48px); background: var(--stone);
+  padding: clamp(32px, 5vw, 56px) clamp(22px, 5vw, 56px) clamp(28px, 4vw, 48px); background: var(--surface);
 }
-.modal__close { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 48px; height: 48px; color: var(--graphite); transition: color .2s ease; }
-.modal__close:hover { color: var(--gold-ink); }
+.modal__close { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 48px; height: 48px; color: var(--text); transition: color .25s ease; }
+.modal__close:hover { color: var(--accent); }
 .modal__close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 .modal .h2.modal__title { margin: 14px 0 0; padding-right: 32px; font-size: clamp(34px, 6vw, 52px); }
 .modal .form { margin: 18px 0 0; padding: 0; background: none; }
@@ -975,13 +949,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    ========================================================================= */
 @media (max-width: 1023px) {
   :root { --sec-top: 120px; --sec-bottom: 120px; }   /* the same 120px gap between all sections */
-  /* two light sections in a row share one gap instead of adding two paddings */
-  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { padding-top: 0; }
   /* anchors and focus never land under the fixed header */
   html { scroll-padding-top: 0; }   /* sections land at the very top: their 120px top padding keeps the label clear of the header */
   [id]:not(section) { scroll-margin-top: calc(var(--header-h) + 16px); }   /* smaller targets land just under the header */
-  /* a light section right after another one has no top padding (they share one gap): it lands 120px lower instead */
-  .panel:is([data-tone="light"], [data-tone="stone"]) + .panel:is([data-tone="light"], [data-tone="stone"]) { scroll-margin-top: var(--sec-top); }
 
   /* inside sections: label → heading 24 · heading → text 28 · text → button 40 · button (or heading) → content 56 */
   .panel :is(.eyebrow, .pill) { margin: 0 0 24px; }
@@ -1027,7 +997,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* the language switch sits in the header next to the burger (the menu itself no longer repeats it) */
   .header__lang { display: flex; margin-left: auto; margin-right: 4px; position: relative; z-index: 2; }
   .header__lang .lang__btn { min-width: 36px; min-height: 44px; }
-  .menu-open .header { --fg-2: var(--graphite-70); --nav-accent: var(--gold-ink); }   /* the open menu is stone: dark switch colours */
+  .menu-open .header { background: transparent; }
   .nav .lang { display: none; }
 
   /* Partnership: a full-screen photo like the hero — label and heading at the top, the button at the bottom */

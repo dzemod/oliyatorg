@@ -284,6 +284,24 @@
     });
   });
 
+  /* ---------- Header: transparent over the hero photo, the page colour at 85% once the hero is under it ---------- */
+  {
+    const header = $('#header');
+    const hero = $('.hero');
+    if (!hero || !('IntersectionObserver' in window)) header.classList.add('is-solid');
+    else {
+      let io = null;
+      const watch = () => {
+        if (io) io.disconnect();
+        // the hero "intersects" while any of it is still visible below the header
+        io = new IntersectionObserver(([en]) => header.classList.toggle('is-solid', !en.isIntersecting), { rootMargin: `-${header.offsetHeight}px 0px 0px 0px` });
+        io.observe(hero);
+      };
+      watch();
+      matchMedia('(min-width: 640px)').addEventListener('change', watch);   // the header height changes here
+    }
+  }
+
   /* ---------- Certificates: language-specific files + lightbox ---------- */
   // A certificate that exists in two languages (Halal) carries its English files in data-*-en: the thumbnail, the
   // large image and the PDF follow the site language.
