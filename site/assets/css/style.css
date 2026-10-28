@@ -299,10 +299,31 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* ESG */
-.esg .esg__stats { margin-top: 56px; }
-.esg__subtitle { margin-top: 80px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; }
-.esg .esg__social { margin-top: 20px; max-width: 640px; }
+/* ESG — a numbered accordion. Phones and tablets: number + title per row; the open row adds its 4:3 photo (full
+   width) and its text. Desktop (below): photo · number · title / text on the 12-column grid. Dividers: 1px. */
+.esg .esg__title { margin-bottom: 0; }
+.esg-list { margin-top: 56px; }
+.esg-row { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; padding: 22px 0; cursor: pointer;
+  transition: transform .5s cubic-bezier(.33, 1, .68, 1); }   /* power2.out; main.js slides the rows (FLIP) */
+.esg-row + .esg-row::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: rgb(239 236 230 / .14); }
+.esg-row__num { grid-column: 1; grid-row: 1; font: 400 20px/1.3 var(--sans); font-variant-numeric: lining-nums tabular-nums; color: var(--text-muted); }
+.esg-row__content { display: contents; }
+.esg-row__heading { grid-column: 2; grid-row: 1; font: inherit; }
+.esg-row__btn {
+  display: block; width: 100%; text-align: left; font: 500 20px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text); transition: color .25s ease;
+}
+.esg-row__btn:hover, .esg-row:hover .esg-row__btn { color: var(--accent); }
+.esg-row.is-open .esg-row__btn { color: var(--text); }
+.esg-row__media { grid-column: 1 / -1; grid-row: 2; display: none; margin-top: 20px; aspect-ratio: 4 / 3; overflow: hidden; }
+.esg-row.is-open .esg-row__media { display: block; }
+.esg-row__media img { width: 100%; height: 100%; object-fit: cover; transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), opacity .5s cubic-bezier(.33, 1, .68, 1); }
+.esg-row__panel { grid-column: 1 / -1; grid-row: 3; }
+.esg-row__text { max-width: 560px; margin-top: 20px; font-size: 17px; line-height: 1.65; color: var(--text-body);
+  transition: opacity .5s cubic-bezier(.33, 1, .68, 1), transform .5s cubic-bezier(.33, 1, .68, 1); }
+/* the moment a row opens (main.js): its photo wipes open from the top and its text fades up */
+.esg-row.is-entering .esg-row__media img { clip-path: inset(0 0 100% 0); opacity: 0; transition: none; }
+.esg-row.is-entering .esg-row__text { opacity: 0; transform: translateY(12px); transition: none; }
 
 /* Certificates — cards on --surface (the sections around them are --bg): padding 32px, thin L-shaped corner marks (24px, 1px, --corner) at
    the four corners instead of a border; a 6px accent square + the tag; the thumbnail (contained, on --surface-2, one
@@ -749,19 +770,30 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
     .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
   }
-  /* ESG: one 12-column grid — head; the text (1–7) and the figures (9–12) on one top line; 80px lower the social
-     sub-heading (1–4) and its text (from 6, at most 640px) on one top line. As tall as its content. */
-  html.is-v .panel.esg {
-    min-height: 0; grid-template-columns: repeat(12, var(--col)); grid-template-rows: auto auto auto; align-items: start;
+  /* ESG: the heading at most 8 columns; each row on the 12-column grid — photo 1–3, number 5, title / text 7–12; the
+     divider spans 5–12. Closed rows: a 16:5 strip of the photo; the open row: 4:3. The image is always drawn 4:3 and
+     clip-path + transform show its middle strip, so opening and closing animate without changing the image's size;
+     main.js slides the rows below (transform). */
+  html.is-v .panel.esg { display: block; min-height: 0; }
+  .is-v .esg .esg__title { min-height: 0; max-width: calc(8 * var(--col) + 7 * var(--gap)); margin: 0; }
+  .is-v .esg-list { margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .esg-row { grid-template-columns: repeat(12, var(--col)); column-gap: var(--gap); padding: 28px 0; }
+  .esg-row + .esg-row::before { left: calc(4 * (var(--col) + var(--gap))); }
+  .esg-row__media {
+    grid-column: 1 / 4; grid-row: 1 / span 2; display: block; position: relative; margin: 0; aspect-ratio: 16 / 5;
+    overflow: visible; container-type: inline-size;
   }
-  .is-v .esg__head { grid-column: 1 / -1; }
-  .is-v .esg .esg__title { min-height: 0; margin: 0; }
-  .is-v .esg .esg__text { grid-column: 1 / 8; grid-row: 2; max-width: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
-  .is-v .esg .esg__stats { grid-column: 9 / 13; grid-row: 2; display: flex; flex-direction: column; gap: clamp(40px, 6vh, 64px); margin: clamp(64px, calc(100vw * 90 / 1920), 100px) 0 0; }
-  .is-v .esg .stat__value { font-size: clamp(60px, 10vh, 128px); }
-  .is-v .esg .stat__label { white-space: normal; }
-  .is-v .esg__subtitle { grid-column: 1 / 5; grid-row: 3; margin-top: 80px; font-size: clamp(24px, 3.2vh, 36px); }
-  .is-v .esg .esg__social { grid-column: 6 / 13; grid-row: 3; margin-top: 80px; }
+  .esg-row.is-open .esg-row__media { aspect-ratio: 4 / 3; }
+  .esg-row__media img {
+    position: absolute; top: 0; left: 0; width: 100%; height: auto; aspect-ratio: 4 / 3;
+    transform: translateY(-21.875cqw); clip-path: inset(21.875cqw 0 21.875cqw 0);   /* (75% − 31.25%) / 2 of the width */
+    transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), transform .5s cubic-bezier(.33, 1, .68, 1);
+  }
+  .esg-row.is-open .esg-row__media img { transform: none; clip-path: inset(0); }
+  .esg-row.is-entering .esg-row__media img { transform: translateY(-21.875cqw); clip-path: inset(21.875cqw 0 21.875cqw 0); opacity: 1; }
+  .esg-row__num { grid-column: 5; grid-row: 1; }
+  .esg-row__content { display: block; grid-column: 7 / 13; grid-row: 1 / span 2; }
+  .esg-row__text { margin-top: 16px; }
 
   /* Certificates: as tall as their content; the thumbnails on the content line, like the ESG content */
   html.is-v .panel.certs, html.is-v .panel.page-hero { min-height: 0; }
@@ -1009,10 +1041,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
   .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
   .esg .esg__title { margin: 0; }
+  .esg .esg-list { margin-top: 56px; }
   .certs .certs__title { margin: 0; }
   .certs .cert-grid { margin-top: 56px; }
   .certs--page .cert-grid { margin-top: 0; }
-  .esg .esg__text { margin-top: 28px; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
   .products .cards { gap: 64px; }

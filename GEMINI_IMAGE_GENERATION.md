@@ -217,6 +217,7 @@ Extra: `--size 1K|2K|4K` (default `1K` — cheapest, use for tests), `--model <i
 - Generate into `.tmp/` first, review with the Read tool, then copy approved images into `site/assets/img/` (resize for web).
 - **Quota (2026-10-13):** `API 429 … free_tier_requests, limit: 0, model: gemini-3-pro-image` means the Google project has no billing enabled — the free tier does not include this model at all. Retrying will not help; enable billing for the project in Google AI Studio. The key itself is valid when you get this error (an invalid key returns 400/403).
 - Each successful call is paid — ask before batch runs or retries.
+- **2026-10-28 (Oliyatorg):** this project has no `.env`, and `tools/generate_image.mjs` had to be restored from git history (`git show ac5e41d:tools/generate_image.mjs`). With the owner's OK the key was loaded from another project without copying it: `node --env-file="../Perla Homes/.env" tools/generate_image.mjs …` (the tool reads `process.env` when no `.env` exists). A 4:3 image at `--size 2K` comes back as 2400×1792 JPEG, ≈25 s per call. Run calls one after another (a shell function in a backgrounded `&` job is not defined there).
 
 ---
 

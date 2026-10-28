@@ -284,6 +284,67 @@
     });
   });
 
+  /* ---------- ESG accordion: one row open at a time ----------
+     A click / tap (or, on desktop, a short hover) opens a row and closes the others. The rows and the sections below
+     slide to their new places with a transform (FLIP: measure, change, invert, play), the photo opens with clip-path
+     and the text fades up — no animated layout properties. Hover waits for the pointer to move after each change, so
+     rows sliding under a still pointer never open themselves. */
+  const accordion = $('[data-accordion]');
+  if (accordion) {
+    const rows = $$('[data-esg-row]', accordion);
+    const sec = accordion.closest('.panel');
+    const after = [];
+    for (let el = sec.nextElementSibling; el; el = el.nextElementSibling) after.push(el);
+    let current = rows.findIndex(r => r.classList.contains('is-open'));
+    const set = (r, on) => {
+      r.classList.toggle('is-open', on);
+      $('.esg-row__btn', r).setAttribute('aria-expanded', String(on));
+      $('.esg-row__panel', r).hidden = !on;
+    };
+    const open = k => {
+      if (k === current) return;
+      const moving = [...rows, ...after];
+      const before = moving.map(el => el.getBoundingClientRect().top);
+      rows[k].classList.add('is-entering');
+      rows.forEach((r, i) => set(r, i === k));
+      current = k;
+      if (reduceMotion) { rows[k].classList.remove('is-entering'); return; }
+      moving.forEach((el, i) => {
+        const d = before[i] - el.getBoundingClientRect().top;
+        if (!d) return;
+        el.style.transition = 'none';
+        el.style.transform = `translateY(${d}px)`;
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        rows[k].classList.remove('is-entering');
+        moving.forEach(el => {
+          if (!el.style.transform) return;
+          el.style.transition = 'transform .5s cubic-bezier(.33, 1, .68, 1)';
+          el.style.transform = '';
+          el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true });
+        });
+      }));
+    };
+    rows.forEach((r, k) => r.addEventListener('click', () => open(k)));   // the whole row; the button gives keyboard access
+    // desktop hover: after a short pause, and only once the pointer has really moved since the last change
+    const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)');
+    let timer = 0, px = 0, py = 0, lockX = -1e4, lockY = -1e4;
+    accordion.addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; });
+    rows.forEach((r, k) => {
+      r.addEventListener('pointerenter', e => {
+        if (!fine.matches) return;
+        px = e.clientX; py = e.clientY;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          if (Math.hypot(px - lockX, py - lockY) < 24) return;
+          lockX = px; lockY = py;
+          open(k);
+        }, 160);
+      });
+      r.addEventListener('pointerleave', () => clearTimeout(timer));
+    });
+  }
+
   /* ---------- Header: transparent over the hero photo, the page colour at 85% once the hero is under it ---------- */
   {
     const header = $('#header');
