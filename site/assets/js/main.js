@@ -279,29 +279,6 @@
     });
   });
 
-  /* ---------- Header colours ---------- */
-  // Light text over the hero, solid stone bar once the hero has scrolled under the header.
-  {
-    const header = $('#header');
-    const hero = $('.hero');
-    const paint = overHero => {
-      header.classList.toggle('on-dark', overHero);
-      header.classList.toggle('is-solid', !overHero);
-    };
-    paint(hero.getBoundingClientRect().bottom > header.offsetHeight);
-    if ('IntersectionObserver' in window) {
-      let io = null;
-      const watch = () => {
-        if (io) io.disconnect();
-        // the hero "intersects" while any of it is still visible below the header
-        io = new IntersectionObserver(([en]) => paint(en.isIntersecting), { rootMargin: `-${header.offsetHeight}px 0px 0px 0px` });
-        io.observe(hero);
-      };
-      watch();
-      matchMedia('(min-width: 640px)').addEventListener('change', watch); // header height changes here
-    }
-  }
-
   /* ---------- Contact form popup ---------- */
   // Native <dialog>: Esc closes it and keeps focus inside. A click on the dark area outside the box closes it too.
   const modal = $('#contact-modal');

@@ -9,6 +9,7 @@ window.I18N = {
 
     'ui.skip': 'Skip to content',
     'ui.home': 'Oliyatorg — home',
+    'ui.logo': 'Oliyatorg',
     'ui.menu': 'Main menu',
     'ui.lang': 'Site language',
     'ui.openMenu': 'Open menu',

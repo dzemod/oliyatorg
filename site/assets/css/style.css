@@ -125,7 +125,7 @@ em { font-style: normal; }   /* the gold second part of headings: colour only, n
    so a click never leaves a frame, even where a browser would otherwise show :focus-visible) */
 :focus-visible { outline: 1px solid var(--focus, rgb(43 42 39 / .5)); outline-offset: 4px; }
 [data-input="mouse"] :focus-visible { outline: none; }
-[data-tone="dark"], [data-tone="photo"], .on-dark { --focus: rgb(239 236 230 / .65); }
+[data-tone="dark"], [data-tone="photo"] { --focus: rgb(239 236 230 / .65); }
 
 /* no orphans: headings and labels balance their lines, running text avoids a lone last word */
 h1, h2, h3, dt, .eyebrow, .pill, .caption, .card__meta { text-wrap: balance; }
@@ -176,11 +176,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   border-bottom: 1px solid var(--label);
 }
 
-/* ---------- Logo (one file; white variant via filter) ---------- */
-.logo { width: auto; height: 56px; }   /* logo 01 (400×340): the band wordmark stays legible */
-.logo--white { display: none; }
-.on-dark .logo--color { display: none; }
-.on-dark .logo--white { display: block; }
+/* ---------- Logo: the client's original, never recoloured (48px phones and tablets, 64px desktop) ---------- */
+.logo { width: auto; height: 48px; }
 
 /* ---------- Header ---------- */
 .header {
@@ -188,10 +185,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
   padding: 0 var(--pad); color: var(--graphite);
 }
-.header.on-dark { color: var(--stone); }
+/* solid stone from the start: the original logo is not readable over the hero photo */
 .header.is-solid { background: var(--stone); box-shadow: 0 1px 0 var(--line); color: var(--graphite); }
-.header.is-solid .logo--color { display: block; }
-.header.is-solid .logo--white { display: none; }
 .header__logo { display: flex; align-items: center; min-height: 44px; position: relative; z-index: 2; }
 
 .nav__list a { position: relative; font-size: 14px; font-weight: 500; letter-spacing: .04em; }
@@ -231,8 +226,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .nav .lang { margin-top: 28px; font-size: 16px; }
   .nav .lang__btn { min-width: 52px; min-height: 48px; }
   .menu-open .header { color: var(--graphite); background: transparent; box-shadow: none; }
-  .menu-open .header .logo--color { display: block; }
-  .menu-open .header .logo--white { display: none; }
   .menu-open { overflow: hidden; }
 }
 
@@ -449,7 +442,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .burger { display: none; }
   .nav { display: flex; align-items: center; gap: 44px; }
   .nav__list { display: flex; gap: 34px; }
-  .logo { height: 76px; }
+  .logo { height: 64px; }
 
   .hero__title { font-size: clamp(52px, 5.4vw, 96px); }
   .hero__lead { font-size: 18px; }
@@ -688,8 +681,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .hero__video { display: none; }
 }
 
-/* ---------- Header over the hero (main.js sets .on-dark) ---------- */
-@media (min-width: 1024px) { .header.on-dark { color: var(--stone); } }
 
 
 /* =========================================================================
@@ -729,8 +720,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 .panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
-/* header parts over a dark section switch to light colours at once (main.js sets .on-dark) */
-.on-dark { --fg: var(--stone); --fg-2: var(--stone-75); }
 @media (max-width: 1023px) {
   .nav { --fg: var(--graphite); --fg-2: var(--graphite-70); --line: rgb(43 42 39 / .15); }
 }
@@ -738,7 +727,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* menu highlight: active/hovered item and active language turn gold —
    dark gold on stone, light gold over the hero video, photos and olive blocks */
 .header { --nav-accent: var(--gold-ink); }
-.header.on-dark { --nav-accent: var(--gold-light); }
 @media (max-width: 1023px) {
   .nav { --nav-accent: var(--gold-ink); } /* burger menu is always on stone */
 }
@@ -810,8 +798,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contact-row__cta svg { flex: none; width: .62em; height: .62em; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform .3s var(--ease); }
 .contact-row__cta:hover svg { transform: translateX(.18em); }
 
-/* footer: menu in two columns, language, copyright (the header logo is the only logo on this screen) */
-.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
+/* footer: logo (80px), menu in two columns, language, copyright */
+.foot__logo { grid-area: logo; display: inline-flex; justify-self: start; }
+.foot__logo img { width: auto; height: 80px; }
+.foot { display: grid; grid-template-columns: 1fr; grid-template-areas: "logo" "nav" "lang" "copy"; gap: 24px; margin-top: 44px; align-items: start; }
 .foot__nav { grid-area: nav; display: grid; grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 0 40px; }
 .foot__nav a { display: inline-block; padding: 6px 0; font-size: 14px; color: var(--fg-2); transition: color .2s ease; }
 .foot__nav a[href]:hover { color: var(--hover); }
@@ -862,6 +852,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
     gap: clamp(12px, 2vh, 24px) 32px; margin-top: clamp(32px, 6vh, 72px); padding-top: 0;
   }
+  .foot__logo { flex: 0 0 100%; }
   .foot__nav { flex: 1 1 calc(100% - 160px); display: flex; flex-wrap: wrap; gap: 0 clamp(18px, 1.8vw, 36px); }
   .foot__nav a { padding: .5vh 0; font-size: clamp(13px, 1.45vh, 16px); }
   .foot .lang { flex: none; line-height: 1; }
@@ -966,8 +957,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
   .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
   .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
-  /* the logo: the band wordmark readable, the header stays 68px */
-  .logo { height: 64px; }
 
   /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */
   .card .card__title, .step .step__title { font-size: 22px; font-weight: 500; }

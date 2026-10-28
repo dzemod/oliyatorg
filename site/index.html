@@ -20,10 +20,9 @@
   <meta property="og:image:alt" content="Логотип Оліяторг на тлі соняшникового поля">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://oliyatorg.vercel.app/assets/brand/og-image.jpg">
-  <link rel="icon" href="assets/brand/mark-01.svg" type="image/svg+xml">
-  <link rel="icon" href="assets/brand/favicon-01-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="assets/brand/favicon-01-192.png" sizes="192x192" type="image/png">
-  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon-01.png">
+  <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
 
   <!-- fonts are self-hosted Google Fonts (assets/fonts, @font-face in style.css): Inter Tight for headings and numbers,
        Inter for the rest. Every Cyrillic face is preloaded (≈7 KB each), so the first screen never swaps after it has painted -->
@@ -54,12 +53,14 @@
   <a class="skip" href="#about" data-i18n="ui.skip">Перейти до змісту</a>
 
   <!-- ============ HEADER ============ -->
-  <header class="header" id="header">
+  <header class="header is-solid" id="header">
     <a class="header__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
-      <!-- LOGO: option 01 in our palette — logo-01.svg (gold + graphite) on light sections, logo-01-white.svg (light gold +
-           stone) over the video, photos and dark sections; CSS shows the right one. The original PNGs stay in assets/brand, unused. -->
-      <img class="logo logo--color" src="assets/brand/logo-01.svg" alt="Оліяторг" width="400" height="340">
-      <img class="logo logo--white" src="assets/brand/logo-01-white.svg" alt="" width="400" height="340" aria-hidden="true">
+      <!-- LOGO: the client's original (brand_assets/original-logo-200.png), only resized — never redrawn or recoloured.
+           It is not readable over the hero photo, so the header is solid stone from the start. -->
+      <picture>
+        <source type="image/webp" srcset="assets/brand/logo-64.webp 1x, assets/brand/logo-128.webp 2x">
+        <img class="logo" src="assets/brand/logo-64.png" srcset="assets/brand/logo-64.png 1x, assets/brand/logo-128.png 2x" alt="Оліяторг" data-i18n-attr="alt:ui.logo" width="64" height="64">
+      </picture>
     </a>
 
     <nav class="nav" id="nav" aria-label="Головне меню" data-i18n-attr="aria-label:ui.menu">
@@ -350,8 +351,7 @@
 
       <!-- 7. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
       <section class="panel contacts" id="contacts" data-tone="dark" data-theme="dark" aria-labelledby="contacts-title">
-        <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it).
-             data-theme="dark": the header logo over it turns white -->
+        <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it) -->
         <div class="contacts__cta" data-theme="dark" data-tone="photo">
           <div class="contacts__photo" aria-hidden="true">
             <picture>
@@ -378,6 +378,12 @@
           </dl>
 
           <footer class="foot" data-reveal>
+            <a class="foot__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
+              <picture>
+                <source type="image/webp" srcset="assets/brand/logo-80.webp 1x, assets/brand/logo-160.webp 2x">
+                <img src="assets/brand/logo-80.png" srcset="assets/brand/logo-80.png 1x, assets/brand/logo-160.png 2x" alt="Оліяторг" data-i18n-attr="alt:ui.logo" width="80" height="80" loading="lazy" decoding="async">
+              </picture>
+            </a>
             <ul class="foot__nav">
               <li><a href="#top" data-i18n="nav.home">Головна</a></li>
               <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.products">Продукція</a></li>
