@@ -159,7 +159,7 @@
               <button class="tabs__tab" type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1" data-i18n="about.t3">Якість</button>
             </div>
             <div class="tabs__panels">
-              <p class="tabs__panel is-active" role="tabpanel" id="about-panel-1" aria-labelledby="about-tab-1" data-i18n="about.v1">Без хімічних розчинників, власна сонячна станція 1,8&nbsp;мегавата</p>
+              <p class="tabs__panel is-active" role="tabpanel" id="about-panel-1" aria-labelledby="about-tab-1" data-i18n="about.v1">Без хімічних розчинників</p>
               <p class="tabs__panel" role="tabpanel" id="about-panel-2" aria-labelledby="about-tab-2" data-i18n="about.v2">Підтримуємо спорт, культуру та місцеві ініціативи</p>
               <p class="tabs__panel" role="tabpanel" id="about-panel-3" aria-labelledby="about-tab-3" data-i18n="about.v3">Контроль якості на кожному етапі — від сировини до продукції</p>
             </div>
@@ -307,7 +307,25 @@
         </ol>
       </section>
 
-      <!-- 6. EXPORT & PARTNERSHIP — after the Envagyte reference: one large photo on the left (top line to bottom line);
+      <!-- 6. ESG — energy independence and social responsibility. Texts: brief.txt, point 13 (exact). Desktop: label and
+           heading; the energy text (columns 1–7) and the two figures stacked (columns 9–12) on one top line; 80px lower
+           the social block: its sub-heading (columns 1–4) and text (from column 6). Phones: one column, figures 2 across. -->
+      <section class="panel esg" id="esg" data-tone="dark" aria-labelledby="esg-title">
+        <header class="esg__head">
+          <p class="eyebrow" data-reveal><span data-i18n="esg.eyebrow">ESG</span></p>
+          <h2 class="h2 esg__title" id="esg-title" data-reveal data-i18n="esg.title">Енергонезалежність та <em>сталий розвиток</em></h2>
+        </header>
+        <p class="text esg__text" data-reveal data-i18n="esg.text">Компанія Оліяторг послідовно впроваджує принципи сталого розвитку та енергоефективності. На підприємстві працює сонячна електростанція потужністю 1,8&nbsp;мегавата, а також генератор електроенергії потужністю 1,5&nbsp;мегавата, компанія використовує як паливо лушпиння соняшнику. Ми прагнемо мінімізувати використання викопних видів палива, зокрема природного газу, та надалі розвивати власну енергетичну інфраструктуру. Наша стратегічна мета — створення енергетичного острова, який забезпечить підприємству максимальну енергетичну незалежність.</p>
+        <!-- the figures count up like the key numbers (main.js); the decimal sign follows the language -->
+        <dl class="stats esg__stats">
+          <div class="stat" data-reveal><dt class="stat__value"><span class="stat__num" aria-hidden="true" data-i18n="esg.n1">1,8</span><span class="sr-only" data-i18n="esg.n1">1,8</span></dt><dd class="stat__label" data-i18n="esg.s1">мегавата — сонячна електростанція</dd></div>
+          <div class="stat" data-reveal><dt class="stat__value"><span class="stat__num" aria-hidden="true" data-i18n="esg.n2">1,5</span><span class="sr-only" data-i18n="esg.n2">1,5</span></dt><dd class="stat__label" data-i18n="esg.s2">мегавата — генератор на&nbsp;лушпинні соняшнику</dd></div>
+        </dl>
+        <h3 class="esg__subtitle" data-reveal data-i18n="esg.socialTitle">Соціальна відповідальність</h3>
+        <p class="text esg__social" data-reveal data-i18n="esg.social">Ми віримо, що відповідальний бізнес — це не лише якісна продукція та ефективне виробництво, а й внесок у розвиток місцевої громади. Оліяторг підтримує спорт, культуру та місцеві ініціативи, сприяючи створенню можливостей для розвитку людей і зміцненню громади.</p>
+      </section>
+
+      <!-- 7. EXPORT & PARTNERSHIP — after the Envagyte reference: one large photo on the left (top line to bottom line);
            on the right the label and heading, then two features (icon above, title, text) from the content line down,
            and a big number with its caption at the bottom right. Phones: photo, heading, features, number. -->
       <section class="panel export" id="export" data-tone="light" aria-labelledby="export-title">
@@ -349,7 +367,7 @@
         </div>
       </section>
 
-      <!-- 7. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
+      <!-- 8. CONTACTS + FOOTER — one screen: partnership photo on the left, contacts and footer on the right -->
       <section class="panel contacts" id="contacts" data-tone="dark" data-theme="dark" aria-labelledby="contacts-title">
         <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it) -->
         <div class="contacts__cta" data-theme="dark" data-tone="photo">

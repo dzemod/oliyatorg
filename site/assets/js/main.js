@@ -159,16 +159,21 @@
   // numbers count up to the values in the HTML (from data-from, else 0), one after another; screen readers read the
   // .sr-only copy. Only the digits' text changes (tabular figures, so nothing around them moves).
   function counter(sec) {
-    const nums = $$('.stat__num', sec).map(el => ({ el, to: +el.textContent, from: +(el.dataset.from || 0) }));
+    const nums = $$('.stat__num', sec).map(el => {
+      const v = el.textContent.trim();
+      return { el, to: parseFloat(v.replace(',', '.')), dec: (v.split(/[.,]/)[1] || '').length, from: +(el.dataset.from || 0) };
+    });
     if (!nums.length) return null;
-    nums.forEach(n => { n.el.textContent = n.from; });
+    // whole numbers as they are; decimals keep their places, with the language's decimal sign
+    const show = (n, v) => { n.el.textContent = n.dec ? v.toFixed(n.dec).replace('.', root.lang === 'en' ? '.' : ',') : Math.round(v); };
+    nums.forEach(n => show(n, n.from));
     return delay => {
       const t0 = performance.now() + delay * 1000, dur = 1400;
       const tick = now => {
         let busy = false;
         nums.forEach((n, i) => {
           const p = Math.min(1, Math.max(0, (now - t0 - i * STAGGER * 1000) / dur));
-          n.el.textContent = Math.round(n.from + (n.to - n.from) * (1 - (1 - p) ** 2));   // power2.out
+          show(n, n.from + (n.to - n.from) * (1 - (1 - p) ** 2));   // power2.out
           if (p < 1) busy = true;
         });
         if (busy) requestAnimationFrame(tick);

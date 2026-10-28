@@ -32,6 +32,8 @@
   --graphite: #2B2A27;                 /* text */
   --graphite-70: rgb(43 42 39 / .7);   /* secondary text (5.0:1 on stone) */
   --olive: #4A4A3A;                    /* dark blocks, dark sections, footer, photo tints */
+  --night: #171612;                    /* the ESG section */
+  --stone-80: rgb(239 236 230 / .8);   /* body text on night */
   --gold: #B8913A;                     /* accent marks: label dots, thin accent lines, active tab / step */
   --gold-text: #9C7B31;                /* large gold text on stone — the gold part of headings (3.4:1) */
   --gold-ink: #816629;                 /* small gold text on stone — active menu, numbers, icons (4.6:1) */
@@ -310,6 +312,13 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .stat__value { font: 400 clamp(48px, 13vw, 64px)/1 var(--display); letter-spacing: var(--track); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ESG — night background, stone headings, body at 80%; gold label, figures and accent from the dark tone */
+.esg[data-tone] { --bg: var(--night); }   /* outranks the dark tone (end of file) */
+.esg .text { color: var(--stone-80); }
+.esg .esg__stats { margin-top: 56px; }
+.esg__subtitle { margin-top: 80px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; }
+.esg .esg__social { margin-top: 20px; max-width: 640px; }
 
 /* 4. Products — after the Interos "blog" layout: label and two-line heading on the left, the "all products"
    button on the right on the heading's bottom line (its right edge = the third card's right edge), then three
@@ -654,6 +663,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
     .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
   }
+  /* ESG: one 12-column grid — head; the text (1–7) and the figures (9–12) on one top line; 80px lower the social
+     sub-heading (1–4) and its text (from 6, at most 640px) on one top line. As tall as its content. */
+  html.is-v .panel.esg {
+    min-height: 0; grid-template-columns: repeat(12, var(--col)); grid-template-rows: auto auto auto; align-items: start;
+  }
+  .is-v .esg__head { grid-column: 1 / -1; }
+  .is-v .esg .esg__title { min-height: 0; margin: 0; }
+  .is-v .esg .esg__text { grid-column: 1 / 8; grid-row: 2; max-width: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .is-v .esg .esg__stats { grid-column: 9 / 13; grid-row: 2; display: flex; flex-direction: column; gap: clamp(40px, 6vh, 64px); margin: clamp(64px, calc(100vw * 90 / 1920), 100px) 0 0; }
+  .is-v .esg .stat__value { font-size: clamp(60px, 10vh, 128px); }
+  .is-v .esg .stat__label { white-space: normal; }
+  .is-v .esg__subtitle { grid-column: 1 / 5; grid-row: 3; margin-top: 80px; font-size: clamp(24px, 3.2vh, 36px); }
+  .is-v .esg .esg__social { grid-column: 6 / 13; grid-row: 3; margin-top: 80px; }
+
   /* Products: the photos fill the screen's free height, but never get shorter than this — on a short screen
      the section grows instead, so the titles never run into the next section */
   .is-v .products .cards { grid-template-rows: minmax(clamp(180px, 20vw, 400px), 1fr) auto auto; }
@@ -902,6 +925,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .hero .hero__lead, .about .about__body .text { margin: 28px 0 0; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
   .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
+  .esg .esg__title { margin: 0; }
+  .esg .esg__text { margin-top: 28px; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
   .products .cards { gap: 64px; }
@@ -955,7 +980,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* one heading size for every section (≈26px at 375, so no heading runs over 2–3 lines); the hero keeps its own
      size (see .hero__title): exactly three lines, each phrase on one line */
   .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
-  .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
+  .esg .esg__title, .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
   .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
 
   /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */

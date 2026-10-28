@@ -38,7 +38,7 @@ window.I18N = {
     'about.t1': 'Nature',
     'about.t2': 'People',
     'about.t3': 'Quality',
-    'about.v1': 'No chemical solvents, our own 1.8-megawatt solar power plant',
+    'about.v1': 'No chemical solvents',
     'about.v2': 'We support sport, culture and local initiatives',
     'about.v3': 'Quality control at every stage — from raw materials to finished product',
     'about.cta': 'About us',
@@ -101,6 +101,16 @@ window.I18N = {
     'form.ok': 'Thank you! We will reply soon',
     'form.mail': 'Your e-mail app has opened with the message — just press “Send”',
     'form.error': 'Could not send. Please write to us by e-mail',
+
+    'esg.eyebrow': 'ESG',
+    'esg.title': 'Energy independence and <em>sustainable development</em>',
+    'esg.text': 'Oliyatorg consistently implements the principles of sustainable development and energy efficiency. The plant runs a 1.8&nbsp;megawatt solar power plant and a 1.5&nbsp;megawatt electricity generator, and the company uses sunflower husks as its fuel. We strive to minimise the use of fossil fuels, in particular natural gas, and to keep developing our own energy infrastructure. Our strategic goal is to create an energy island that will give the plant maximum energy independence.',
+    'esg.n1': '1.8',
+    'esg.n2': '1.5',
+    'esg.s1': 'megawatts — solar power plant',
+    'esg.s2': 'megawatts — sunflower husk generator',
+    'esg.socialTitle': 'Social responsibility',
+    'esg.social': 'We believe that responsible business is not only about quality products and efficient production, but also about contributing to the development of the local community. Oliyatorg supports sport, culture and local initiatives, helping to create opportunities for people to grow and to strengthen the community.',
 
     'footer.copy': 'Oliyatorg. All rights reserved',
 
