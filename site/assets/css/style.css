@@ -892,6 +892,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    ========================================================================= */
 /* neighbouring sections alternate: "base" (the page colour) and "surface"; over photos the text is full strength */
 [data-tone="surface"] { --bg: var(--surface); }
+/* ESG only: the deep green of the logo's family (text 13.6:1, running text 8.7:1, gold 5.4:1, muted 4.7:1) */
+[data-tone="green"] { --bg: #16251B; --line: rgb(239 236 230 / .16); }
 [data-tone="photo"] { --body: var(--text); --fg-2: rgb(239 236 230 / .8); }
 .panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
