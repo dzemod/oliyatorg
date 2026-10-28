@@ -323,15 +323,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .esg-row.is-entering .esg-row__media img { clip-path: inset(0 0 100% 0); opacity: 0; transition: none; }
 .esg-row.is-entering .esg-row__text { opacity: 0; transform: translateY(12px); transition: none; }
 
-/* Certificates — cards on --surface (the sections around them are --bg): padding 32px, thin L-shaped corner marks (24px, 1px, --corner) at
-   the four corners instead of a border; a 6px accent square + the tag; the thumbnail (contained, on --surface-2, one
-   fixed height); the title (20px, 2 lines at most) and the scope (16px, 4 lines at most). Hover: up 4px, the corner
-   marks turn gold (0.25s). Home: the head on the left line, four cards in one row whose parts share rows (subgrid), so titles and
-   descriptions start on the same lines; the button under them. certificates.html: a list of wide cards. */
+/* Certificates — cards on --surface (the sections around them are --bg), no border: padding 32px; a 6px gold square +
+   the tag (14px); the thumbnail (contained, on --surface-2, one fixed height); the title (20px, 2 lines at most) and the
+   scope (16px, --text-body, 4 lines at most). Hover: the card rises 4px (0.25s). Home: a slider (below); its cards'
+   parts share rows (subgrid), so tags, thumbnails, titles and texts start on the same lines. certificates.html: a list
+   of wide cards. */
 .certs__head .eyebrow { margin: 0 0 22px; }
 .certs__head .certs__title { margin: 0; }
 .certs .certs__lead { max-width: 34em; margin: 24px 0 0; }
-.certs__more { display: flex; margin-top: 48px; }
 .cert-grid { display: grid; gap: 24px; margin-top: 48px; }
 .cert { display: grid; }
 .cert__card {
@@ -339,16 +338,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   background: var(--surface); text-align: left; color: var(--text);
   transition: transform .25s ease;
 }
-/* the corner marks: eight 1px lines drawn in currentColor, so one colour transition turns all of them */
-.cert__card::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; color: var(--corner); transition: color .25s ease;
-  --l: linear-gradient(currentColor, currentColor);
-  background: var(--l) left top / 24px 1px, var(--l) left top / 1px 24px, var(--l) right top / 24px 1px, var(--l) right top / 1px 24px,
-              var(--l) left bottom / 24px 1px, var(--l) left bottom / 1px 24px, var(--l) right bottom / 24px 1px, var(--l) right bottom / 1px 24px;
-  background-repeat: no-repeat;
-}
 .cert__card:hover { transform: translateY(-4px); }
-.cert__card:hover::before { color: var(--accent); }
 .cert__tag { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--text); }
 .cert__tag::before { content: ""; flex: none; width: 6px; height: 6px; background: var(--accent); }
 .cert__media { display: block; height: 260px; margin-top: 24px; padding: 20px; background: var(--surface-2); }
@@ -362,25 +352,46 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden;
   margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-body);
 }
-/* home: the cards' parts share the rows of the grid (subgrid) — every tag, photo, title and text on one line */
 .cert-grid--home .cert { grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
 .cert-grid--home .cert__card { grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 0; }
 .cert-grid--home .cert__body { display: contents; }
 .cert-grid--home .cert__title { margin-top: 24px; }
-/* phones: a swipe row of 82vw cards, from the page margin to the screen edge */
-@media (max-width: 639px) {
-  .cert-grid--home {
-    grid-auto-flow: column; grid-auto-columns: 82vw; grid-template-rows: repeat(4, auto); gap: 0 16px;
-    margin-inline: calc(-1 * var(--pad)); padding: 4px var(--pad) 8px; overflow-x: auto; overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); scrollbar-width: none;
-  }
-  .cert-grid--home::-webkit-scrollbar { display: none; }
-  .cert-grid--home .cert { scroll-snap-align: start; }
-  .certs__more .certs__all { display: flex; width: 100%; }
-  .certs__more .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
+
+/* the head row, like Production's: label, heading, text on the left; arrows + button on the right, on the heading's
+   bottom line. Phones: the controls under the text — the two arrows, then the button over the rest of the row. */
+.certs__controls { display: flex; align-items: stretch; gap: 8px; margin-top: 32px; }
+.certs__controls .certs__all { margin-left: 8px; }
+.slider__arrow {
+  display: grid; place-items: center; flex: none; width: 54px; height: 54px; background: var(--surface-2); color: var(--text);
+  transition: background-color .25s ease, color .25s ease, opacity .25s ease;
 }
-@media (min-width: 640px) { .cert-grid--home { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .cert-grid--home { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.slider__arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.slider__arrow:hover:not(:disabled) { background: var(--accent); color: var(--bg); }
+.slider__arrow:disabled { opacity: .4; cursor: default; }
+@media (min-width: 640px) {
+  .certs__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
+  .certs__head .eyebrow { grid-column: 1; justify-self: start; }
+  .certs__head .certs__title { grid-column: 1; grid-row: 2; }
+  .certs .certs__lead { grid-column: 1; grid-row: 3; }
+  .certs__controls { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
+}
+@media (max-width: 639px) {
+  .certs__controls { flex-wrap: wrap; }
+  .certs__controls .certs__all { flex: 1 1 100%; display: flex; margin-left: 0; }
+  .certs__controls .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
+}
+
+/* the slider: a clipped window over one row of cards; the row moves with a transform, one card per step (main.js).
+   Cards: 4 in view on desktop, 2 on tablets, 1.15 on phones (the next one peeks). 8px above for the hover rise. */
+.slider { --g: 16px; --cw: calc((100% - var(--g)) / 1.15); overflow: hidden; margin-top: 40px; padding-top: 8px; touch-action: pan-y; outline-offset: 6px; }
+.slider__track {
+  position: relative; margin: 0; grid-auto-flow: column; grid-auto-columns: var(--cw); grid-template-rows: repeat(4, auto); gap: 0 var(--g);
+  transition: transform .5s cubic-bezier(.33, 1, .68, 1);   /* power2.out */
+}
+.slider.is-dragging .slider__track { transition: none; }
+.slider .cert__card:focus-visible { outline-offset: -2px; }
+@media (min-width: 640px) { .slider { --g: 24px; --cw: calc((100% - var(--g)) / 2); } }
+@media (min-width: 1024px) { .slider { --cw: calc((100% - 3 * var(--g)) / 4); } }
 /* certificates.html: one wide card per row — the thumbnail left (4 of 12 columns), tag, title and scope right */
 .cert-grid--page .cert__card { grid-template-rows: none; }
 .cert-grid--page .cert__title, .cert-grid--page .cert__desc { -webkit-line-clamp: unset; }
@@ -797,6 +808,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .certs .certs__title { font-size: var(--h2-size); }
   .is-v .certs__head { width: 100%; }
   .is-v .certs .cert-grid { margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .is-v .certs .slider { margin-top: clamp(56px, calc(100vw * 82 / 1920), 92px); }
+  .is-v .certs .slider .cert-grid { margin-top: 0; }
   .is-v .certs--page .cert-grid { margin-top: 0; }
   /* certificates.html hero: under the header, the heading as large as the key numbers' */
   html.is-v .panel.page-hero { display: block; padding-top: calc(var(--header-h) + var(--vgap)); }
@@ -1041,6 +1054,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .esg .esg-list { margin-top: 56px; }
   .certs .certs__title { margin: 0; }
   .certs .cert-grid { margin-top: 56px; }
+  .certs .slider { margin-top: 48px; }
+  .certs .slider .cert-grid { margin-top: 0; }
   .certs--page .cert-grid { margin-top: 0; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */

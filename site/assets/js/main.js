@@ -345,6 +345,70 @@
     });
   }
 
+  /* ---------- Certificates slider (home): one card per step ----------
+     The row moves with a transform (0.5s, CSS); arrows, swipe / drag (pointer events) and ← → while focus is inside.
+     A drag never opens the lightbox: the click after it is swallowed. Tabbing to a card brings it into view. */
+  const slider = $('[data-slider]');
+  if (slider) {
+    const track = $('.slider__track', slider);
+    const items = $$('.cert', track);
+    const prev = $('[data-slider-prev]'), next = $('[data-slider-next]');
+    let i = 0, x = 0;
+    const metrics = () => {
+      const step = items.length > 1 ? items[1].offsetLeft - items[0].offsetLeft : 0;
+      const end = items[items.length - 1];
+      const max = Math.max(0, end.offsetLeft + end.offsetWidth - slider.clientWidth);
+      return { step, max, last: step ? Math.ceil(max / step - .01) : 0 };
+    };
+    const go = k => {
+      const m = metrics();
+      i = Math.max(0, Math.min(k, m.last));
+      x = Math.min(i * m.step, m.max);
+      track.style.transform = `translateX(${-x}px)`;
+      prev.disabled = i === 0;
+      next.disabled = i === m.last;
+    };
+    prev.addEventListener('click', () => go(i - 1));
+    next.addEventListener('click', () => go(i + 1));
+    slider.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      go(i + (e.key === 'ArrowRight' ? 1 : -1));
+    });
+    slider.addEventListener('focusin', e => {
+      const item = e.target.closest('.cert');
+      if (!item) return;
+      const { step } = metrics(), l = item.offsetLeft, r = l + item.offsetWidth;
+      if (l < x) go(Math.floor(l / step));
+      else if (r > x + slider.clientWidth) go(Math.ceil((r - slider.clientWidth) / step));
+      slider.scrollLeft = 0;   // the browser may scroll the clipped window to the focused card: the transform does it
+    });
+    // swipe / drag: the row follows the pointer, then snaps one card on (> 40px) or back
+    let x0 = null, dx = 0, dragged = false;
+    slider.addEventListener('pointerdown', e => {
+      if (e.button) return;
+      x0 = e.clientX; dx = 0; dragged = false;
+    });
+    slider.addEventListener('pointermove', e => {
+      if (x0 === null) return;
+      dx = e.clientX - x0;
+      if (!dragged && Math.abs(dx) > 6) { dragged = true; slider.classList.add('is-dragging'); slider.setPointerCapture(e.pointerId); }
+      if (dragged) track.style.transform = `translateX(${-x + dx}px)`;
+    });
+    const release = () => {
+      if (x0 === null) return;
+      x0 = null;
+      slider.classList.remove('is-dragging');
+      if (dragged) go(i + (dx < -40 ? 1 : dx > 40 ? -1 : 0));
+    };
+    slider.addEventListener('pointerup', release);
+    slider.addEventListener('pointercancel', release);
+    slider.addEventListener('click', e => { if (dragged) { e.stopPropagation(); e.preventDefault(); dragged = false; } }, true);
+    addEventListener('resize', () => go(i));
+    document.addEventListener('langchange', () => go(i));
+    go(0);
+  }
+
   /* ---------- Certificates: language-specific files + lightbox ---------- */
   // A certificate that exists in two languages (Halal) carries its English files in data-*-en: the thumbnail, the
   // large image and the PDF follow the site language.
