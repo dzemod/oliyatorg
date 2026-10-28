@@ -318,17 +318,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .esg-row__icon svg { display: block; }
 .esg-row__label { transition: opacity .25s ease; }
 .esg-row:hover .esg-row__label { opacity: .7; }
-/* the toggle: a 40px circle at the right edge, on the title's first line — closed: an outlined "+"; open: a filled
-   circle whose "+" has turned 45° into an "×" in the gold */
+/* the toggle: a 40px square (sharp corners, like the whole site) at the right edge, on the title's first line — closed: an outlined "+"; open: a filled
+   square whose "+" has turned 45° into an "×" in the gold (only the lines turn; the square stays upright) */
 .esg-row__toggle {
-  position: absolute; top: -7px; right: 0; width: 40px; height: 40px; border: 1px solid rgb(14 14 13 / .4); border-radius: 50%;
-  color: var(--fg); transition: transform .3s ease, color .3s ease, background-color .3s ease, border-color .3s ease;
+  position: absolute; top: -7px; right: 0; width: 40px; height: 40px; border: 1px solid rgb(14 14 13 / .4); border-radius: 0;
+  color: var(--fg); transition: color .3s ease, background-color .3s ease, border-color .3s ease;
 }
 .esg-row__toggle::before, .esg-row__toggle::after {
   content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 1.5px; margin: -.75px 0 0 -7px; background: currentColor;
+  transition: transform .3s ease;
 }
 .esg-row__toggle::after { transform: rotate(90deg); }
-.esg-row.is-open .esg-row__toggle { transform: rotate(45deg); color: var(--accent); background-color: var(--fg); border-color: var(--fg); }
+.esg-row.is-open .esg-row__toggle::before { transform: rotate(45deg); }
+.esg-row.is-open .esg-row__toggle::after { transform: rotate(135deg); }
+.esg-row.is-open .esg-row__toggle { color: var(--accent); background-color: var(--fg); border-color: var(--fg); }
 .esg-row__media { grid-row: 2; display: none; margin-top: 20px; aspect-ratio: 16 / 9; overflow: hidden; }
 .esg-row.is-open .esg-row__media { display: block; }
 .esg-row__media img { width: 100%; height: 100%; object-fit: cover; transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), opacity .5s cubic-bezier(.33, 1, .68, 1); }
