@@ -57,7 +57,7 @@ fs.mkdirSync(OUT, { recursive: true });
 for (const f of files) {
   if (textOnly) {
     const { text, pages } = await page.evaluate((n) => window.firstPage(n, 0), f);
-    console.log(`\n=== ${f} (${pages} pages)\n${text.slice(0, 1500)}`);
+    console.log(`\n=== ${f} (${pages} pages)\n${text.slice(0, +(process.env.CHARS || 1500))}`);
     continue;
   }
   const name = map[f];

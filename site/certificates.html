@@ -92,56 +92,72 @@
     <main class="track" id="track">
 
       <!-- 1. HERO — the page title and one sentence from brief.txt (point 9) -->
-      <section class="panel page-hero" data-tone="base" aria-labelledby="page-title">
+      <section class="panel page-hero" data-tone="surface" aria-labelledby="page-title">
         <p class="eyebrow" data-reveal><span data-i18n="certs.eyebrow">Сертифікати</span></p>
         <h1 class="h2 page-hero__title" id="page-title" data-reveal data-i18n="certsPage.title">Якість — не&nbsp;опція. <em>Це&nbsp;наш стандарт</em></h1>
         <p class="text page-hero__lead" data-reveal data-i18n="certsPage.lead">Якість починається з&nbsp;ретельного відбору сировини й&nbsp;забезпечується на&nbsp;кожному етапі виробництва.</p>
       </section>
 
-      <!-- 2. ALL CERTIFICATES — data: assets/certificates/certificates.json. The Halal certificate shows the Ukrainian file on
+      <!-- 2. ALL CERTIFICATES — a list of wide cards (thumbnail left, tag, title and scope right; phones: thumbnail on top).
+           Data: assets/certificates/certificates.json. The Halal certificate shows the Ukrainian file on
            the UA site and the English one on the EN site (main.js). A click opens the lightbox. -->
-      <section class="panel certs certs--page" id="certs-list" data-tone="surface" aria-label="Сертифікати" data-i18n-attr="aria-label:certs.eyebrow">
+      <section class="panel certs certs--page" id="certs-list" data-tone="base" aria-label="Сертифікати" data-i18n-attr="aria-label:certs.eyebrow">
         <ul class="cert-grid cert-grid--page">
           <li class="cert" data-reveal>
-            <button class="cert__open" type="button" data-cert data-large="assets/certificates/iso-22000-tuv-1600.webp" data-pdf="assets/certificates/iso-22000-tuv.pdf">
-              <span class="cert__media"><img src="assets/certificates/iso-22000-tuv-600.webp" srcset="assets/certificates/iso-22000-tuv-600.webp 600w, assets/certificates/iso-22000-tuv-1600.webp 1600w" sizes="(min-width: 1480px) 22vw, (min-width: 640px) 30vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
-              <span class="caption cert__issuer" data-i18n="cert.iso-22000-tuv.issuer">TÜV Thüringen</span>
-              <span class="cert__title" data-i18n="cert.iso-22000-tuv.title">ISO 22000:2018</span>
+            <button class="cert__card" type="button" data-cert data-large="assets/certificates/iso-22000-tuv-1600.webp" data-pdf="assets/certificates/iso-22000-tuv.pdf">
+              <span class="cert__tag" data-i18n="cert.iso.tag">ISO 22000</span>
+              <span class="cert__media"><img src="assets/certificates/iso-22000-tuv-600.webp" srcset="assets/certificates/iso-22000-tuv-600.webp 600w, assets/certificates/iso-22000-tuv-1600.webp 1600w" sizes="(min-width: 640px) 30vw, 80vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="cert__body">
+                <span class="cert__title" data-i18n="cert.iso.title">Система менеджменту ISO 22000:2018</span>
+                <span class="cert__desc" data-i18n="cert.iso.desc">Виробництво нерафінованої соняшникової та&nbsp;ріпакової олії і&nbsp;макухи. Видав TÜV Thüringen.</span>
+              </span>
             </button>
           </li>
           <li class="cert" data-reveal>
-            <button class="cert__open" type="button" data-cert data-large="assets/certificates/organic-eu-organic-standard-1600.webp" data-pdf="assets/certificates/organic-eu-organic-standard.pdf">
-              <span class="cert__media"><img src="assets/certificates/organic-eu-organic-standard-600.webp" srcset="assets/certificates/organic-eu-organic-standard-600.webp 600w, assets/certificates/organic-eu-organic-standard-1600.webp 1600w" sizes="(min-width: 1480px) 22vw, (min-width: 640px) 30vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
-              <span class="caption cert__issuer" data-i18n="cert.organic-eu-organic-standard.issuer">Organic Standard</span>
-              <span class="cert__title" data-i18n="cert.organic-eu-organic-standard.title">Органічне виробництво — Регламент (ЄС) 2018/848</span>
+            <button class="cert__card" type="button" data-cert data-large="assets/certificates/organic-eu-organic-standard-1600.webp" data-pdf="assets/certificates/organic-eu-organic-standard.pdf">
+              <span class="cert__tag" data-i18n="cert.eu.tag">Organic EU</span>
+              <span class="cert__media"><img src="assets/certificates/organic-eu-organic-standard-600.webp" srcset="assets/certificates/organic-eu-organic-standard-600.webp 600w, assets/certificates/organic-eu-organic-standard-1600.webp 1600w" sizes="(min-width: 640px) 30vw, 80vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="cert__body">
+                <span class="cert__title" data-i18n="cert.eu.title">Органічний сертифікат ЄС (2018/848)</span>
+                <span class="cert__desc" data-i18n="cert.eu.desc">Органічна олія, макуха та&nbsp;лушпиння соняшнику для&nbsp;ринку ЄС. Орган контролю&nbsp;— Organic Standard.</span>
+              </span>
             </button>
           </li>
           <li class="cert" data-reveal>
-            <button class="cert__open" type="button" data-cert data-large="assets/certificates/organic-usda-etko-1600.webp" data-pdf="assets/certificates/organic-usda-etko.pdf">
-              <span class="cert__media"><img src="assets/certificates/organic-usda-etko-600.webp" srcset="assets/certificates/organic-usda-etko-600.webp 600w, assets/certificates/organic-usda-etko-1600.webp 1600w" sizes="(min-width: 1480px) 22vw, (min-width: 640px) 30vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
-              <span class="caption cert__issuer" data-i18n="cert.organic-usda-etko.issuer">ETKO</span>
-              <span class="cert__title" data-i18n="cert.organic-usda-etko.title">Органічний сертифікат — USDA, 7&nbsp;CFR Part&nbsp;205</span>
+            <button class="cert__card" type="button" data-cert data-large="assets/certificates/organic-usda-etko-1600.webp" data-pdf="assets/certificates/organic-usda-etko.pdf">
+              <span class="cert__tag" data-i18n="cert.usda.tag">Organic USDA</span>
+              <span class="cert__media"><img src="assets/certificates/organic-usda-etko-600.webp" srcset="assets/certificates/organic-usda-etko-600.webp 600w, assets/certificates/organic-usda-etko-1600.webp 1600w" sizes="(min-width: 640px) 30vw, 80vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="cert__body">
+                <span class="cert__title" data-i18n="cert.usda.title">Органічний сертифікат USDA</span>
+                <span class="cert__desc" data-i18n="cert.usda.desc">Відповідність органічним правилам USDA (7&nbsp;CFR Part&nbsp;205), категорія Handling. Видав ETKO.</span>
+              </span>
             </button>
           </li>
           <li class="cert" data-reveal>
-            <button class="cert__open" type="button" data-cert data-large="assets/certificates/gmp-plus-sgs-1600.webp" data-pdf="assets/certificates/gmp-plus-sgs.pdf">
-              <span class="cert__media"><img src="assets/certificates/gmp-plus-sgs-600.webp" srcset="assets/certificates/gmp-plus-sgs-600.webp 600w, assets/certificates/gmp-plus-sgs-1600.webp 1600w" sizes="(min-width: 1480px) 22vw, (min-width: 640px) 30vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
-              <span class="caption cert__issuer" data-i18n="cert.gmp-plus-sgs.issuer">SGS</span>
-              <span class="cert__title" data-i18n="cert.gmp-plus-sgs.title">GMP+ Feed Safety Assurance</span>
+            <button class="cert__card" type="button" data-cert data-large="assets/certificates/gmp-plus-sgs-1600.webp" data-pdf="assets/certificates/gmp-plus-sgs.pdf">
+              <span class="cert__tag" data-i18n="cert.gmp.tag">GMP+</span>
+              <span class="cert__media"><img src="assets/certificates/gmp-plus-sgs-600.webp" srcset="assets/certificates/gmp-plus-sgs-600.webp 600w, assets/certificates/gmp-plus-sgs-1600.webp 1600w" sizes="(min-width: 640px) 30vw, 80vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="cert__body">
+                <span class="cert__title" data-i18n="cert.gmp.title">GMP+ Feed Safety Assurance</span>
+                <span class="cert__desc" data-i18n="cert.gmp.desc">Виробництво кормових матеріалів за&nbsp;модулем GMP+ Feed Safety Assurance 2020. Видав SGS.</span>
+              </span>
             </button>
           </li>
           <li class="cert" data-reveal>
-            <button class="cert__open" type="button" data-cert data-large="assets/certificates/halal-uk-1600.webp" data-pdf="assets/certificates/halal-uk.pdf" data-large-en="assets/certificates/halal-en-1600.webp" data-pdf-en="assets/certificates/halal-en.pdf" data-srcset-en="assets/certificates/halal-en-600.webp 600w, assets/certificates/halal-en-1600.webp 1600w" data-srcset-uk="assets/certificates/halal-uk-600.webp 600w, assets/certificates/halal-uk-1600.webp 1600w">
-              <span class="cert__media"><img src="assets/certificates/halal-uk-600.webp" srcset="assets/certificates/halal-uk-600.webp 600w, assets/certificates/halal-uk-1600.webp 1600w" sizes="(min-width: 1480px) 22vw, (min-width: 640px) 30vw, 46vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
-              <span class="caption cert__issuer" data-i18n="cert.halal.issuer">Центр сертифікації «Халяль»</span>
-              <span class="cert__title" data-i18n="cert.halal.title">Сертифікат «Халяль»</span>
+            <button class="cert__card" type="button" data-cert data-large="assets/certificates/halal-uk-1600.webp" data-pdf="assets/certificates/halal-uk.pdf" data-large-en="assets/certificates/halal-en-1600.webp" data-pdf-en="assets/certificates/halal-en.pdf" data-srcset-en="assets/certificates/halal-en-600.webp 600w, assets/certificates/halal-en-1600.webp 1600w" data-srcset-uk="assets/certificates/halal-uk-600.webp 600w, assets/certificates/halal-uk-1600.webp 1600w">
+              <span class="cert__tag" data-i18n="cert.halal.tag">Halal</span>
+              <span class="cert__media"><img src="assets/certificates/halal-uk-600.webp" srcset="assets/certificates/halal-uk-600.webp 600w, assets/certificates/halal-uk-1600.webp 1600w" sizes="(min-width: 640px) 30vw, 80vw" alt="" width="600" height="849" loading="lazy" decoding="async"></span>
+              <span class="cert__body">
+                <span class="cert__title" data-i18n="cert.halal.title">Сертифікат «Халяль»</span>
+                <span class="cert__desc" data-i18n="cert.halal.desc">Соняшникова та&nbsp;ріпакова олія і&nbsp;макуха не&nbsp;містять речовин, заборонених шаріатом. Видав Центр сертифікації «Халяль».</span>
+              </span>
             </button>
           </li>
         </ul>
       </section>
 
       <!-- 3. CONTACTS + FOOTER (the same as on the home page) — one screen: partnership photo on the left, contacts and footer on the right -->
-      <section class="panel contacts" id="contacts" data-tone="base" aria-labelledby="contacts-title">
+      <section class="panel contacts" id="contacts" data-tone="surface" aria-labelledby="contacts-title">
         <!-- full-height photo from the left edge; on desktop it ends before the header menu (main.js measures it) -->
         <div class="contacts__cta" data-tone="photo">
           <div class="contacts__photo" aria-hidden="true">

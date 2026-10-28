@@ -304,28 +304,77 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .esg__subtitle { margin-top: 80px; font: 500 22px/1.2 var(--display); letter-spacing: -.01em; }
 .esg .esg__social { margin-top: 20px; max-width: 640px; }
 
-/* Certificates (home block + certificates.html): head row like Products, portrait thumbnails on a soft frame, the
-   issuer and the title under each; a click opens the lightbox */
-.certs__head .certs__title { margin: 22px 0 0; }
-.certs__all { margin-top: 32px; }
-.cert-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 16px; margin-top: 48px; }
-.cert__open { display: block; width: 100%; text-align: left; }
-.cert__media { display: block; aspect-ratio: 1 / 1.414; padding: 9%; background: var(--surface-2); overflow: hidden; }
-.cert__media img { width: 100%; height: 100%; object-fit: contain; transition: transform 1.2s var(--ease); }
-.cert__open:hover .cert__media img { transform: scale(1.04); }
-.cert__issuer { display: block; margin-top: 16px; }
-.cert__title { display: block; margin-top: 6px; font: 500 17px/1.3 var(--display); letter-spacing: -.01em; }
-.cert__open:hover .cert__title { color: var(--hover); }
-@media (min-width: 640px) {
-  .certs__head { display: grid; grid-template-columns: 1fr auto; column-gap: var(--gap); }
-  .certs__head .eyebrow { grid-column: 1; justify-self: start; margin-bottom: 22px; }
-  .certs__head .certs__title { grid-column: 1; grid-row: 2; margin: 0; }
-  .certs__all { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
-  .cert-grid { gap: 48px var(--gap); }
-  .cert-grid--home { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cert-grid--page { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* Certificates — cards on --surface (the sections around them are --bg): padding 32px, thin L-shaped corner marks (24px, 1px, --corner) at
+   the four corners instead of a border; a 6px accent square + the tag; the thumbnail (contained, on --surface-2, one
+   fixed height); the title (20px, 2 lines at most) and the scope (16px, 4 lines at most). Hover: up 4px, the corner
+   marks turn gold (0.25s). Home: centred head, four cards in one row whose parts share rows (subgrid), so titles and
+   descriptions start on the same lines; the button centred under them. certificates.html: a list of wide cards. */
+.certs__head { text-align: center; }
+.certs__head .eyebrow { margin: 0 auto 22px; }
+.certs__head .certs__title { margin: 0; }
+.certs .certs__lead { max-width: 34em; margin: 24px auto 0; }
+.certs__more { display: flex; justify-content: center; margin-top: 48px; }
+.cert-grid { display: grid; gap: 24px; margin-top: 48px; }
+.cert { display: grid; }
+.cert__card {
+  position: relative; display: grid; grid-template-rows: auto auto auto 1fr; align-content: start; width: 100%; padding: 32px;
+  background: var(--surface); text-align: left; color: var(--text);
+  transition: transform .25s ease;
 }
-@media (min-width: 1480px) { .cert-grid--page { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* the corner marks: eight 1px lines drawn in currentColor, so one colour transition turns all of them */
+.cert__card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; color: var(--corner); transition: color .25s ease;
+  --l: linear-gradient(currentColor, currentColor);
+  background: var(--l) left top / 24px 1px, var(--l) left top / 1px 24px, var(--l) right top / 24px 1px, var(--l) right top / 1px 24px,
+              var(--l) left bottom / 24px 1px, var(--l) left bottom / 1px 24px, var(--l) right bottom / 24px 1px, var(--l) right bottom / 1px 24px;
+  background-repeat: no-repeat;
+}
+.cert__card:hover { transform: translateY(-4px); }
+.cert__card:hover::before { color: var(--accent); }
+.cert__tag { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--text); }
+.cert__tag::before { content: ""; flex: none; width: 6px; height: 6px; background: var(--accent); }
+.cert__media { display: block; height: 260px; margin-top: 24px; padding: 20px; background: var(--surface-2); }
+.cert__media img { width: 100%; height: 100%; object-fit: contain; }
+.cert__body { display: block; margin-top: 24px; }
+.cert__title {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  font: 600 20px/1.3 var(--sans); color: var(--text);
+}
+.cert__desc {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden;
+  margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-body);
+}
+/* home: the cards' parts share the rows of the grid (subgrid) — every tag, photo, title and text on one line */
+.cert-grid--home .cert { grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
+.cert-grid--home .cert__card { grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 0; }
+.cert-grid--home .cert__body { display: contents; }
+.cert-grid--home .cert__title { margin-top: 24px; }
+/* phones: a swipe row of 82vw cards, from the page margin to the screen edge */
+@media (max-width: 639px) {
+  .cert-grid--home {
+    grid-auto-flow: column; grid-auto-columns: 82vw; grid-template-rows: repeat(4, auto); gap: 0 16px;
+    margin-inline: calc(-1 * var(--pad)); padding: 4px var(--pad) 8px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); scrollbar-width: none;
+  }
+  .cert-grid--home::-webkit-scrollbar { display: none; }
+  .cert-grid--home .cert { scroll-snap-align: start; }
+  .certs__more .certs__all { display: flex; width: 100%; }
+  .certs__more .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
+}
+@media (min-width: 640px) { .cert-grid--home { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .cert-grid--home { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* certificates.html: one wide card per row — the thumbnail left (4 of 12 columns), tag, title and scope right */
+.cert-grid--page .cert__card { grid-template-rows: none; }
+.cert-grid--page .cert__title, .cert-grid--page .cert__desc { -webkit-line-clamp: unset; }
+@media (max-width: 639px) {   /* phones: the thumbnail on top, then the tag, title and scope */
+  .cert-grid--page .cert__media { order: -1; margin: 0 0 24px; }
+}
+@media (min-width: 640px) {
+  .cert-grid--page .cert__card { grid-template-columns: 4fr 8fr; grid-template-rows: auto 1fr; column-gap: clamp(24px, 4vw, 64px); }
+  .cert-grid--page .cert__media { grid-column: 1; grid-row: 1 / 3; height: clamp(260px, 30vw, 420px); margin-top: 0; }
+  .cert-grid--page .cert__tag { grid-column: 2; grid-row: 1; }
+  .cert-grid--page .cert__body { grid-column: 2; grid-row: 2; margin-top: 20px; max-width: 640px; }
+}
 
 /* certificates.html: a short hero under the header */
 .page-hero.panel { padding-top: calc(var(--header-h) + 64px); }
@@ -719,8 +768,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .certs .certs__title { font-size: var(--h2-size); }
   .is-v .certs__head { width: 100%; }
   .is-v .certs .cert-grid { margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
-  .is-v .cert__title { font-size: clamp(17px, 2vh, 22px); }
-  .is-v .cert__issuer { font-size: var(--t-caps); font-weight: 600; }
+  .is-v .certs--page .cert-grid { margin-top: 0; }
   /* certificates.html hero: under the header, the heading as large as the key numbers' */
   html.is-v .panel.page-hero { display: block; padding-top: calc(var(--header-h) + var(--vgap)); }
   .is-v .page-hero .page-hero__title { font-size: clamp(48px, 8vh, 108px); max-width: 14em; }
@@ -962,8 +1010,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
   .esg .esg__title { margin: 0; }
   .certs .certs__title { margin: 0; }
-  .certs .certs__all { margin-top: 40px; }
   .certs .cert-grid { margin-top: 56px; }
+  .certs--page .cert-grid { margin-top: 0; }
   .esg .esg__text { margin-top: 28px; }
 
   /* product cards: 64 between cards, 20 photo → caption, 12 caption → title */
@@ -1037,7 +1085,4 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* contact rows: the label above the value, so the value gets the full width */
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
-  /* certificates: the button full width */
-  .certs .certs__all { display: flex; width: 100%; }
-  .certs .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
 }

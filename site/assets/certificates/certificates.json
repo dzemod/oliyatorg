@@ -1,31 +1,56 @@
 {
-  "_about": "The client's certificates (images/certificates-raw, from the zip). Titles and issuers are taken from each certificate's first page. Files per certificate: <file>.pdf, <file>-600.webp (thumbnail), <file>-1600.webp (large) — built by tools/render_certificates.mjs. The Halal certificate exists in two languages: the Ukrainian file on the UA site, the English one on the EN site.",
+  "_about": "The client's certificates (images/certificates-raw, from the zip). Tag, title and description are taken from each certificate's first page (standard / type, the certificate's name, and its scope). Files per certificate: <file>.pdf, <file>-600.webp (thumbnail), <file>-1600.webp (large) — built by tools/render_certificates.mjs. The Halal certificate exists in two languages: the Ukrainian file on the UA site, the English one on the EN site.",
   "certificates": [
     {
+      "key": "iso",
       "file": "iso-22000-tuv",
-      "title": { "uk": "ISO 22000:2018", "en": "ISO 22000:2018" },
-      "issuer": { "uk": "TÜV Thüringen", "en": "TÜV Thüringen" }
+      "tag": { "uk": "ISO 22000", "en": "ISO 22000" },
+      "title": { "uk": "Система менеджменту ISO 22000:2018", "en": "ISO 22000:2018 management system" },
+      "description": {
+        "uk": "Виробництво нерафінованої соняшникової та ріпакової олії і макухи. Видав TÜV Thüringen.",
+        "en": "Manufacturing of unrefined sunflower and rapeseed oil and cake. Issued by TÜV Thüringen."
+      }
     },
     {
+      "key": "eu",
       "file": "organic-eu-organic-standard",
-      "title": { "uk": "Органічне виробництво — Регламент (ЄС) 2018/848", "en": "Organic production — Regulation (EU) 2018/848" },
-      "issuer": { "uk": "Organic Standard", "en": "Organic Standard" }
+      "tag": { "uk": "Organic EU", "en": "Organic EU" },
+      "title": { "uk": "Органічний сертифікат ЄС (2018/848)", "en": "EU organic certificate (2018/848)" },
+      "description": {
+        "uk": "Органічна олія, макуха та лушпиння соняшнику для ринку ЄС. Орган контролю — Organic Standard.",
+        "en": "Organic sunflower oil, cake and husk for import into the EU. Control body: Organic Standard."
+      }
     },
     {
+      "key": "usda",
       "file": "organic-usda-etko",
-      "title": { "uk": "Органічний сертифікат — USDA, 7 CFR Part 205", "en": "Organic certificate — USDA, 7 CFR Part 205" },
-      "issuer": { "uk": "ETKO", "en": "ETKO" }
+      "tag": { "uk": "Organic USDA", "en": "Organic USDA" },
+      "title": { "uk": "Органічний сертифікат USDA", "en": "USDA organic certificate" },
+      "description": {
+        "uk": "Відповідність органічним правилам USDA (7 CFR Part 205), категорія Handling. Видав ETKO.",
+        "en": "Compliance with the USDA organic regulations (7 CFR Part 205), Handling category. Issued by ETKO."
+      }
     },
     {
+      "key": "gmp",
       "file": "gmp-plus-sgs",
+      "tag": { "uk": "GMP+", "en": "GMP+" },
       "title": { "uk": "GMP+ Feed Safety Assurance", "en": "GMP+ Feed Safety Assurance" },
-      "issuer": { "uk": "SGS", "en": "SGS" }
+      "description": {
+        "uk": "Виробництво кормових матеріалів за модулем GMP+ Feed Safety Assurance 2020. Видав SGS.",
+        "en": "Production of feed materials under the GMP+ Feed Safety Assurance Module 2020. Issued by SGS."
+      }
     },
     {
+      "key": "halal",
       "file": { "uk": "halal-uk", "en": "halal-en" },
       "language": { "halal-uk": "uk", "halal-en": "en" },
+      "tag": { "uk": "Halal", "en": "Halal" },
       "title": { "uk": "Сертифікат «Халяль»", "en": "Halal certificate" },
-      "issuer": { "uk": "Центр сертифікації «Халяль»", "en": "Certification Centre “Halal”" }
+      "description": {
+        "uk": "Соняшникова та ріпакова олія і макуха не містять речовин, заборонених шаріатом. Видав Центр сертифікації «Халяль».",
+        "en": "Sunflower and rapeseed oil and cake contain no substances forbidden by Shariah. Issued by Certification Centre “Halal”."
+      }
     }
   ]
 }
