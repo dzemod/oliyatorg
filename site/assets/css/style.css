@@ -1104,6 +1104,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contacts .contact-row dt { padding-top: 0; }
 }
 
+/* phones (below 768px): the heading-row buttons move to the end of their section, after the cards, full width, 32px under
+   them (the head dissolves, so its parts become the section's own column). Certificates: the arrows under the cards
+   (left, 16px apart), then the full-width "all certificates" button. Tablets and desktop keep the button in the head row. */
+@media (max-width: 767px) {
+  .products.panel, .production.panel, .certs.panel:not(.certs--page) { display: flex; flex-direction: column; }
+  .products__head, .production__head, .certs__head { display: contents; }
+  .products .pill, .production .eyebrow, .certs .eyebrow { align-self: flex-start; }
+  .products .products__all, .production .production__more { order: 1; margin-top: 32px; }
+  .certs .certs__controls { order: 1; flex-wrap: wrap; gap: 32px 16px; margin-top: 16px; }
+  .certs .certs__controls .certs__all { flex: 1 1 100%; display: flex; margin-left: 0; }
+  .certs .certs__controls .certs__all > span:not(.btn__box) { flex: 1; justify-content: center; }
+}
+
 /* =========================================================================
    Partnership call — on --gold-surface (tone "gold", the same as ESG: the only gold backgrounds on the site). The
    label, heading and button sit on the gold (first, so the label stays on the top line); the photo follows under them

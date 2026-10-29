@@ -127,8 +127,6 @@
   document.fonts && document.fonts.ready.then(fitContacts);
 
   /* ---------- Layout ---------- */
-  // html.is-v (set in <head>): the designed desktop layout, its sections stacked top to bottom
-  const vertical = root.classList.contains('is-v');
   const sections = $$('.panel');
 
   // Reload when crossing the desktop breakpoint so the right layout is built.
@@ -256,13 +254,15 @@
     if (id !== 'top') history.replaceState(null, '', '#' + id);
   });
 
-  /* ---------- Hero video: desktop only, never with "reduce motion" ---------- */
+  /* ---------- Hero video: every screen size, never with "reduce motion" ---------- */
   const video = $('.hero__video');
-  if (video && vertical && !reduceMotion) {
+  if (video && !reduceMotion) {
     // starts after the page has loaded, so it never competes with the first screen's poster, fonts and images
     const start = () => {
-      video.src = innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
-      video.addEventListener('canplay', () => video.classList.add('is-ready'), { once: true });
+      video.src = matchMedia('(max-width: 767px)').matches ? video.dataset.srcMobile
+        : innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
+      // shown only once it really plays: if autoplay is blocked (e.g. Low Power Mode) the poster stays, no frozen frame or play button
+      video.addEventListener('playing', () => video.classList.add('is-ready'), { once: true });
       video.play().catch(() => { /* autoplay blocked — poster stays */ });
     };
     document.readyState === 'complete' ? start() : addEventListener('load', start, { once: true });

@@ -34,7 +34,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=129">
+  <link rel="stylesheet" href="assets/css/style.css?v=130">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
@@ -101,10 +101,11 @@
             <source type="image/webp" srcset="assets/img/hero-poster-960.webp">
             <img class="hero__poster" src="assets/img/hero-poster-1920.jpg" alt="" width="1920" height="1080" fetchpriority="high">
           </picture>
-          <!-- Video is attached by main.js only on desktop without "reduce motion"; mobile shows the poster. -->
-          <video class="hero__video" muted loop playsinline preload="none"
+          <!-- Video is attached by main.js (phones get the vertical mobile file); never with "reduce motion" — the poster stays. -->
+          <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster-960.webp"
                  data-src-large="assets/img/hero-1920.mp4"
-                 data-src-small="assets/img/hero-960.mp4"></video>
+                 data-src-small="assets/img/hero-960.mp4"
+                 data-src-mobile="assets/img/hero-mobile.mp4"></video>
         </div>
 
         <div class="hero__inner photo-text">
@@ -574,6 +575,6 @@
 
   <script src="assets/js/i18n.js?v=38"></script>
   <!-- the fades are CSS transitions and the count-up is a few requestAnimationFrame steps: no animation library -->
-  <script src="assets/js/main.js?v=46"></script>
+  <script src="assets/js/main.js?v=47"></script>
 </body>
 </html>
