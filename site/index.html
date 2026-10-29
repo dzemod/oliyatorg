@@ -34,7 +34,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=128">
+  <link rel="stylesheet" href="assets/css/style.css?v=129">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
@@ -127,7 +127,7 @@
       </section>
 
       <!-- 2. ABOUT — after the Veltom reference: one large photo on the left (top line to bottom line),
-           the text column on the right with the three values (photo, title, text) under it -->
+           the text column on the right (label, heading, text, button), as tall as the photo -->
       <!-- About texts: from brief.txt (ESG, double pressing without solvents, quality at every stage, community support) -->
       <section class="panel about" id="about" data-tone="surface" aria-labelledby="about-title">
         <figure class="about__photo" data-reveal>
@@ -142,28 +142,12 @@
           <h2 class="h2 about__title" id="about-title" data-reveal data-i18n="about.title">Від насіння до&nbsp;олії —<br><em>з&nbsp;повагою до&nbsp;природи</em></h2>
           <div class="about__body">
             <!-- two lengths of the same text: the full one on desktop, the short one on phones and tablets (.t-full / .t-short) -->
-            <p class="text" data-reveal><span class="t-full" data-i18n="about.p1">Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини</span><span class="t-short" data-i18n="about.p1short">Переробляємо насіння українських аграріїв подвійним віджимом — без хімічних розчинників</span></p>
+            <p class="text" data-reveal><span class="t-full" data-i18n="about.p1">Оліяторг переробляє насіння соняшнику від українських аграріїв за технологією подвійного віджиму — без хімічних розчинників, зі збереженням природних властивостей сировини.</span><span class="t-short" data-i18n="about.p1short">Переробляємо насіння українських аграріїв подвійним віджимом — без хімічних розчинників</span></p>
             <!-- TODO: about.html when the page is built --><a class="btn" href="#contacts" data-reveal>
               <span data-i18n="about.cta">Про компанію</span>
               <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
             </a>
           </div>
-
-          <!-- values: three text items side by side (title, text); they rise in one after another (main.js, data-stagger) -->
-          <ul class="about__items" data-stagger aria-label="Наші цінності" data-i18n-attr="aria-label:about.tabs">
-            <li class="about-item">
-              <h3 class="about-item__title" data-i18n="about.t1">Природа</h3>
-              <p class="about-item__text" data-i18n="about.v1">Без хімічних розчинників</p>
-            </li>
-            <li class="about-item">
-              <h3 class="about-item__title" data-i18n="about.t2">Люди</h3>
-              <p class="about-item__text" data-i18n="about.v2">Підтримуємо спорт, культуру та місцеві ініціативи</p>
-            </li>
-            <li class="about-item">
-              <h3 class="about-item__title" data-i18n="about.t3">Якість</h3>
-              <p class="about-item__text" data-i18n="about.v3">Контроль якості на кожному етапі — від сировини до продукції</p>
-            </li>
-          </ul>
         </div>
       </section>
 
@@ -588,8 +572,8 @@
     </button>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=37"></script>
+  <script src="assets/js/i18n.js?v=38"></script>
   <!-- the fades are CSS transitions and the count-up is a few requestAnimationFrame steps: no animation library -->
-  <script src="assets/js/main.js?v=45"></script>
+  <script src="assets/js/main.js?v=46"></script>
 </body>
 </html>
