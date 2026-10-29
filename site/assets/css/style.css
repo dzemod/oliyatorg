@@ -262,17 +262,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .about__body { max-width: 29em; }
 .about__body .btn { margin-top: 38px; }
 
-/* values: three items at once — photo 4:3 (full width), 20px, title (the small uppercase heading style, white), 8px,
-   text (16px). Phones: stacked 32px apart; from tablets: three equal columns 24px apart. The parts share rows
-   (subgrid), so titles and texts start on the same lines. */
-.about__items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin-top: 56px; }
-.about-item__media { aspect-ratio: 4 / 3; overflow: hidden; }
-.about-item__media img { width: 100%; height: 100%; object-fit: cover; }
-.about-item__title { margin-top: 20px; font-size: 12px; font-weight: 600; line-height: 1.4; letter-spacing: .16em; text-transform: uppercase; color: var(--text); }
-.about-item__text { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--text-body); }
+/* values: three text items at once — title (the small uppercase heading style, white, one line), 8px, text (16px).
+   Phones: stacked 24px apart; from tablets: three equal columns 24px apart. The parts share rows (subgrid), so
+   titles and texts start on the same lines. */
+.about__items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 56px; }
+.about-item__title { white-space: nowrap; font-size: 12px; font-weight: 600; line-height: 1.4; letter-spacing: .16em; text-transform: uppercase; color: var(--text); }
+.about-item__text { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--text-body); text-wrap: pretty; }
 @media (min-width: 640px) {
-  .about__items { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto auto; gap: 0 24px; }
-  .about-item { display: grid; grid-template-rows: subgrid; grid-row: span 3; align-content: start; }
+  .about__items { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto; gap: 0 24px; }
+  .about-item { display: grid; grid-template-rows: subgrid; grid-row: span 2; align-content: start; }
 }
 
 /* lists whose items rise in one after another (main.js adds .in to the list as it enters; --d: 0.12 s apart) */
@@ -638,6 +636,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .about__text { grid-column: 7 / 13; align-self: start; margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
   .is-h .about__items { align-self: stretch; margin-top: 64px; }
   .is-h .about-item__title { font-size: var(--t-caps); }
+  .is-h .about-item__text { font-size: 16px; }
   .is-h .about .h2.about__title { font-size: var(--h2-size); white-space: nowrap; }
   .is-h .about__body { width: 100%; max-width: none; margin-top: var(--content-gap); }   /* on the content line */
   .is-h .about__body .btn > span { white-space: nowrap; }
@@ -744,6 +743,14 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v .about__body, .is-v .export__body { flex: none; margin-top: auto; padding-top: 40px; }
   .is-v .about__body .btn { margin-top: 32px; }
   .is-v .about__items { margin-top: 40px; }
+  /* About: compact — as tall as the text column (the photo stretches to it, object-fit: cover; it never sets the
+     height), equal padding top and bottom; the column: label 16 heading 32 text 32 button 48 the three values */
+  .is-v .panel.about { min-height: 0; padding-top: clamp(64px, 9vh, 112px); padding-bottom: clamp(64px, 9vh, 112px); }
+  .is-v .about__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .is-v .panel.about .about__text .eyebrow { margin-bottom: 16px; }
+  .is-v .about .about__body { margin-top: 32px; padding-top: 0; }
+  .is-v .about .about__body .btn { margin-top: 32px; }
+  .is-v .about .about__items { margin-top: 48px; }
   /* Export: at least the screen under the header (photo and text column the same height); the features: see below */
   /* About, Export: the text column stays on column 7 (the page's centre line); the photo
      grows to end --split before it */

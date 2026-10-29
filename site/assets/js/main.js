@@ -10,6 +10,12 @@
     uk: /(^|[\s(«"„])(і|й|в|у|з|із|зі|та|на|до|а|о|не|що|за|від|для|по|як|ми|це|чи)\s+/gi,
     en: /(^|[\s("“])(a|an|the|of|to|in|and|for|on|by|with|or|at|we|our|from)\s+/gi
   };
+  // the About values' short texts: only one-letter words are bound to the next word, and their last words are not
+  // tied (ORPHAN_BLOCKS), so they wrap naturally instead of in narrow lines
+  const ONE = {
+    uk: /(^|[\s(«"„])(і|й|в|у|з|а|о)\s+/gi,
+    en: /(^|[\s("“])(a)\s+/gi
+  };
   function typo(scope, lang) {
     const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
       acceptNode: n => /SCRIPT|STYLE|TEXTAREA/.test(n.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
@@ -18,7 +24,8 @@
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const n of nodes) {
       // run twice so chains like "і в" are both bound
-      const v = n.nodeValue.replace(SHORT[lang], '$1$2 ').replace(SHORT[lang], '$1$2 ').replace(/ —/g, ' —');
+      const re = n.parentNode.closest('.about-item__text') ? ONE[lang] : SHORT[lang];
+      const v = n.nodeValue.replace(re, '$1$2 ').replace(re, '$1$2 ').replace(/ —/g, ' —');
       if (v !== n.nodeValue) n.nodeValue = v;
     }
     tieLastWords();
@@ -27,7 +34,7 @@
   /* No orphans: tie the last two words of every text block, so a single word never ends up alone on the last line.
      Layout-aware: where the tied pair is wider than its box (very narrow columns), the tie is undone — overflow is
      worse than an orphan. Re-run on resize and language change. */
-  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, .t-full, .t-short, dt, dd, li > a, figcaption, label, .btn > span';
+  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p:not(.about-item__text), .t-full, .t-short, dt, dd, li > a, figcaption, label, .btn > span';
   let ties = [];
   const untie = ({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); };
   function tieLastWords() {
