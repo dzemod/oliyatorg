@@ -34,7 +34,7 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=125">
+  <link rel="stylesheet" href="assets/css/style.css?v=126">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
@@ -310,7 +310,7 @@
       <!-- 6. ESG — label and heading, then four rows, all open (photo 16:9 · line icon + title, text). The texts are the
            brief's ESG block (point 13), split into four rows; the rows rise in one after another (main.js, data-stagger).
            Photos: generated (tools/generate_image.mjs), no real plant. -->
-      <section class="panel esg" id="esg" data-tone="gold" aria-labelledby="esg-title">
+      <section class="panel esg" id="esg" data-tone="cream" aria-labelledby="esg-title">
         <header class="esg__head">
           <p class="eyebrow" data-reveal><span data-i18n="esg.eyebrow">ESG</span></p>
           <h2 class="h2 esg__title" id="esg-title" data-reveal data-i18n="esg.title">Енергонезалежність та <em>сталий розвиток</em></h2>
@@ -356,6 +356,8 @@
           </li>
         </ol>
       </section>
+      <!-- TEMP: ESG color comparison, remove after choice -->
+      <script>if (/[?&]esg=b(&|$)/.test(location.search)) document.getElementById('esg').classList.add('esg--b');</script>
 
       <!-- 7. EXPORT & PARTNERSHIP — after the Envagyte reference: one large photo on the left (top line to bottom line);
            on the right the label and heading, then two features (icon above, title, text) from the content line down,
