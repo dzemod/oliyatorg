@@ -143,6 +143,9 @@ window.I18N = {
 
 
     'alt.sunset': 'Sunflower field at sunset',
+    'alt.nature': 'Close-up of a sunflower head with dew drops',
+    'alt.people': 'Hands in work gloves holding sunflower seeds',
+    'alt.quality': 'Sunflower oil being poured into a glass vessel',
     'alt.unrefined': 'A bottle and a glass bowl of unrefined sunflower oil with seeds',
     'alt.refined': 'A bottle and a glass bowl of refined sunflower oil with seeds',
     'alt.meal': 'Sunflower press cake in a ceramic bowl',

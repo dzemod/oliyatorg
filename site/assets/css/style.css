@@ -115,7 +115,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 ul, ol, dl, dd { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3, p { margin: 0; }
-em { font-style: normal; }   /* the gold second part of headings: colour only, never italic */
+em, i, cite, address, var, dfn, q { font-style: normal; }   /* the gold second part of headings: colour only, never italic */
 /* focus: a subtle thin outline for keyboard navigation only (main.js sets data-input="mouse" on pointer use,
    so a click never leaves a frame, even where a browser would otherwise show :focus-visible) */
 :focus-visible { outline: 1px solid var(--focus, rgb(239 236 230 / .65)); outline-offset: 4px; }
@@ -253,33 +253,32 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .hero__hint { display: none; }
 
 /* 2. About — after the Veltom reference: one large photo, then the text column (label, heading, short text,
-   button) with the values tabs at its bottom. Phones: the photo on top, the column under it. */
+   button) with the three values under it. Phones: the photo on top, the column under it. */
 .about__photo { overflow: hidden; aspect-ratio: 4 / 3; }
 .about__photo img { width: 100%; height: 100%; object-fit: cover; }
-/* text: label, heading, paragraph, button and tabs all start on one left line */
+/* text: label, heading, paragraph, button and values all start on one left line */
 .about__text { margin-top: 48px; }
 .about .h2.about__title { margin: 22px 0 30px; }
 .about__body { max-width: 29em; }
 .about__body .btn { margin-top: 38px; }
 
-/* values tabs (after the Veltom reference): titles spread across the column (first on the left line, last on the
-   right edge) over a thin line; the active one gets the gold dot. The texts share one grid cell (the block keeps
-   the tallest text's height, nothing jumps) and cross-fade. */
-.about__tabs { margin-top: 56px; }
-.tabs__list { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
-.tabs__tab {
-  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding-bottom: 6px;
-  font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); transition: color .3s ease;
+/* values: three items at once — photo 4:3 (full width), 20px, title (the small uppercase heading style, white), 8px,
+   text (16px). Phones: stacked 32px apart; from tablets: three equal columns 24px apart. The parts share rows
+   (subgrid), so titles and texts start on the same lines. */
+.about__items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin-top: 56px; }
+.about-item__media { aspect-ratio: 4 / 3; overflow: hidden; }
+.about-item__media img { width: 100%; height: 100%; object-fit: cover; }
+.about-item__title { margin-top: 20px; font-size: 12px; font-weight: 600; line-height: 1.4; letter-spacing: .16em; text-transform: uppercase; color: var(--text); }
+.about-item__text { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--text-body); }
+@media (min-width: 640px) {
+  .about__items { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto auto; gap: 0 24px; }
+  .about-item { display: grid; grid-template-rows: subgrid; grid-row: span 3; align-content: start; }
 }
-.tabs__tab::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .3s ease; }
-.tabs__tab:hover, .tabs__tab[aria-selected="true"] { color: var(--fg); }
-.tabs__tab[aria-selected="true"]::before { opacity: 1; }
-.tabs__panels { display: grid; margin-top: 20px; }
-.tabs__panel {
-  grid-area: 1 / 1; font-size: 16px; line-height: 1.6; color: var(--body);
-  opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility 0s .45s;
-}
-.tabs__panel.is-active { opacity: 1; visibility: visible; transition: opacity .45s var(--ease) .1s; }
+
+/* lists whose items rise in one after another (main.js adds .in to the list as it enters; --d: 0.12 s apart) */
+.anim [data-stagger] > * { visibility: hidden; }
+.fade [data-stagger] > * { transition: opacity .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s), transform .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s); }
+.fade [data-stagger]:not(.in) > * { opacity: 0; transform: translateY(24px); }
 
 /* 3. Numbers */
 .numbers { color: var(--fg); overflow: hidden; }
@@ -297,50 +296,21 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* ESG — a compact accordion on the gold (tone "gold", end of file). Phones and tablets: icon + title + round toggle on
-   one line; the open row adds its 16:9 photo (full width) and its text. Desktop (below): photo · icon + title / text ·
-   toggle on the 12-column grid. One state (main.js): the open row gets .is-open — photo, text, toggle and
-   aria-expanded all follow it. */
+/* ESG — four rows on the gold (tone "gold", end of file), all open: photo, icon + title, text. Phones and tablets: the
+   16:9 photo full width, then icon + title, then the text; 32px between rows. Desktop (below): photo · icon + title /
+   text on the 12-column grid. */
 .esg .esg__title { margin-bottom: 0; }
-.esg .esg__title em { font-style: italic; }
 .esg-list { margin-top: 48px; }
-.esg-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); padding: 24px 0; cursor: pointer;
-  transition: transform .5s cubic-bezier(.33, 1, .68, 1); }   /* power2.out; main.js slides the rows (FLIP) */
+.esg-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); padding: 16px 0; }
+.esg-row:first-child { padding-top: 0; }
 .esg-row + .esg-row::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
-.esg-row__content { display: contents; }
-.esg-row__heading { position: relative; grid-row: 1; font: inherit; }
+.esg-row__media { aspect-ratio: 16 / 9; overflow: hidden; }
+.esg-row__media img { width: 100%; height: 100%; object-fit: cover; }
 /* the 24px line icon inline before the title (16px apart), on the title's first 26px line */
-.esg-row__btn {
-  display: flex; align-items: flex-start; gap: 16px; width: 100%; padding-right: 56px; text-align: left;
-  font: 500 20px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase; color: var(--fg); cursor: pointer;
-}
+.esg-row__title { display: flex; align-items: flex-start; gap: 16px; margin-top: 20px; font: 500 20px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase; color: var(--fg); }
 .esg-row__icon { flex: none; margin-top: 1px; color: var(--fg); }
 .esg-row__icon svg { display: block; }
-.esg-row__label { transition: opacity .25s ease; }
-.esg-row:hover .esg-row__label { opacity: .7; }
-/* the toggle: a 40px square (sharp corners, like the whole site) at the right edge, on the title's first line — closed: an outlined "+"; open: a filled
-   square whose "+" has turned 45° into an "×" in the gold (only the lines turn; the square stays upright) */
-.esg-row__toggle {
-  position: absolute; top: -7px; right: 0; width: 40px; height: 40px; border: 1px solid rgb(14 14 13 / .4); border-radius: 0;
-  color: var(--fg); transition: color .3s ease, background-color .3s ease, border-color .3s ease;
-}
-.esg-row__toggle::before, .esg-row__toggle::after {
-  content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 1.5px; margin: -.75px 0 0 -7px; background: currentColor;
-  transition: transform .3s ease;
-}
-.esg-row__toggle::after { transform: rotate(90deg); }
-.esg-row.is-open .esg-row__toggle::before { transform: rotate(45deg); }
-.esg-row.is-open .esg-row__toggle::after { transform: rotate(135deg); }
-.esg-row.is-open .esg-row__toggle { color: var(--accent); background-color: var(--fg); border-color: var(--fg); }
-.esg-row__media { grid-row: 2; display: none; margin-top: 20px; aspect-ratio: 16 / 9; overflow: hidden; }
-.esg-row.is-open .esg-row__media { display: block; }
-.esg-row__media img { width: 100%; height: 100%; object-fit: cover; transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), opacity .5s cubic-bezier(.33, 1, .68, 1); }
-.esg-row__panel { grid-row: 3; }
-.esg-row__text { max-width: 760px; margin-top: 16px; font-size: 17px; line-height: 1.65; color: var(--body);
-  transition: opacity .5s cubic-bezier(.33, 1, .68, 1), transform .5s cubic-bezier(.33, 1, .68, 1); }
-/* the moment a row opens (main.js): its photo wipes open from the top and its text fades up 12px */
-.esg-row.is-entering .esg-row__media img { clip-path: inset(0 0 100% 0); opacity: 0; transition: none; }
-.esg-row.is-entering .esg-row__text { opacity: 0; transform: translateY(12px); transition: none; }
+.esg-row__text { max-width: 760px; margin-top: 12px; font-size: 17px; line-height: 1.65; color: var(--body); }
 @media (max-width: 639px) { .panel.esg { padding-left: 24px; padding-right: 24px; } }
 
 /* Certificates — cards on --surface (the sections around them are --bg), no border: padding 32px; a 6px gold square +
@@ -664,16 +634,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .panel.about { width: 100vw; grid-template-columns: repeat(12, var(--col)); }
   /* photo: columns 1–5 (≈40% of the content width), from the top line to the bottom line; column 6 is the gap */
   .is-h .about__photo { grid-column: 1 / 6; align-self: stretch; aspect-ratio: auto; }
-  /* the column runs from the top line to the bottom line; the tabs block sits on the bottom line */
-  /* compact: the tabs follow the button 64px under it (not pushed to the bottom line) */
+  /* compact: the three values follow the button 64px under it (not pushed to the bottom line) */
   .is-h .about__text { grid-column: 7 / 13; align-self: start; margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
-  .is-h .about__tabs { align-self: stretch; margin-top: 64px; }
-  .is-h .tabs__tab { min-height: clamp(40px, 5vh, 56px); padding-bottom: .8vh; font-size: var(--t-caps); }
-  .is-h .tabs__panels { margin-top: 2.4vh; }
-  .is-h .tabs__panel { font-size: var(--t-body); }
-  /* the tab texts share one grid cell, so the block keeps the tallest text's height and switching never changes it; on a
-     narrow column a text wraps to a second line instead of being cut */
-  .tabs__panel { width: 100%; }
+  .is-h .about__items { align-self: stretch; margin-top: 64px; }
+  .is-h .about-item__title { font-size: var(--t-caps); }
   .is-h .about .h2.about__title { font-size: var(--h2-size); white-space: nowrap; }
   .is-h .about__body { width: 100%; max-width: none; margin-top: var(--content-gap); }   /* on the content line */
   .is-h .about__body .btn > span { white-space: nowrap; }
@@ -743,7 +707,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .text { font-size: 16px; }
   .is-h .section-head .text { display: none; }
   .is-h .about__body .text { line-height: 1.6; }
-  .is-h .tabs__tab { min-height: 36px; }
 }
 /* =========================================================================
    Desktop, stacked (html.is-h.is-v): the desktop sections and layout lines, stacked top to bottom. Each section fills at least the screen under the solid header (100vh
@@ -771,7 +734,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* photo left, text right (About, Export): the text column spans the photo exactly — the label on the photo's top
      line, the last line on its bottom line. The column is compact (label → heading 24, heading → content at least 40,
-     text → button 32, button → tabs 40, features 32 apart); the free height goes between the heading and the content.
+     text → button 32, button → values 40, features 32 apart); the free height goes between the heading and the content.
      The section grows past the screen only when the text needs more room — then the photo grows with it (the image
      is absolutely placed, so it never sets the height itself, and the text is never cut). */
   .is-v .panel:is(.about, .export) { height: auto; min-height: calc(100vh - var(--header-h)); grid-template-rows: auto; }
@@ -780,8 +743,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-v :is(.about__text, .export__text) { align-self: stretch; }
   .is-v .about__body, .is-v .export__body { flex: none; margin-top: auto; padding-top: 40px; }
   .is-v .about__body .btn { margin-top: 32px; }
-  .is-v .about__tabs { margin-top: 40px; }
-  .is-v .tabs__panels { margin-top: 16px; }
+  .is-v .about__items { margin-top: 40px; }
   /* Export: at least the screen under the header (photo and text column the same height); the features: see below */
   /* About, Export: the text column stays on column 7 (the page's centre line); the photo
      grows to end --split before it */
@@ -798,31 +760,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     .is-v .step__media { aspect-ratio: 2 / 1; }   /* wide cards: a lower photo, so the section stays compact */
     .is-v .step:nth-child(n + 3) .step__media { margin-top: 56px; }
   }
-  /* ESG: the heading at most 8 columns; each row on the 12-column grid — photo 1–3, icon + title / text 4–11, toggle
-     12; the divider spans 4–12. Closed rows (padding 16px): a 72px strip of the photo, the title and toggle centred on
-     it; the open row (padding 24px): the 16:9 photo, the title and text centred against it. The image is always drawn
-     16:9 and clip-path + transform show its middle 72px, so opening and closing animate without changing the image's
-     size; main.js slides the rows below (transform). */
+  /* ESG: the heading at most 8 columns, 48px to the first row; each row (padding 24px) on the 12-column grid — the
+     16:9 photo on columns 1–3 (the same size in every row), icon + title / text on 4–11, centred against the photo;
+     the divider spans 4–12 */
   html.is-v .panel.esg { display: block; min-height: 0; }
   .is-v .esg .esg__title { min-height: 0; max-width: calc(8 * var(--col) + 7 * var(--gap)); margin: 0; }
   .is-v .esg-list { margin-top: 48px; }
-  .esg-row { grid-template-columns: repeat(12, var(--col)); column-gap: var(--gap); padding: 16px 0; }
-  .esg-row.is-open { padding: 24px 0; }
+  .esg-row { grid-template-columns: repeat(12, var(--col)); column-gap: var(--gap); padding: 24px 0; }   /* the first row: no top padding (48px under the heading) */
   .esg-row + .esg-row::before { left: calc(3 * (var(--col) + var(--gap))); }
-  .esg-row__media {
-    grid-column: 1 / 4; grid-row: 1; display: block; position: relative; margin: 0; height: 72px; aspect-ratio: auto;
-    overflow: visible; container-type: inline-size;
-  }
-  .esg-row.is-open .esg-row__media { height: auto; aspect-ratio: 16 / 9; }
-  .esg-row__media img {
-    position: absolute; top: 0; left: 0; width: 100%; height: auto; aspect-ratio: 16 / 9;
-    transform: translateY(calc(36px - 28.125cqw)); clip-path: inset(calc(28.125cqw - 36px) 0 calc(28.125cqw - 36px) 0);
-    transition: clip-path .5s cubic-bezier(.33, 1, .68, 1), transform .5s cubic-bezier(.33, 1, .68, 1);
-  }
-  .esg-row.is-open .esg-row__media img { transform: none; clip-path: inset(0); }
-  .esg-row.is-entering .esg-row__media img { transform: translateY(calc(36px - 28.125cqw)); clip-path: inset(calc(28.125cqw - 36px) 0 calc(28.125cqw - 36px) 0); opacity: 1; }
-  .esg-row__content { display: block; grid-column: 4 / 13; grid-row: 1; align-self: center; }
-  .esg-row__text { margin-top: 12px; }
+  .esg-row__media { grid-column: 1 / 4; grid-row: 1; }
+  .esg-row__content { grid-column: 4 / 12; grid-row: 1; align-self: center; }
+  .esg-row__title { margin-top: 0; }
 
   /* Certificates: as tall as their content; the thumbnails on the content line, like the ESG content */
   html.is-v .panel.certs, html.is-v .panel.page-hero { min-height: 0; }
@@ -898,9 +846,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    ========================================================================= */
 /* neighbouring sections alternate: "base" (the page colour) and "surface"; over photos the text is full strength */
 [data-tone="surface"] { --bg: var(--surface); }
-/* ESG only: the gold accent as the background, dark text on it (WCAG AA): #0E0E0D 6.6:1 · running text at 80% 5.0:1 */
-[data-tone="gold"] { --bg: var(--accent); --fg: #0E0E0D; --body: rgb(14 14 13 / .8); --label: #0E0E0D; --em: #0E0E0D;
-  --corner: rgb(14 14 13 / .4); --line: rgb(14 14 13 / .18); --focus: #0E0E0D; }
+/* ESG only: a darker shade of the site's gold as the background, white text on it (WCAG AA): #FFFFFF 5.3:1 · running
+   text at 88% 4.5:1; the accent words #0E0E0D (3.6:1, large heading text) */
+[data-tone="gold"] { --bg: #8C6420; --fg: #FFFFFF; --body: rgb(255 255 255 / .88); --label: #FFFFFF; --em: #0E0E0D;
+  --corner: rgb(255 255 255 / .5); --line: rgb(255 255 255 / .22); --focus: #FFFFFF; }
 [data-tone="photo"] { --body: var(--text); --fg-2: rgb(239 236 230 / .8); }
 .panel { background-color: var(--bg); color: var(--fg); }   /* text inherits its section's tone */
 
@@ -988,6 +937,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .foot .lang__btn { min-width: 0; padding: 0 10px; }
 .foot .lang__btn:first-child { padding-left: 0; }
 .foot__copy { grid-area: copy; font-size: 13px; color: var(--fg-2); }
+/* contacts and footer text: white, never gold — values and links 85%, small labels 60%, hover full white (the logo
+   keeps its own colours) */
+.contacts__side { --fg: rgb(255 255 255 / .85); --fg-2: rgb(255 255 255 / .6); --hover: #FFFFFF; }
+.contacts__side .lang__btn[aria-pressed="true"] { color: var(--fg); }
+.contacts__side .lang__btn:hover { color: var(--hover); }
+.contacts__side .foot__nav a { color: var(--fg); }
 
 @media (min-width: 1024px) {
   /* Two columns that share the section's top and bottom lines. This screen follows the header menu instead of the
@@ -1073,7 +1028,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .export .export__title, .contacts .contacts__title { margin: 0; }
   .hero .hero__lead, .about .about__body .text { margin: 28px 0 0; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
-  .products .cards, .production .steps, .about .about__tabs, .numbers .stats, .export .features { margin-top: 56px; }
+  .products .cards, .production .steps, .about .about__items, .numbers .stats, .export .features { margin-top: 56px; }
   .esg .esg__title { margin: 0; }
   .esg .esg-list { margin-top: 48px; }
   .certs .certs__title { margin: 0; }
@@ -1138,7 +1093,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* type scale (phones and tablets): subheadings 22px Inter Tight 500, uppercase captions 12px 600 */
   .card .card__title, .step .step__title { font-size: 22px; font-weight: 500; }
-  .card .card__meta, .contact-row dt, .tabs .tabs__tab { font-size: 12px; font-weight: 600; }
+  .card .card__meta, .contact-row dt, .about-item .about-item__title { font-size: 12px; font-weight: 600; }
   .stat .stat__label { font-weight: 500; }
 
   /* body text at least 16px, captions 15px */

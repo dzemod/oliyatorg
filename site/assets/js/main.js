@@ -27,7 +27,7 @@
   /* No orphans: tie the last two words of every text block, so a single word never ends up alone on the last line.
      Layout-aware: where the tied pair is wider than its box (very narrow columns), the tie is undone — overflow is
      worse than an orphan. Re-run on resize and language change. */
-  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, .t-full, .t-short, dt, dd, li > a, figcaption, label, .btn > span, .tabs__tab';
+  const ORPHAN_BLOCKS = 'h1 .line > *, h2, h3, p, .t-full, .t-short, dt, dd, li > a, figcaption, label, .btn > span';
   let ties = [];
   const untie = ({ node, i }) => { if (node.nodeValue[i] === ' ') node.nodeValue = node.nodeValue.slice(0, i) + ' ' + node.nodeValue.slice(i + 1); };
   function tieLastWords() {
@@ -213,6 +213,16 @@
         }), { rootMargin: '0px 0px -10% 0px' });
         $$('.step').forEach(el => cardIo.observe(el));
       }
+      // [data-stagger] lists (About values, ESG rows): their items rise in one after another (24px, 0.6 s, 0.12 s apart)
+      // when the list itself enters the screen, once
+      const lists = $$('[data-stagger]');
+      lists.forEach(list => [...list.children].forEach((el, i) => el.style.setProperty('--d', (i * .12).toFixed(2) + 's')));
+      const listIo = new IntersectionObserver(entries => entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        listIo.unobserve(en.target);
+        en.target.classList.add('in');
+      }), { rootMargin: '0px 0px -15% 0px' });
+      lists.forEach(list => listIo.observe(list));
       endAnim();
       // hero: on load, once its start state has painted
       const heroPlay = plays[sections.findIndex(s => s.classList.contains('hero'))];
@@ -259,95 +269,6 @@
     // Pause while the hero is off-screen
     new IntersectionObserver(([en]) => { en.isIntersecting ? video.play().catch(() => {}) : video.pause(); })
       .observe($('.hero'));
-  }
-
-  /* ---------- Tabs (About values): click / tap, ← → Home End; roving tabindex ---------- */
-  $$('[data-tabs]').forEach(box => {
-    const tabs = $$('[role="tab"]', box);
-    const select = (tab, focus) => {
-      tabs.forEach(t => {
-        const on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        $('#' + t.getAttribute('aria-controls')).classList.toggle('is-active', on);
-      });
-      if (focus) tab.focus();
-    };
-    tabs.forEach((t, i) => {
-      t.addEventListener('click', () => select(t));
-      t.addEventListener('keydown', e => {
-        const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
-        if (to === undefined) return;
-        e.preventDefault();
-        select(tabs[(to + tabs.length) % tabs.length], true);
-      });
-    });
-  });
-
-  /* ---------- ESG accordion: one row open at a time ----------
-     ONE state: `current`, the open row's index. open(k) sets .is-open, aria-expanded and the panel's hidden on every row
-     from it, so photo, text, icon, toggle and button can never disagree. Rows open by scrolling (the row under the middle
-     of the screen, IntersectionObserver — no pinning, the page scrolls freely) or by a click / tap / Enter anywhere on
-     a row. The row being opened keeps its place on screen (the scroll position absorbs the rows above growing or
-     shrinking), and the rows and sections below slide to their new places with a transform (FLIP), the photo opens with
-     clip-path and the text fades up — no animated layout properties. Reduced motion: the same switch, instantly. */
-  const accordion = $('[data-accordion]');
-  if (accordion) {
-    const rows = $$('[data-esg-row]', accordion);
-    const sec = accordion.closest('.panel');
-    const after = [];
-    for (let el = sec.nextElementSibling; el; el = el.nextElementSibling) after.push(el);
-    let current = -1, quietUntil = 0;
-    const set = (r, on) => {
-      r.classList.toggle('is-open', on);
-      $('.esg-row__btn', r).setAttribute('aria-expanded', String(on));
-      $('.esg-row__panel', r).hidden = !on;
-    };
-    const open = k => {
-      if (k === current) return;
-      const first = current < 0;
-      const moving = [...rows, ...after];
-      const before = moving.map(el => el.getBoundingClientRect().top);
-      const anchor = before[k];
-      if (!reduceMotion && !first) rows[k].classList.add('is-entering');
-      rows.forEach((r, i) => set(r, i === k));
-      current = k;
-      if (first) return;
-      // the opened row stays where it was: rows above it closing never pull it (and the page) away from the reader
-      const shift = rows[k].getBoundingClientRect().top - anchor;
-      if (shift) window.scrollBy({ top: shift, behavior: 'instant' });
-      quietUntil = performance.now() + 600;   // the scroll observer ignores the switch's own movement
-      if (reduceMotion) return;
-      moving.forEach((el, i) => {
-        const d = before[i] - el.getBoundingClientRect().top;
-        if (!d) return;
-        el.style.transition = 'none';
-        el.style.transform = `translateY(${d}px)`;
-      });
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        rows[k].classList.remove('is-entering');
-        moving.forEach(el => {
-          if (!el.style.transform) return;
-          el.style.transition = 'transform .5s cubic-bezier(.33, 1, .68, 1)';
-          el.style.transform = '';
-          el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true });
-        });
-      }));
-    };
-    open(Math.max(0, rows.findIndex(r => r.classList.contains('is-open'))));   // row 01 when the section first appears
-    // the whole row is clickable; the button inside gives keyboard access (Enter / Space click it)
-    rows.forEach((r, k) => r.addEventListener('click', () => { open(k); quietUntil = performance.now() + 900; }));
-    // scrolling: whenever a row (or the section, after a jump) crosses the screen's middle line, the row closest to
-    // that line becomes the open one
-    if ('IntersectionObserver' in window) {
-      const mid = new IntersectionObserver(() => {
-        if (performance.now() < quietUntil) return;
-        const m = innerHeight / 2;
-        const dist = rows.map(r => { const b = r.getBoundingClientRect(); return b.top > m ? b.top - m : Math.max(0, m - b.bottom); });
-        open(dist.indexOf(Math.min(...dist)));
-      }, { rootMargin: '-50% 0px -50% 0px' });
-      [sec, ...rows].forEach(el => mid.observe(el));
-    }
   }
 
   /* ---------- Certificates slider (home): one card per step ----------
