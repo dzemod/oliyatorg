@@ -1214,7 +1214,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
   html.is-x .certs .certs__head { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
   /* the button on the left line and on the bottom line, level with the cards' bottom */
-  html.is-x .certs .certs__controls { align-self: flex-start; margin-top: auto; padding-top: clamp(28px, 5vh, 56px); }
+  html.is-x .certs .certs__controls { align-self: flex-start; }
   html.is-x .certs .certs__controls .certs__all { margin-left: 0; }
   html.is-x .certs .slider__arrow { display: none; }
   html.is-x .certs .slider { --g: 24px; height: 100%; margin: 0; padding: 0; overflow: visible; }
@@ -1270,11 +1270,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-h .track > .panel .certs__lead { max-width: 640px; margin: 32px 0 0; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; text-wrap: pretty; }
   /* Certificates (sideways strip): the left column on 4 of the 12 columns, as tall as the cards */
   html.is-x .track > .panel.certs { --certs-head: calc(4 * var(--col) + 3 * var(--gap)); }
-  /* label on the cards' top line; heading, text and button as one block on their bottom line (the button 32px under the
-     text, its bottom level with the cards' bottom) — the free height sits between the label and the heading */
-  html.is-x .track > .panel.certs .certs__head .eyebrow { margin-bottom: auto; }
-  html.is-x .track > .panel.certs .certs__title { margin-top: 16px; }
-  html.is-x .track > .panel.certs .certs__controls { margin-top: 32px; padding-top: 0; }
   /* ESG (Ukrainian): "Енергонезалежність" is 8.8em wide — the heading never gets wider than its four columns, so on
      1366–1440px screens it stays a little under the shared size instead of running into the table */
   html.is-x[lang="uk"] .track > .panel.esg .esg__title { font-size: min(clamp(48px, 6.4vh, 88px), calc((4 * var(--col) + 3 * var(--gap)) / 8.9)); }
@@ -1294,3 +1289,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .cert-grid--page .cert__title { font-size: clamp(22px, 1.6vw, 30px); }
   .cert-grid--page .cert__desc { margin-top: 16px; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.6; }
 }
+
+/* Certificates head (home page, every layout): one top-aligned flow from the cards' top line — label, 16px, heading,
+   32px, text, 40px, the "all certificates" button (phones: full width, the slider arrows under it, then the cards) */
+.track > .panel.certs .eyebrow { margin-bottom: 16px; }
+.track > .panel.certs .certs__lead { margin-top: 32px; }
+.track > .panel.certs .certs__controls { order: 0; margin-top: 40px; padding-top: 0; }
+.track > .panel.certs .certs__controls .certs__all { order: -1; }
