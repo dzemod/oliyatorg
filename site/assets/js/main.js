@@ -498,6 +498,55 @@
       .observe($('.hero'));
   }
 
+  /* ---------- About: values tabs ----------
+     Three tabs switch the photo (stacked, crossfade) and the text under them. Auto-advance every 6 s in a loop: the gold
+     line under the active tab is a CSS animation, and its end moves on to the next tab. It runs only while the section
+     is on screen, pauses on hover and while focus is inside, and stops for good once the visitor picks a tab (click or
+     ← → Home End, which also move the focus). Reduced motion: no auto-advance, instant switch. */
+  const tabsBox = $('[data-about-tabs]');
+  if (tabsBox) {
+    const tabs = $$('[role="tab"]', tabsBox), texts = $$('[role="tabpanel"]', tabsBox), imgs = $$('[data-about-img]');
+    const fill = $('.about-tabs__fill', tabsBox);
+    let cur = 0, stopped = reduceMotion, hover = false, focused = false, seen = false;
+    // the fill animation starts over for each tab (the class comes off, a reflow, and back on)
+    const restart = () => {
+      tabsBox.classList.remove('is-auto');
+      if (stopped) return;
+      void fill.offsetWidth;
+      tabsBox.classList.add('is-auto');
+    };
+    const pause = () => tabsBox.classList.toggle('is-paused', hover || focused || !seen);
+    function show(k, moveFocus) {
+      cur = (k + tabs.length) % tabs.length;
+      tabs.forEach((t, i) => { t.setAttribute('aria-selected', String(i === cur)); t.tabIndex = i === cur ? 0 : -1; });
+      texts.forEach((p, i) => p.classList.toggle('is-active', i === cur));
+      imgs.forEach(img => img.classList.toggle('is-active', +img.dataset.aboutImg === cur));
+      tabsBox.style.setProperty('--i', cur);
+      if (moveFocus) tabs[cur].focus();
+      restart();
+    }
+    fill.addEventListener('animationend', () => { if (!stopped) show(cur + 1); });
+    tabs.forEach((t, i) => t.addEventListener('click', () => { stopped = true; show(i); }));
+    tabsBox.addEventListener('keydown', e => {
+      if (!e.target.closest('[role="tab"]')) return;
+      const k = { ArrowRight: cur + 1, ArrowLeft: cur - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (k === undefined) return;
+      e.preventDefault();   // the sideways strip's own ← → never sees it
+      stopped = true;
+      show(k, true);
+    });
+    tabsBox.addEventListener('mouseenter', () => { hover = true; pause(); });
+    tabsBox.addEventListener('mouseleave', () => { hover = false; pause(); });
+    tabsBox.addEventListener('focusin', () => { focused = true; pause(); });
+    tabsBox.addEventListener('focusout', e => { if (!tabsBox.contains(e.relatedTarget)) { focused = false; pause(); } });
+    // only while the section is on screen (the observer follows the sideways strip's transform too)
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([en]) => { seen = en.isIntersecting; pause(); }, { threshold: .35 }).observe(tabsBox.closest('.panel'));
+    } else seen = true;
+    pause();
+    restart();
+  }
+
   /* ---------- Certificates slider (home): one card per step ----------
      The row moves with a transform (0.5s, CSS); arrows, swipe / drag (pointer events) and ← → while focus is inside.
      A drag never opens the lightbox: the click after it is swallowed. Tabbing to a card brings it into view. */

@@ -1264,8 +1264,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* =========================================================================
    About — editorial typography (desktop: the sideways strip and the stacked page alike). The right column is as tall
-   as the photo: the text group (label, heading, paragraph) from the photo's top line; the button on its bottom
-   line (margin-top: auto), always at least 32px under the paragraph. The heading
+   as the photo: the text group (label, heading, paragraph, button) from the photo's top line; the values tabs
+   on its bottom line (see "About — values tabs"). The heading
    follows the screen height (clamp), so on a short screen (1366×768) it shrinks and everything still fits.
    Phones and tablets: the same order, a larger heading and paragraph.
    ========================================================================= */
@@ -1277,7 +1277,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     font-size: clamp(48px, 6.4vh, 88px); line-height: 1.05; letter-spacing: -.02em;
   }
   html.is-h .about .about__text .text { max-width: 640px; margin: 32px 0; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; text-wrap: pretty; }
-  html.is-h .about .about__text .btn { margin-top: auto; }
 }
 @media (max-width: 1023px) {
   .about .h2.about__title { font-size: clamp(34px, 9vw, 44px); }
@@ -1326,3 +1325,58 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .track > .panel.certs .certs__lead { margin-top: 32px; }
 .track > .panel.certs .certs__controls { order: 0; margin-top: 40px; padding-top: 0; }
 .track > .panel.certs .certs__controls .certs__all { order: -1; }
+
+/* =========================================================================
+   About — values tabs (after the Veltom "home-two" tabs): a row of three tabs (Nature / People / Quality) spread over
+   the column, a thin divider under them with a gold line filling under the active tab (its 6 s auto-advance), and the
+   active tab's text 20px under the divider. Each tab also shows its own photo on the left: the photos are stacked in
+   the frame and crossfade (opacity 0.5 s), so nothing moves. Desktop: the tabs sit at the foot of the text column, their
+   text's bottom on the photo's bottom line; phones and tablets: under the button. main.js drives them.
+   ========================================================================= */
+.about__photo { position: relative; }
+.about__photo img { position: absolute; inset: 0; transition: opacity .5s ease; }
+.about__photo img:not(.is-active) { opacity: 0; }
+
+.about-tabs { --tabs: 3; position: relative; width: 100%; margin-top: 40px; }
+.about-tabs__list { display: grid; grid-template-columns: repeat(var(--tabs), minmax(0, 1fr)); }
+.about-tabs__tab {
+  display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 8px 12px 0; text-align: left;
+  font: 500 15px/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted);
+  transition: color .25s ease;
+}
+/* the dot keeps its place on every tab, so the label never shifts when it becomes active */
+.about-tabs__tab::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .25s ease; }
+.about-tabs__tab[aria-selected="true"] { color: var(--text); }
+.about-tabs__tab[aria-selected="true"]::before { opacity: 1; }
+.about-tabs__tab:not([aria-selected="true"]):hover { color: var(--text); }
+.about-tabs__tab:focus-visible { outline-offset: 2px; }
+
+/* the divider, and the gold line under the active tab: it fills over the 6 s before the next tab (an animation, so the
+   compositor runs it; main.js listens for its end) */
+.about-tabs__line { position: relative; height: 1px; background: rgb(239 236 230 / .16); }
+.about-tabs__fill {
+  position: absolute; left: calc(var(--i, 0) * 100% / var(--tabs)); bottom: 0; width: calc(100% / var(--tabs)); height: 2px;
+  background: var(--accent); transform: scaleX(1); transform-origin: 0 50%;
+}
+.about-tabs.is-auto .about-tabs__fill { animation: about-tab-fill 6s linear both; }
+.about-tabs.is-auto.is-paused .about-tabs__fill { animation-play-state: paused; }
+@keyframes about-tab-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* the three texts share one cell: the panel is as tall as the longest (two lines at most), so nothing jumps */
+.about-tabs__panels { display: grid; min-height: calc(2 * 1.6 * 17px); margin-top: 20px; }   /* two lines, always */
+.about-tabs__text {
+  grid-area: 1 / 1; max-width: 640px; font-size: 17px; line-height: 1.6; color: var(--text-body);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  opacity: 0; transform: translateY(8px); visibility: hidden;
+  transition: opacity .4s ease, transform .4s ease, visibility 0s linear .4s;
+}
+.about-tabs__text.is-active { opacity: 1; transform: none; visibility: visible; transition: opacity .4s ease, transform .4s ease, visibility 0s; }
+
+@media (min-width: 1024px) {
+  /* the button follows the paragraph; the tabs take the column's foot (at least 40px under the button) */
+  html.is-h .about .about__text .btn { margin-top: 0; }
+  html.is-h .about .about-tabs { margin-top: auto; padding-top: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about__photo img, .about-tabs__text { transition: none; }
+}
