@@ -25,14 +25,14 @@
 
 :root {
   /* dark palette — the ONE place for colours; everything else uses these variables.
-     Contrast (WCAG AA): text on bg 16.9:1 · text-body on surface ≈ 9:1 · text-muted on bg 5.6:1, on surface 5.2:1,
-     on surface-2 4.6:1 · accent on bg 6.6:1, on surface 6.1:1 · bg-coloured text on the accent 6.6:1. */
-  --bg: #0E0E0D;                         /* page; every other section (tone "base") */
-  --surface: #181816;                    /* cards, alternate sections (tone "surface") */
-  --surface-2: #222220;                  /* inputs, secondary buttons, certificate frames */
+     Contrast (WCAG AA): text on bg 15.9:1 · text-body on surface 9.4:1 · text-muted on bg 6.3:1, on surface 5.9:1,
+     on surface-2 5.3:1 · accent on bg 6.4:1, on surface 5.9:1 · bg-coloured text on the accent 6.4:1. */
+  --bg: #0A1220;                         /* page (dark navy); every other section (tone "base") */
+  --surface: #0F1A2C;                    /* cards, alternate sections (tone "surface") */
+  --surface-2: #16233A;                  /* inputs, secondary buttons, certificate frames */
   --text: #EFECE6;                       /* headings */
   --text-body: rgb(239 236 230 / .78);   /* running text */
-  --text-muted: #8F8A82;                 /* captions, secondary menu items */
+  --text-muted: #8C96A8;                 /* captions, secondary menu items */
   --accent: #B8913A;                     /* the site's gold — accents only: labels, numbers, gold heading words, active
                                             menu item, primary buttons */
   --gold-surface: #CFAE62;               /* the background of the ESG section and the partnership call (nothing else) */
@@ -41,7 +41,7 @@
   --line: rgb(239 236 230 / .14);        /* dividers and borders */
   --white: #FFFFFF;                      /* the certificate image's own paper */
   --shade: 0 0 0;                        /* neutral black for photo gradients: rgb(var(--shade) / a) */
-  --error: #E8846B;                      /* form errors only (6.4:1 on surface) */
+  --error: #E8846B;                      /* form errors only (6.6:1 on surface) */
 
   /* tone tokens — what each section's text, lines and background read (tones: end of file) */
   --fg: var(--text);
@@ -392,7 +392,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 /* lightbox: the large certificate on a dark screen, its title and the PDF link under it */
 .lightbox {
   width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 24px;
-  border: 0; background: rgb(14 14 13 / .94); color: var(--text);
+  border: 0; background: rgb(10 18 32 / .94); color: var(--text);   /* --bg at 94% */
   overscroll-behavior: contain;
 }
 .lightbox[open] { display: grid; place-items: center; animation: modal-fade .3s ease; }
@@ -872,7 +872,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .btn .btn__arrow { display: block; flex: none; width: 20px; height: 20px; transform: rotate(-45deg); transition: transform .25s ease-out; }
 .btn:hover > span { background: var(--accent-hover); }
 .btn--secondary > span { background: var(--surface-2); color: var(--text); }
-.btn--secondary:hover > span { background: #2E2E2B; color: var(--accent); }   /* 5.0:1 */
+.btn--secondary:hover > span { background: color-mix(in srgb, var(--surface-2) 92%, var(--text)); color: var(--accent); }   /* ≈4.6:1 */
 .btn:hover .btn__arrow { transform: rotate(0deg); }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover .btn__arrow { transform: rotate(-45deg); }
@@ -1121,7 +1121,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    Partnership call — on --gold-surface (tone "gold", the same as ESG: the only gold backgrounds on the site). The
    label, heading and button sit on the gold (first, so the label stays on the top line); the photo follows under them
    in its natural colours (no shade), filling the rest of the column. Contrast: see tone "gold" · button label --text on
-   #0E0E0D 16.4:1, on the #222220 hover 13.5:1.
+   --text on --surface 14.8:1, on the --surface-2 hover 13.3:1.
    ========================================================================= */
 .contacts .contacts__cta { flex-direction: column; align-items: stretch; min-height: 0; background: var(--gold-surface); color: #0E0E0D; }
 .contacts .contacts__cta-inner { order: -1; min-height: 0; padding-top: 72px; padding-bottom: 72px; }
@@ -1130,8 +1130,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .contacts .contacts__photo { position: relative; inset: auto; flex: 1 0 auto; aspect-ratio: 4 / 3; }
 .contacts .contacts__photo::after { content: none; }
 .contacts .contacts__photo img { position: absolute; inset: 0; }
-.contacts__cta .btn > span { background: #0E0E0D; color: var(--text); }
-.contacts__cta .btn:hover > span { background: #222220; }
+.contacts__cta .btn > span { background: var(--surface); color: var(--text); }
+.contacts__cta .btn:hover > span { background: var(--surface-2); }
 @media (min-width: 1024px) {
   .contacts .contacts__cta-inner { padding-top: var(--top); padding-bottom: clamp(48px, 7vh, 96px); }
   .contacts .contacts__cta-inner .btn { margin-top: clamp(32px, 5vh, 56px); }
