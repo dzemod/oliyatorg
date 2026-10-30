@@ -146,8 +146,8 @@
      (power2.out). The motion itself is a CSS transition of opacity (+ a 16px rise on desktop), so the compositor runs
      it and no script works per frame. The section's numbers count up from the same trigger. Everything is built once
      (never again on resize or language change) and each trigger is removed after it fires.
-       · desktop home page (sideways strip): a ScrollTrigger on the strip (containerAnimation) when a section's left
-         edge passes 85% of the screen, with a 16px rise
+       · desktop home page (sideways strip): the strip's own update (stripUpdate) when a block's left edge passes
+         85% of the screen, with a 16px rise
        · desktop, other pages: an IntersectionObserver, with a 16px rise
        · phones and tablets: an IntersectionObserver; opacity only, no movement
        · hero: the same sequence on load · reduced motion: none of this, the final state at once
@@ -231,15 +231,13 @@
   const hero = $('.hero');
   if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
 
-  // Reveals: each plays once. On the sideways strip a ScrollTrigger on the strip's tween (containerAnimation) plays it
-  // when its left edge passes 85% of the screen; on a vertical page an IntersectionObserver as it rises past 85%.
+  // Reveals: each plays once. On the sideways strip the strip's own update plays it when its left edge passes 85% of
+  // the screen (stripUpdate below); on a vertical page an IntersectionObserver as it rises past 85%.
   function fire(r) { if (r.done) return; r.done = true; r.play(); }
   function armReveals() {
     const left = reveals.filter(r => !r.done);
-    if (!left.length) return;
-    if (hTween) {
-      left.forEach(r => ScrollTrigger.create({ trigger: r.el, containerAnimation: hTween, start: 'left 85%', once: true, onEnter: () => fire(r) }));
-    } else if ('IntersectionObserver' in window) {
+    if (!left.length || hTween) return;   // the strip checks its reveals on every update
+    if ('IntersectionObserver' in window) {
       revealIo = new IntersectionObserver(entries => entries.forEach(en => {
         if (!en.isIntersecting) return;
         revealIo.unobserve(en.target);
@@ -257,32 +255,41 @@
 
   /* ---------- Desktop home page: the sideways strip ----------
      Engine from the earlier sideways version (commit 5f7b827): ONE ScrollTrigger pins the page (.scroller, under the
-     fixed header) and scrubs one tween — the strip's translateX over its length — with the page's vertical scroll
-     (scrub 0.6: a short glide, transform only). The pin adds exactly the strip's overflow as scroll height, so the start
-     and the end meet the page's own edges with no jump. Sideways trackpad swipes and ← → feed the same scroll;
-     ↑ ↓, PageUp / PageDown and Space scroll natively. A 2px line on the bottom edge shows the progress.
-     Built and torn down live when the window crosses 1024px (setMode); never with "reduce motion". */
+     fixed header) and scrubs one timeline with the page's vertical scroll (scrub 0.6: a short glide). The timeline:
+       1. the strip moves left (translateX) until the ESG panel fills the screen;
+       2. the strip holds still for 2 screen heights of scroll while the ESG rows open one after another, top to bottom
+          (row 1 is already open when the panel arrives; each row's openness is the CSS variable --o, 0–1);
+       3. the strip moves on to the end.
+     The timeline's time is measured in scroll pixels, so the pin adds exactly the strip's overflow plus the hold as
+     scroll height, and the start and the end meet the page's own edges with no jump. Sideways trackpad swipes and ← →
+     feed the same scroll; ↑ ↓, PageUp / PageDown and Space scroll natively. A 2px line on the bottom edge shows the
+     progress. Built when the window grows past 1024px, rebuilt on resize, torn down below 1024px (setMode); never
+     with "reduce motion". */
   const bar = $('.hprogress__fill');
+  const esg = $('#esg');
+  const esgRows = esg ? $$('.esg-row', esg) : [];
   let ctx = null;
+  let geo = [];          // the sections' places on the strip (px), measured at build
+  let esgL = 0, hold = 0, dist = 0;
+  let spotNow = null;    // where the strip stands: { p: section, f: 0–1 into it, h: 0–1 through the ESG hold }
   const distance = () => Math.max(0, track.scrollWidth - root.clientWidth);
   const st = () => hTween.scrollTrigger;
-  // jump without the scrub's glide (language switch, keyboard focus, mode switch)
+  // jump without the scrub's glide (language switch, keyboard focus, mode switch, resize)
   const jumpTo = y => {
     scrollTo(0, y);
     ScrollTrigger.update();
     const tw = st().getTween();
     if (tw) tw.progress(1);
   };
-  // the section at the screen's left edge and how far into it (0–1). The sections' places are measured at every refresh
-  // (geo), so this still answers right when the window has just crossed 1024px and the strip's CSS is already gone.
-  let geo = [];
-  const measure = () => { geo = sections.map(p => ({ p, l: p.offsetLeft, w: p.offsetWidth })); };
-  function stripSpot() {
-    const x = Math.max(0, Math.min(scrollY - st().start, st().end - st().start));
-    const g = geo.filter(g => g.l <= x + 1).pop() || geo[0];
-    return { p: g.p, f: g.w ? (x - g.l) / g.w : 0 };
-  }
-  const stripTop = (p, f = 0) => Math.min(st().start + p.offsetLeft + f * p.offsetWidth, st().end);
+  // strip position x (px) → scroll offset into the pin: the hold sits at x = esgL
+  const offsetForX = (x, h = 0) => x < esgL ? x : x > esgL ? x + hold : esgL + h * hold;
+  const stripTop = (p, f = 0, h = 0) => {
+    const g = geo.find(g => g.p === p) || { l: p.offsetLeft, w: p.offsetWidth };
+    return Math.min(st().start + offsetForX(Math.min(g.l + f * g.w, dist), h), st().end);
+  };
+  // the section at the screen's left edge, from the timeline's own time (no layout reads), so it still answers right
+  // when the window has just crossed 1024px and the strip's CSS is already gone
+  const stripSpot = () => spotNow || { p: sections[0], f: 0, h: 0 };
 
   let gsapLoading = null;
   function loadGsap() {
@@ -299,24 +306,43 @@
   function buildStrip() {
     gsap.registerPlugin(ScrollTrigger);
     const setBar = gsap.quickSetter(bar, 'scaleX');
+    // everything the timeline needs is measured once here (and again on every rebuild), never while scrolling
+    const x0 = track.getBoundingClientRect().left;
+    geo = sections.map(p => ({ p, l: p.offsetLeft, w: p.offsetWidth }));
+    const pending = reveals.filter(r => !r.done).map(r => ({ r, l: r.el.getBoundingClientRect().left - x0 }));
+    const rows = esgRows.length > 1 ? esgRows : [];
+    dist = distance();
+    esgL = rows.length ? Math.min(esg.offsetLeft, dist) : dist;
+    hold = rows.length ? innerHeight * 2 : 0;
+    const vw = root.clientWidth;
+    function stripUpdate() {
+      const t = this.time();
+      const x = t <= esgL ? t : t <= esgL + hold ? esgL : t - hold;
+      const g = geo.filter(g => g.l <= x + 1).pop() || geo[0];
+      spotNow = { p: g.p, f: g.w ? (x - g.l) / g.w : 0, h: hold && t > esgL ? Math.min(1, (t - esgL) / hold) : 0 };
+      setBar(this.progress());
+      pending.forEach(q => { if (!q.r.done && q.l - x < vw * .85) fire(q.r); });
+    }
     ctx = gsap.context(() => {
-      hTween = gsap.to(track, {
-        x: () => -distance(),
-        ease: 'none',
-        onUpdate() { setBar(this.progress()); },
-        scrollTrigger: {
-          trigger: scroller,
-          start: 'top top',
-          end: () => '+=' + distance(),
-          pin: true,
-          scrub: .6,
-          invalidateOnRefresh: true,
-          onRefresh: measure
-        }
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        onUpdate: stripUpdate,
+        scrollTrigger: { trigger: scroller, start: 'top top', end: '+=' + (dist + hold), pin: true, scrub: .6 }
       });
-      armReveals();
+      tl.to(track, { x: -esgL, duration: Math.max(esgL, .001) }, 0);
+      if (rows.length) {
+        // row 1 open on arrival; then each next row opens while the one before closes
+        gsap.set(rows, { '--o': i => (i ? 0 : 1) });
+        const step = hold / (rows.length - 1);
+        rows.slice(1).forEach((row, k) => {
+          tl.to(rows[k], { '--o': 0, duration: step, ease: 'power1.inOut' }, esgL + k * step)
+            .to(row, { '--o': 1, duration: step, ease: 'power1.inOut' }, esgL + k * step);
+        });
+      }
+      tl.to(track, { x: -dist, duration: Math.max(dist - esgL, .001) }, esgL + hold);
+      hTween = tl;
     });
-    setBar(hTween.progress());
+    stripUpdate.call(hTween);   // a page reloaded mid-way plays what is already on screen
     // lazy images load as the strip brings them near; once the page has loaded, the rest follow, so a fast scroll
     // never meets an empty frame
     const eager = () => $$('img[loading="lazy"]', track).forEach(img => { img.loading = 'eager'; });
@@ -324,9 +350,18 @@
   }
   function destroyStrip() {
     if (!ctx) return;
-    ctx.revert();   // unpins, removes the transform and every strip trigger
-    ctx = hTween = null;
+    ctx.revert();   // unpins, removes the transform, the rows' --o and the trigger
+    ctx = hTween = spotNow = null;
     track.style.transform = bar.style.transform = '';
+  }
+  // rebuild after a resize (the panels' widths follow the screen), keeping the same spot on screen
+  function rebuildStrip() {
+    if (!hTween) return;
+    const s = stripSpot();
+    destroyStrip();
+    buildStrip();
+    ScrollTrigger.refresh();   // sizes the new pin first: before that the page is one screen tall and the jump would land on 0
+    jumpTo(stripTop(s.p, s.f, s.h));
   }
 
   // The mode follows the window: ≥1024px without "reduce motion" the desktop layout (html.is-h.is-v), and on the home
@@ -368,7 +403,7 @@
     loadGsap().then(() => {
       if (hTween || !root.classList.contains('is-x')) return;
       buildStrip();
-      if (from) jumpTo(stripTop(from));
+      if (from) { ScrollTrigger.refresh(); jumpTo(stripTop(from)); }
     }).catch(() => {
       // no GSAP (CDN blocked): the desktop sections simply stack top to bottom
       root.classList.remove('is-x');
@@ -400,7 +435,7 @@
       const r = e.target.getBoundingClientRect();
       if (r.left >= 0 && r.right <= root.clientWidth) return;
       const x = r.left - track.getBoundingClientRect().left;
-      jumpTo(Math.max(st().start, Math.min(st().start + x - innerWidth * .3, st().end)));
+      jumpTo(st().start + offsetForX(Math.max(0, Math.min(x - innerWidth * .3, dist))));
     });
     // Language: the texts change, the strip is re-measured, and the same spot stays on screen
     let spot = null;
@@ -408,13 +443,25 @@
     document.addEventListener('langchange', () => {
       if (!hTween) return;
       ScrollTrigger.refresh();
-      if (spot) jumpTo(stripTop(spot.p, spot.f));
+      if (spot) jumpTo(stripTop(spot.p, spot.f, spot.h));
       spot = null;
     });
     // fonts and images settle the widths: re-measure
     const refresh = () => { if (hTween) ScrollTrigger.refresh(); };
     document.fonts && document.fonts.ready.then(refresh);
     addEventListener('load', refresh);
+    // resize: the panels follow the screen, so the timeline is rebuilt (once the resizing has stopped)
+    let resizeTimer;
+    addEventListener('resize', () => {
+      if (!hTween) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(rebuildStrip, 250);
+    });
+    // ESG: a click on a row opens it — the page scrolls to that row's point of the hold
+    esgRows.forEach((row, i) => row.addEventListener('click', () => {
+      if (!hTween || !hold) return;
+      scrollTo({ top: st().start + esgL + hold * i / (esgRows.length - 1), behavior: 'smooth' });
+    }));
   }
 
   /* ---------- Anchor links ---------- */

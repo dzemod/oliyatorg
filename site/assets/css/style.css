@@ -1175,21 +1175,37 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-x .production .steps { flex: 1; min-height: 0; grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, auto) auto auto auto; }
   html.is-x .steps .step .step__media { aspect-ratio: 4 / 3; margin-top: 0; }
 
-  /* ESG: the heading on the left, the four items in four columns — photo 4:3, icon + title, text; thin rules between */
-  html.is-x .track > .panel.esg {
-    --esg-head: calc(var(--h2-size) * 10);
-    --esg-w: clamp(300px, calc(var(--panel-h) * .58), 540px);
-    --esg-gap: clamp(32px, 2.8vw, 56px);
-    display: grid; grid-template-columns: var(--esg-head) auto; grid-template-rows: minmax(0, 1fr); column-gap: clamp(48px, 5vw, 96px);
-    width: calc(2 * var(--pad) + var(--esg-head) + clamp(48px, 5vw, 96px) + 4 * var(--esg-w) + 3 * var(--esg-gap));
+  /* ESG: one screen — label and heading on columns 1–4, a table of the four rows on columns 5–12: the photo on 3 of the
+     8 columns, the icon + title and the text beside it, thin rules between the rows; the table is as
+     tall as the panel and its rows share the free height evenly (so it never grows or shrinks while rows open). main.js drives each row's
+     openness --o (0 closed, 1 open) while the strip holds still: the photo grows from a 72px strip to 16:9 (smaller on
+     short screens, so the table always fits), the title moves from the strip's middle to the photo's top line, the
+     text fades and slides in 12px under the title. All four titles are always visible. */
+  html.is-x .track > .panel.esg { display: grid; grid-template-columns: repeat(12, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap); }
+  html.is-x .esg .esg__head { grid-column: 1 / 5; align-self: start; }
+  /* the longest word ("Енергонезалежність") always fits the four columns */
+  html.is-x .esg .esg__title { max-width: none; font-size: min(var(--h2-size), calc((4 * var(--col) + 3 * var(--gap)) / 9.6)); }
+  html.is-x .esg .esg-list {
+    --row-pad: clamp(10px, 2vh, 24px);
+    --media-w: calc(3 * var(--col) + 2 * var(--gap));
+    --open-h: min(calc(var(--media-w) * 9 / 16), calc(var(--panel-h) - var(--top) - var(--bottom) - 3 * 72px - 6 * var(--row-pad) - 8px));
+    grid-column: 5 / 13; align-self: stretch; display: flex; flex-direction: column; margin: 0;
   }
-  html.is-x .esg .esg__title { max-width: none; }
-  html.is-x .esg .esg-list { display: grid; grid-template-columns: repeat(4, var(--esg-w)); column-gap: var(--esg-gap); align-items: start; margin: 0; }
-  html.is-x .esg-list .esg-row { display: flex; flex-direction: column; padding: 0; }
-  html.is-x .esg-row + .esg-row::before { top: 0; bottom: 0; left: calc(var(--esg-gap) / -2); right: auto; width: 1px; height: auto; }
-  html.is-x .esg-row .esg-row__media { aspect-ratio: 4 / 3; }
-  html.is-x .esg-row .esg-row__title { margin-top: clamp(14px, 2.2vh, 24px); gap: 12px; font-size: clamp(15px, 1.9vh, 19px); }
-  html.is-x .esg-row .esg-row__text { margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(14px, 1.65vh, 17px); line-height: 1.6; }
+  html.is-x .esg-list .esg-row {
+    --o: 0;
+    grid-template-columns: var(--media-w) minmax(0, 1fr); column-gap: var(--gap); align-items: start;
+    flex: 1 1 auto; align-content: center; padding: var(--row-pad) 0; cursor: pointer;
+  }
+  html.is-x .esg-list .esg-row:first-child { --o: 1; }   /* open when the panel arrives */
+  html.is-x .esg-list .esg-row + .esg-row::before { left: 0; }
+  html.is-x .esg-row .esg-row__media { grid-column: 1; height: calc(72px + (var(--open-h) - 72px) * var(--o)); aspect-ratio: auto; }
+  /* closed: the title centred on the 72px strip; open: on the photo's top line */
+  html.is-x .esg-row .esg-row__content { grid-column: 2; align-self: start; display: flex; flex-direction: column; justify-content: center; min-height: calc(72px * (1 - var(--o))); }
+  html.is-x .esg-row .esg-row__title { margin-top: 0; }
+  html.is-x .esg-row .esg-row__text {
+    max-width: 620px; max-height: calc(var(--o) * var(--o) * 16em); margin-top: calc(12px * var(--o)); overflow: hidden;
+    font-size: 17px; line-height: 1.6; opacity: var(--o); transform: translateY(calc((1 - var(--o)) * 12px));
+  }
 
   /* Certificates: the head (label, heading, text, button) on the left, then all five cards in one row (no slider);
      each card as tall as the panel, its thumbnail takes the free height */

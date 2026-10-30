@@ -35,7 +35,7 @@
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=134">
+  <link rel="stylesheet" href="assets/css/style.css?v=136">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"); html.is-x on top of it: the sections side by side on one sideways strip (main.js; without GSAP it
@@ -567,7 +567,7 @@
   <!-- Desktop (sideways strip): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are CSS
        transitions; main.js loads GSAP itself if the window later grows past 1024px. Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=48';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=49';
     (document.documentElement.classList.contains('is-x')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {
