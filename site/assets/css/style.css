@@ -91,6 +91,7 @@
     --t-sub: clamp(20px, 2.3vh, 26px);       /* subheadings: card and step titles (Inter Tight 500) */
     --t-body: clamp(16px, 1.75vh, 19px);     /* body text — never under 16px */
     --t-caps: clamp(12px, 1.3vh, 14px);      /* small uppercase captions: tab names, card captions, contact labels (600) */
+    --t-numcap: clamp(16px, 1.8vh, 20px);    /* captions under big numbers (500) */
     /* photo screens (hero, Partnership) share their own text layout: label on the photo line, button on the bottom line;
        the photo line is where the hero text block (label, 3-line heading, lead, button) puts its label */
     --photo-top: calc(100vh - var(--bottom) - 45vh - 92px);
@@ -268,16 +269,20 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .fade [data-stagger] > * { transition: opacity .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s), transform .6s cubic-bezier(.33, 1, .68, 1) var(--d, 0s); }
 .fade [data-stagger]:not(.in) > * { opacity: 0; transform: translateY(24px); }
 
-/* About: the four key numbers under the button — phones 2 × 2, tablets and desktop one row of four. Every figure sits
-   on one line and every caption starts on the next (subgrid); captions 15px, one or two lines. */
-.stats {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */
-  grid-auto-rows: auto; gap: 32px 20px; margin-top: 40px;
+/* 3. Numbers */
+.numbers { color: var(--fg); overflow: hidden; }
+.numbers__bg { position: absolute; inset: 0; }
+.numbers__bg img { width: 100%; height: 100%; object-fit: cover; }
+/* the text covers the whole photo here: a gradient from the bottom (the figures) that stays soft at the top (heading) */
+.numbers__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgb(var(--shade) / .8), rgb(var(--shade) / .55) 50%, rgb(var(--shade) / .4));
 }
-.stat { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+.numbers__inner { position: relative; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));   /* minmax(0, …): columns never stretch to fit a tied word pair */ gap: 36px 20px; margin-top: 40px; }
 /* lining, tabular figures: every number sits on the baseline (no hanging 9s) and keeps its width while counting */
-.stat__value { align-self: end; font: 400 clamp(48px, 13vw, 64px)/1 var(--display); letter-spacing: var(--track); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
-.stat__label { margin-top: 10px; font-size: 15px; font-weight: 500; line-height: 1.45; color: var(--body); text-wrap: balance; }
+.stat__value { font: 400 clamp(48px, 13vw, 64px)/1 var(--display); letter-spacing: var(--track); font-variant-numeric: lining-nums tabular-nums; color: var(--num); }
+.stat__label { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ESG — four rows on the gold (tone "gold", end of file), all open: photo, icon + title, text. Phones and tablets: the
@@ -582,7 +587,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .panel:not(.hero) :is(.eyebrow, .pill) { margin-bottom: var(--label-gap); }
   /* at least two lines high; a heading that wraps to a third line (narrow screens, English) pushes the content down
      instead of running into it */
-  .is-h .panel :is(.about__title, .products__title, .production__title, .export__title) { min-height: var(--head-h); margin: 0; }
+  .is-h .panel :is(.about__title, .numbers__head .h2, .products__title, .production__title, .export__title) { min-height: var(--head-h); margin: 0; }
   .is-h .link { margin-top: 3vh; }
   /* section heads (label on the top line, then heading and intro) take the first 4 columns */
   .is-h .section-head { grid-column: 1 / 5; }
@@ -627,11 +632,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .is-h .about__body .btn > span { white-space: nowrap; }
   .is-h .about__body .btn { margin-top: 5.4vh; }
 
-  /* About's key numbers: one row of four across the text column, 40px under the button; the figures follow the screen
-     (gold, Inter Tight), the captions stay 15px */
-  .is-h .about__stats { align-self: stretch; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 var(--gap); margin-top: 40px; }
-  .is-h .about__stats .stat__value { font-size: clamp(44px, min(7.4vh, 3.7vw), 96px); }
-  .is-h .about__stats .stat__label { margin-top: clamp(8px, 1.2vh, 14px); }
+  /* 3. Numbers — full-screen photo; label/heading from the top line, figures end on the bottom line */
+  .is-h .panel.numbers { width: 100vw; display: block; }   /* .panel.numbers outranks the shared section grid */
+  .is-h .numbers__inner { position: absolute; inset: var(--top) var(--pad) var(--bottom); display: flex; flex-direction: column; }
+  .is-h .numbers .h2 { font-size: clamp(48px, 8vh, 108px); max-width: 12em; }
+  /* each column runs from the content line (its line) to the bottom line (the number and caption) */
+  .is-h .stats { flex: 1; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin: var(--content-gap) 0 0; }
+  .is-h .stat { display: flex; flex-direction: column; justify-content: flex-end; }
+  .is-h .stat__value { font-size: clamp(60px, 13vh, 168px); }
+  .is-h .stat__label { margin-top: 1.4vh; font-size: var(--t-numcap); font-weight: 500; white-space: nowrap; }   /* short captions, one line each */
 
   /* 4. Products — 12 columns: heading block on top, three 4-column cards fill down to the bottom line */
   .is-h .panel.products { width: 100vw; display: flex; flex-direction: column; --cards-gap: var(--gap); }   /* outranks the shared section grid */
@@ -702,6 +711,12 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
   html.is-v { --vgap: calc(100vw * 140 / 1920); --top: calc(var(--vgap) / 2); --bottom: calc(var(--vgap) / 2); --label-gap: 24px; }
 
+  /* Numbers: the figures right under the heading (≈90px), and the section only as tall as its content */
+  html.is-v .panel.numbers { height: auto; }   /* outranks .is-v .panel:not(.hero) */
+  .is-v .numbers__inner { position: relative; inset: auto; }
+  .is-v .numbers .numbers__head .h2 { height: auto; }
+  .is-v .numbers .stats { flex: none; margin-top: clamp(64px, calc(100vw * 90 / 1920), 100px); }
+  .is-v .numbers .stat { justify-content: flex-start; }
   /* at least the screen under the header, taller when the content needs it: never a fixed height */
   .is-v .panel:not(.hero) { height: auto; min-height: calc(100vh - var(--header-h)); }
   .is-v .panel.contacts:not(.hero) { min-height: 0; }   /* as tall as its content */
@@ -1007,11 +1022,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* inside sections: label → heading 24 · heading → text 28 · text → button 40 · button (or heading) → content 56 */
   .panel :is(.eyebrow, .pill) { margin: 0 0 24px; }
-  .hero .hero__title, .about .h2.about__title, .products .products__title, .production .production__title,
+  .hero .hero__title, .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
   .export .export__title, .contacts .contacts__title { margin: 0; }
   .hero .hero__lead, .about .about__body .text { margin: 28px 0 0; }
   .hero .hero__inner .btn, .about .about__body .btn { margin-top: 40px; }
-  .products .cards, .production .steps, .export .features { margin-top: 56px; }
+  .products .cards, .production .steps, .numbers .stats, .export .features { margin-top: 56px; }
   .esg .esg__title { margin: 0; }
   .esg .esg-list { margin-top: 48px; }
   .certs .certs__title { margin: 0; }
@@ -1033,6 +1048,11 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .btn > span:not(.btn__box) { flex: 1; justify-content: center; }
   .products__head, .production__head { display: block; }
   .products .products__all, .production .production__more { margin-top: 40px; }
+
+  /* Numbers: compact — less air around the section, 32px between the figures */
+  .numbers.panel { padding-top: 88px; padding-bottom: 88px; }
+  .numbers .stats { margin-top: 40px; gap: 32px 20px; }
+  .numbers .stat__label { margin-top: 6px; }
 
   /* Export: label → photo → heading → features (the text column dissolves, so its parts take their own order) */
   .export.panel { display: flex; flex-direction: column; }
@@ -1065,7 +1085,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* one heading size for every section (≈26px at 375, so no heading runs over 2–3 lines); the hero keeps its own
      size (see .hero__title): exactly three lines, each phrase on one line */
-  .about .h2.about__title, .products .products__title, .production .production__title,
+  .about .h2.about__title, .numbers .h2, .products .products__title, .production .production__title,
   .esg .esg__title, .certs .certs__title, .page-hero .page-hero__title, .export .export__title, .contacts .contacts__title { font-size: clamp(26px, 7vw, 48px); line-height: 1.1; }
   .hero .hero__title, .contacts .contacts__title { font-weight: 500; }   /* over full-screen photos: a medium weight */
 
@@ -1080,6 +1100,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 }
 @media (max-width: 639px) {
   :root { --pad: 24px; }   /* 24px side margins on phones */
+  /* key numbers: one column, number and caption, 32px apart */
+  .numbers .stats { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   /* contact rows: the label above the value, so the value gets the full width */
   .contacts .contact-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .contacts .contact-row dt { padding-top: 0; }
@@ -1153,8 +1175,17 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* About, Export: photo and text column between the two lines */
   html.is-x .panel:is(.about, .export) { grid-template-rows: minmax(0, 1fr); }
-  /* About: the key numbers follow the screen height too (the column itself: "About — editorial typography", end of file) */
-  html.is-x .about__stats .stat__value { font-size: clamp(44px, min(9vh, 3.8vw), 110px); }
+
+  /* Numbers: label and heading on the top line, the figures on the bottom line */
+  html.is-x .numbers__inner { height: 100%; display: flex; flex-direction: column; }
+  /* the figures share one row and the captions the next (subgrid), so a two-line caption never lifts its figure */
+  html.is-x .numbers .stats { flex: 1; grid-template-rows: minmax(0, 1fr) auto auto; margin-top: var(--content-gap); }
+  html.is-x .numbers .stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+  html.is-x .numbers .stat__value { grid-row: 2; }
+  html.is-x .numbers .stat__label { grid-row: 3; }
+  /* narrow desktops (≈1024–1300px): the figures also follow the width, and a long caption may take two lines */
+  html.is-x .numbers .stat__value { font-size: clamp(60px, min(13vh, 8.5vw), 168px); }
+  html.is-x .numbers .stat__label { white-space: normal; text-wrap: balance; }
 
   /* Products: three cards in a row, each about as wide as its photo is tall (the panel grows past the screen) */
   html.is-x .track > .panel.products {
@@ -1233,8 +1264,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
 /* =========================================================================
    About — editorial typography (desktop: the sideways strip and the stacked page alike). The right column is as tall
-   as the photo: the text group (label, heading, paragraph) from the photo's top line; the button and the four key
-   numbers as one block on its bottom line (margin-top: auto), always at least 32px under the paragraph. The heading
+   as the photo: the text group (label, heading, paragraph) from the photo's top line; the button on its bottom
+   line (margin-top: auto), always at least 32px under the paragraph. The heading
    follows the screen height (clamp), so on a short screen (1366×768) it shrinks and everything still fits.
    Phones and tablets: the same order, a larger heading and paragraph.
    ========================================================================= */
@@ -1247,7 +1278,6 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   }
   html.is-h .about .about__text .text { max-width: 640px; margin: 32px 0; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; text-wrap: pretty; }
   html.is-h .about .about__text .btn { margin-top: auto; }
-  html.is-h .about .about__stats { margin-top: 40px; padding-top: 0; }
 }
 @media (max-width: 1023px) {
   .about .h2.about__title { font-size: clamp(34px, 9vw, 44px); }
@@ -1263,7 +1293,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
    ========================================================================= */
 @media (min-width: 1024px) {
   html.is-h .track > .panel:not(.hero) :is(.eyebrow, .pill) { margin-bottom: 16px; }
-  html.is-h .track > .panel:not(.hero) :is(.about__title, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) {
+  html.is-h .track > .panel:not(.hero) :is(.about__title, .numbers__head .h2, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) {
     min-height: 0; margin: 0; white-space: normal; text-wrap: balance;
     font-size: clamp(48px, 6.4vh, 88px); line-height: 1.05; letter-spacing: -.02em;
   }
@@ -1275,7 +1305,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-x[lang="uk"] .track > .panel.esg .esg__title { font-size: min(clamp(48px, 6.4vh, 88px), calc((4 * var(--col) + 3 * var(--gap)) / 8.9)); }
 }
 @media (max-width: 1023px) {
-  .track > .panel :is(.about__title, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) { font-size: clamp(34px, 9vw, 44px); }
+  .track > .panel :is(.about__title, .numbers__head .h2, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) { font-size: clamp(34px, 9vw, 44px); }
   .track > .panel .certs__lead { font-size: 18px; }
 }
 

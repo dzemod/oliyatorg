@@ -37,6 +37,8 @@ window.I18N = {
     'about.p1short': 'We double-press sunflower seeds from Ukrainian farmers — no chemical solvents',
     'about.cta': 'About us',
 
+    'numbers.eyebrow': 'Oliyatorg in numbers',
+    'numbers.title': 'Production <em>scale</em>',
     'numbers.s1': 'year founded',
     'numbers.s2': 'thousand tons of seeds a year',
     'numbers.s3': 'thousand tons — elevator',
