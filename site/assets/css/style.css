@@ -1153,11 +1153,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 
   /* About, Export: photo and text column between the two lines */
   html.is-x .panel:is(.about, .export) { grid-template-rows: minmax(0, 1fr); }
-  /* About: the text column as tall as the photo — label on its top line, the key numbers on its bottom line; the free
-     height is shared between heading → text and button → numbers (at least the usual gaps: padding) */
-  html.is-x .about .about__text { align-self: stretch; }
-  html.is-x .about .about__body { margin-top: auto; padding-top: 32px; }
-  html.is-x .about .about__stats { margin-top: auto; padding-top: 40px; }
+  /* About: the key numbers follow the screen height too (the column itself: "About — editorial typography", end of file) */
   html.is-x .about__stats .stat__value { font-size: clamp(44px, min(9vh, 3.8vw), 110px); }
 
   /* Products: three cards in a row, each about as wide as its photo is tall (the panel grows past the screen) */
@@ -1233,4 +1229,27 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-x .contacts .contacts__photo { flex: 1 1 0; min-height: 0; }
   html.is-x .contacts .contact-rows { flex: 1 1 auto; min-height: 0; }
   html.is-x .contacts .contact-row { flex: 1 1 auto; }
+}
+
+/* =========================================================================
+   About — editorial typography (desktop: the sideways strip and the stacked page alike). The right column is as tall
+   as the photo: the text group (label, heading, paragraph) from the photo's top line; the button and the four key
+   numbers as one block on its bottom line (margin-top: auto), always at least 32px under the paragraph. The heading
+   follows the screen height (clamp), so on a short screen (1366×768) it shrinks and everything still fits.
+   Phones and tablets: the same order, a larger heading and paragraph.
+   ========================================================================= */
+@media (min-width: 1024px) {
+  html.is-h .about .about__text { align-self: stretch; }
+  html.is-h .about .about__body { display: contents; }   /* the paragraph and the button become the column's own items */
+  html.is-h .about .h2.about__title {
+    min-height: 0; margin: 0; white-space: normal; text-wrap: balance;
+    font-size: clamp(48px, 6.4vh, 88px); line-height: 1.05; letter-spacing: -.02em;
+  }
+  html.is-h .about .about__text .text { max-width: 640px; margin: 32px 0; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; text-wrap: pretty; }
+  html.is-h .about .about__text .btn { margin-top: auto; }
+  html.is-h .about .about__stats { margin-top: 40px; padding-top: 0; }
+}
+@media (max-width: 1023px) {
+  .about .h2.about__title { font-size: clamp(34px, 9vw, 44px); }
+  .about .about__body .text { font-size: 18px; }
 }
