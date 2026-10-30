@@ -35,7 +35,7 @@
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=132">
+  <link rel="stylesheet" href="assets/css/style.css?v=133">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"); html.is-x on top of it: the sections side by side on one sideways strip (main.js; without GSAP it
@@ -131,7 +131,7 @@
       </section>
 
       <!-- 2. ABOUT — after the Veltom reference: one large photo on the left (top line to bottom line),
-           the text column on the right (label, heading, text, button), as tall as the photo -->
+           the text column on the right (label, heading, text, button, then the four key numbers), as tall as the photo -->
       <!-- About texts: from brief.txt (ESG, double pressing without solvents, quality at every stage, community support) -->
       <section class="panel about" id="about" data-tone="surface" aria-labelledby="about-title">
         <figure class="about__photo" data-reveal>
@@ -152,26 +152,10 @@
               <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
             </a>
           </div>
-        </div>
-      </section>
-
-      <!-- 3. KEY NUMBERS (dark) -->
-      <!-- Numbers: from the client's website, oil tanks updated to 5 000 t by brief.txt -->
-      <!-- TODO: confirm with client --> <!-- export countries / partners count, if they should replace two of these figures -->
-      <section class="panel numbers" data-tone="photo" aria-labelledby="numbers-title">
-        <div class="numbers__bg" aria-hidden="true">
-          <picture>
-            <source type="image/webp" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.webp 800w, assets/img/numbers-seeds-macro-1400.webp 1400w, assets/img/numbers-seeds-macro-2400.webp 2400w">
-            <img src="assets/img/numbers-seeds-macro-1400.jpg" sizes="100vw" srcset="assets/img/numbers-seeds-macro-800.jpg 800w, assets/img/numbers-seeds-macro-1400.jpg 1400w, assets/img/numbers-seeds-macro-2400.jpg 2400w" alt="" width="1400" height="1050" loading="lazy" decoding="async">
-          </picture>
-        </div>
-        <div class="numbers__inner">
-          <header class="numbers__head">
-            <p class="eyebrow eyebrow--light" data-reveal><span data-i18n="numbers.eyebrow">Оліяторг у цифрах</span></p>
-            <h2 class="h2 h2--light" id="numbers-title" data-reveal data-i18n="numbers.title">Масштаб <em>виробництва</em></h2>
-          </header>
-          <!-- the visible numbers count up (main.js) and are hidden from screen readers; .sr-only holds the final value -->
-          <dl class="stats">
+          <!-- Key numbers: from the client's website, oil tanks updated to 5 000 t by brief.txt. The visible numbers count up
+               (main.js) and are hidden from screen readers; .sr-only holds the final value -->
+          <!-- TODO: confirm with client --> <!-- export countries / partners count, if they should replace two of these figures -->
+          <dl class="stats about__stats">
             <div class="stat" data-reveal><dt class="stat__value"><span class="stat__num" data-from="1900" aria-hidden="true">1991</span><span class="sr-only">1991</span></dt><dd class="stat__label" data-i18n="numbers.s1">рік заснування</dd></div>
             <div class="stat" data-reveal><dt class="stat__value"><span class="stat__num" aria-hidden="true">100</span><span class="sr-only">100</span></dt><dd class="stat__label" data-i18n="numbers.s2">тисяч тонн насіння на&nbsp;рік</dd></div>
             <div class="stat" data-reveal><dt class="stat__value"><span class="stat__num" aria-hidden="true">20</span><span class="sr-only">20</span></dt><dd class="stat__label" data-i18n="numbers.s3">тисяч тонн —&nbsp;елеватор</dd></div>
@@ -579,7 +563,7 @@
     </button>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=39"></script>
+  <script src="assets/js/i18n.js?v=40"></script>
   <!-- Desktop (sideways strip): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are CSS
        transitions; main.js loads GSAP itself if the window later grows past 1024px. Inserted in order (async = false). -->
   <script>
