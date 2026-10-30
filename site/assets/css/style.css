@@ -1168,8 +1168,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     --step-w: max(315px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
     width: max(100vw, calc(2 * var(--pad) + 4 * var(--step-w) + 3 * var(--gap)));
   }
-  html.is-x .production .steps { flex: 1; min-height: 0; grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, auto) auto auto auto; }
-  html.is-x .steps .step .step__media { aspect-ratio: 4 / 3; margin-top: 0; }
+  /* the photos take all the height the texts leave, so the cards always end on the bottom line (object-fit: cover) */
+  html.is-x .production .steps { flex: 1; min-height: 0; grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, 1fr) auto auto auto; }
+  html.is-x .steps .step .step__media { aspect-ratio: auto; height: 100%; margin-top: 0; }
 
   /* ESG: one screen — label and heading on columns 1–4, a table of the four rows on columns 5–12: the photo on 3 of the
      8 columns, the icon + title and the text beside it, thin rules between the rows; the table is as
@@ -1281,4 +1282,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 @media (max-width: 1023px) {
   .track > .panel :is(.about__title, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) { font-size: clamp(34px, 9vw, 44px); }
   .track > .panel .certs__lead { font-size: 18px; }
+}
+
+/* certificates.html (desktop): each wide card's text group (tag, title, scope) sits centred against the thumbnail, in
+   larger type, so the right half of the card is never mostly empty */
+@media (min-width: 1024px) {
+  .cert-grid--page .cert__card { grid-template-rows: 1fr auto auto 1fr; }
+  .cert-grid--page .cert__media { grid-row: 1 / 5; }
+  .cert-grid--page .cert__tag { grid-row: 2; }
+  .cert-grid--page .cert__body { grid-row: 3; max-width: 720px; }
+  .cert-grid--page .cert__title { font-size: clamp(22px, 1.6vw, 30px); }
+  .cert-grid--page .cert__desc { margin-top: 16px; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.6; }
 }
