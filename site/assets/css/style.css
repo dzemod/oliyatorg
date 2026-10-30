@@ -1137,3 +1137,107 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .contacts .contacts__cta-inner .btn { margin-top: clamp(32px, 5vh, 56px); }
   .contacts .contacts__photo { aspect-ratio: auto; min-height: 36vh; }
 }
+
+/* =========================================================================
+   Desktop home page, sideways (html.is-x on top of html.is-h.is-v; main.js, GSAP ScrollTrigger)
+   The sections stand side by side on one strip (.track) under the fixed header; the page's vertical scroll moves the
+   strip from right to left. Every section keeps its current design and is exactly one screen under the header tall
+   (--panel-h): most are one screen wide, the ones with a row of cards (Products, Production, ESG, Certificates) as wide
+   as their row. Nothing scrolls inside a section: tall blocks are laid out in columns and sized with the screen height.
+   Phones, tablets, reduced motion and the other pages never get html.is-x.
+   ========================================================================= */
+.hprogress { display: none; }
+@media (min-width: 1024px) {
+  html.is-x {
+    --panel-h: calc(100vh - var(--header-h));
+    --top: clamp(28px, 6vh, 72px); --bottom: clamp(28px, 6vh, 72px);   /* the section's top and bottom lines, inside the panel */
+    scrollbar-width: none; overscroll-behavior-x: none;   /* no scrollbar: 100vw is the whole visible width */
+  }
+  @supports (height: 100svh) { html.is-x { --panel-h: calc(100svh - var(--header-h)); } }
+  html.is-x::-webkit-scrollbar { display: none; }
+  .is-x body { overscroll-behavior-x: none; }   /* sideways trackpad swipes move the strip, never browser back / forward */
+
+  /* the strip: pinned under the header (main.js), moved with a transform only */
+  .is-x .scroller { height: 100vh; height: 100svh; padding-top: var(--header-h); overflow: hidden; overflow: clip; }
+  .is-x .track { position: relative; display: flex; flex-wrap: nowrap; width: max-content; height: var(--panel-h); will-change: transform; }
+  html.is-x .track > .panel { flex: none; width: 100vw; height: 100%; min-height: 0; overflow: hidden; }
+  html.is-x .track > .panel:not(.hero, .contacts) { padding: var(--top) var(--pad) var(--bottom); }
+
+  /* progress along the strip: a 2px line on the screen's bottom edge */
+  .is-x .hprogress { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; height: 2px; background: rgb(239 236 230 / .15); pointer-events: none; }
+  .hprogress__fill { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
+
+  /* Hero: the text block sits on the bottom line */
+  html.is-x .hero .photo-text { top: auto; }
+
+  /* About, Export: photo and text column between the two lines */
+  html.is-x .panel:is(.about, .export) { grid-template-rows: minmax(0, 1fr); }
+
+  /* Numbers: label and heading on the top line, the figures on the bottom line */
+  html.is-x .numbers__inner { height: 100%; display: flex; flex-direction: column; }
+  /* the figures share one row and the captions the next (subgrid), so a two-line caption never lifts its figure */
+  html.is-x .numbers .stats { flex: 1; grid-template-rows: minmax(0, 1fr) auto auto; margin-top: var(--content-gap); }
+  html.is-x .numbers .stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+  html.is-x .numbers .stat__value { grid-row: 2; }
+  html.is-x .numbers .stat__label { grid-row: 3; }
+  /* narrow desktops (≈1024–1300px): the figures also follow the width, and a long caption may take two lines */
+  html.is-x .numbers .stat__value { font-size: clamp(60px, min(13vh, 8.5vw), 168px); }
+  html.is-x .numbers .stat__label { white-space: normal; text-wrap: balance; }
+
+  /* Products: three cards in a row, each about as wide as its photo is tall (the panel grows past the screen) */
+  html.is-x .track > .panel.products {
+    --card-w: calc(var(--panel-h) * .62);
+    width: max(100vw, calc(2 * var(--pad) + 3 * var(--card-w) + 2 * var(--gap)));
+  }
+  html.is-x .products .cards { grid-template-rows: minmax(0, 1fr) auto auto; }
+
+  /* Production: the four cards always in one row, at least 315px each (two-line descriptions) */
+  html.is-x .track > .panel.production {
+    --step-w: max(315px, calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4));
+    width: max(100vw, calc(2 * var(--pad) + 4 * var(--step-w) + 3 * var(--gap)));
+  }
+  html.is-x .production .steps { flex: 1; min-height: 0; grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, auto) auto auto auto; }
+  html.is-x .steps .step .step__media { aspect-ratio: 4 / 3; margin-top: 0; }
+
+  /* ESG: the heading on the left, the four items in four columns — photo 4:3, icon + title, text; thin rules between */
+  html.is-x .track > .panel.esg {
+    --esg-head: calc(var(--h2-size) * 10);
+    --esg-w: clamp(300px, calc(var(--panel-h) * .58), 540px);
+    --esg-gap: clamp(32px, 2.8vw, 56px);
+    display: grid; grid-template-columns: var(--esg-head) auto; grid-template-rows: minmax(0, 1fr); column-gap: clamp(48px, 5vw, 96px);
+    width: calc(2 * var(--pad) + var(--esg-head) + clamp(48px, 5vw, 96px) + 4 * var(--esg-w) + 3 * var(--esg-gap));
+  }
+  html.is-x .esg .esg__title { max-width: none; }
+  html.is-x .esg .esg-list { display: grid; grid-template-columns: repeat(4, var(--esg-w)); column-gap: var(--esg-gap); align-items: start; margin: 0; }
+  html.is-x .esg-list .esg-row { display: flex; flex-direction: column; padding: 0; }
+  html.is-x .esg-row + .esg-row::before { top: 0; bottom: 0; left: calc(var(--esg-gap) / -2); right: auto; width: 1px; height: auto; }
+  html.is-x .esg-row .esg-row__media { aspect-ratio: 4 / 3; }
+  html.is-x .esg-row .esg-row__title { margin-top: clamp(14px, 2.2vh, 24px); gap: 12px; font-size: clamp(15px, 1.9vh, 19px); }
+  html.is-x .esg-row .esg-row__text { margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(14px, 1.65vh, 17px); line-height: 1.6; }
+
+  /* Certificates: the head (label, heading, text, button) on the left, then all five cards in one row (no slider);
+     each card as tall as the panel, its thumbnail takes the free height */
+  html.is-x .track > .panel.certs {
+    --certs-head: clamp(340px, 27vw, 520px);
+    --cert-w: clamp(260px, calc(var(--panel-h) * .42), 400px);
+    --certs-gap: clamp(48px, 5vw, 96px);
+    display: grid; grid-template-columns: var(--certs-head) auto; grid-template-rows: minmax(0, 1fr); column-gap: var(--certs-gap);
+    width: calc(2 * var(--pad) + var(--certs-head) + var(--certs-gap) + 5 * var(--cert-w) + 4 * 24px);
+  }
+  html.is-x .certs .certs__head { display: flex; flex-direction: column; align-items: flex-start; }
+  html.is-x .certs .certs__controls { margin-top: clamp(28px, 5vh, 56px); }
+  html.is-x .certs .certs__controls .certs__all { margin-left: 0; }
+  html.is-x .certs .slider__arrow { display: none; }
+  html.is-x .certs .slider { --g: 24px; height: 100%; margin: 0; padding: 0; overflow: visible; }
+  html.is-x .certs .slider__track { height: 100%; grid-auto-columns: var(--cert-w); grid-template-rows: auto minmax(0, 1fr) auto auto; transform: none !important; transition: none; }
+  html.is-x .certs .cert__card { padding: clamp(20px, 2.8vh, 32px); }
+  html.is-x .certs .cert__media { height: auto; min-height: 0; margin-top: clamp(14px, 2.2vh, 24px); padding: clamp(12px, 1.8vh, 20px); }
+  html.is-x .certs .cert__title { margin-top: clamp(14px, 2.2vh, 24px); font-size: clamp(17px, 2vh, 20px); }
+  html.is-x .certs .cert__desc { margin-top: clamp(8px, 1.2vh, 12px); font-size: clamp(14px, 1.6vh, 16px); }
+
+  /* Contacts + footer: one screen; the photo under the call gives up height first, the rows share what is left */
+  html.is-x .track > .panel.contacts { grid-template-rows: minmax(0, 1fr); }
+  html.is-x .contacts .contacts__photo { flex: 1 1 0; min-height: 0; }
+  html.is-x .contacts .contact-rows { flex: 1 1 auto; min-height: 0; }
+  html.is-x .contacts .contact-row { flex: 1 1 auto; }
+}

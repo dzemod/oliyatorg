@@ -74,6 +74,7 @@
   const t = key => dict[lang][key] ?? dict.uk[key] ?? '';
 
   function setLang(next) {
+    document.dispatchEvent(new CustomEvent('beforelangchange'));   // the sideways strip notes where it stands
     lang = dict[next] ? next : 'uk';
     root.lang = lang === 'uk' ? 'uk' : 'en';
     $$('[data-i18n]').forEach(el => {
@@ -128,10 +129,13 @@
 
   /* ---------- Layout ---------- */
   const sections = $$('.panel');
-
-  // Reload when crossing the desktop breakpoint so the right layout is built.
-  const desktopMq = matchMedia('(min-width: 1024px)');
-  desktopMq.addEventListener('change', () => { if (!reduceMotion) location.reload(); });
+  const track = $('#track');
+  const scroller = $('.scroller');
+  const strip = !!(track && track.hasAttribute('data-strip'));   // only the home page scrolls sideways
+  const wideMq = matchMedia('(min-width: 1024px)');
+  let hTween = null;      // the sideways strip's scrubbed tween (desktop home page), null when the page is vertical
+  let reveals = [];       // blocks that play once as they enter: { el, play, done }
+  let revealIo = null;
 
   /* ---------- Motion: one calm sequence per section, once ----------
      Every animated block carries [data-reveal] (the hero's: [data-hero]). The inline script in <head> adds html.anim
@@ -142,9 +146,12 @@
      (power2.out). The motion itself is a CSS transition of opacity (+ a 16px rise on desktop), so the compositor runs
      it and no script works per frame. The section's numbers count up from the same trigger. Everything is built once
      (never again on resize or language change) and each trigger is removed after it fires.
-       · desktop: an IntersectionObserver, with a 16px rise
+       · desktop home page (sideways strip): a ScrollTrigger on the strip (containerAnimation) when a section's left
+         edge passes 85% of the screen, with a 16px rise
+       · desktop, other pages: an IntersectionObserver, with a 16px rise
        · phones and tablets: an IntersectionObserver; opacity only, no movement
-       · hero: the same sequence on load · reduced motion: none of this, the final state at once */
+       · hero: the same sequence on load · reduced motion: none of this, the final state at once
+     When the window crosses 1024px, everything not yet played simply shows (finishReveals). */
   const animOn = root.classList.contains('anim');
   const endAnim = () => { root.classList.remove('anim'); window.__anim = true; };
   const STAGGER = .08;
@@ -195,32 +202,18 @@
         return () => { sec.classList.add('in'); if (count) count(.2); };
       });
       root.classList.add('fade');
-      const io = new IntersectionObserver(entries => entries.forEach(en => {
-        if (!en.isIntersecting) return;
-        io.unobserve(en.target);
-        plays[sections.indexOf(en.target)]();
-      }), { rootMargin: '0px 0px -15% 0px' });
-      sections.forEach(sec => { if (!sec.classList.contains('hero')) io.observe(sec); });
+      const once = (el, play) => reveals.push({ el, play, done: false });
+      sections.forEach((sec, k) => { if (!sec.classList.contains('hero')) once(sec, plays[k]); });
       // Production cards (style.css): on desktop the section's .in plays all four, one after another; on phones and
       // tablets they are stacked, so each card plays on its own as it enters
-      if (!root.classList.contains('is-h')) {
-        const cardIo = new IntersectionObserver(entries => entries.forEach(en => {
-          if (!en.isIntersecting) return;
-          cardIo.unobserve(en.target);
-          en.target.classList.add('in');
-        }), { rootMargin: '0px 0px -10% 0px' });
-        $$('.step').forEach(el => cardIo.observe(el));
-      }
+      if (!root.classList.contains('is-h')) $$('.step').forEach(el => once(el, () => el.classList.add('in')));
       // [data-stagger] lists (the ESG rows): their items rise in one after another (24px, 0.6 s, 0.12 s apart)
       // when the list itself enters the screen, once
       const lists = $$('[data-stagger]');
       lists.forEach(list => [...list.children].forEach((el, i) => el.style.setProperty('--d', (i * .12).toFixed(2) + 's')));
-      const listIo = new IntersectionObserver(entries => entries.forEach(en => {
-        if (!en.isIntersecting) return;
-        listIo.unobserve(en.target);
-        en.target.classList.add('in');
-      }), { rootMargin: '0px 0px -15% 0px' });
-      lists.forEach(list => listIo.observe(list));
+      lists.forEach(list => once(list, () => list.classList.add('in')));
+      // the sideways strip arms them itself once it is built (buildStrip); a vertical page right away
+      if (!root.classList.contains('is-x')) armReveals();
       endAnim();
       // hero: on load, once its start state has painted
       const heroPlay = plays[sections.findIndex(s => s.classList.contains('hero'))];
@@ -238,10 +231,197 @@
   const hero = $('.hero');
   if (hero && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => hero.classList.toggle('is-away', !en.isIntersecting)).observe(hero);
 
+  // Reveals: each plays once. On the sideways strip a ScrollTrigger on the strip's tween (containerAnimation) plays it
+  // when its left edge passes 85% of the screen; on a vertical page an IntersectionObserver as it rises past 85%.
+  function fire(r) { if (r.done) return; r.done = true; r.play(); }
+  function armReveals() {
+    const left = reveals.filter(r => !r.done);
+    if (!left.length) return;
+    if (hTween) {
+      left.forEach(r => ScrollTrigger.create({ trigger: r.el, containerAnimation: hTween, start: 'left 85%', once: true, onEnter: () => fire(r) }));
+    } else if ('IntersectionObserver' in window) {
+      revealIo = new IntersectionObserver(entries => entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        revealIo.unobserve(en.target);
+        left.filter(r => r.el === en.target).forEach(fire);
+      }), { rootMargin: '0px 0px -15% 0px' });
+      left.forEach(r => revealIo.observe(r.el));
+    } else left.forEach(fire);
+  }
+  // the layout changed under them (the window crossed 1024px): whatever has not played yet simply shows
+  function finishReveals() {
+    if (revealIo) { revealIo.disconnect(); revealIo = null; }
+    reveals.forEach(fire);
+    $$('.step').forEach(el => el.classList.add('in'));
+  }
+
+  /* ---------- Desktop home page: the sideways strip ----------
+     Engine from the earlier sideways version (commit 5f7b827): ONE ScrollTrigger pins the page (.scroller, under the
+     fixed header) and scrubs one tween — the strip's translateX over its length — with the page's vertical scroll
+     (scrub 0.6: a short glide, transform only). The pin adds exactly the strip's overflow as scroll height, so the start
+     and the end meet the page's own edges with no jump. Sideways trackpad swipes and ← → feed the same scroll;
+     ↑ ↓, PageUp / PageDown and Space scroll natively. A 2px line on the bottom edge shows the progress.
+     Built and torn down live when the window crosses 1024px (setMode); never with "reduce motion". */
+  const bar = $('.hprogress__fill');
+  let ctx = null;
+  const distance = () => Math.max(0, track.scrollWidth - root.clientWidth);
+  const st = () => hTween.scrollTrigger;
+  // jump without the scrub's glide (language switch, keyboard focus, mode switch)
+  const jumpTo = y => {
+    scrollTo(0, y);
+    ScrollTrigger.update();
+    const tw = st().getTween();
+    if (tw) tw.progress(1);
+  };
+  // the section at the screen's left edge and how far into it (0–1). The sections' places are measured at every refresh
+  // (geo), so this still answers right when the window has just crossed 1024px and the strip's CSS is already gone.
+  let geo = [];
+  const measure = () => { geo = sections.map(p => ({ p, l: p.offsetLeft, w: p.offsetWidth })); };
+  function stripSpot() {
+    const x = Math.max(0, Math.min(scrollY - st().start, st().end - st().start));
+    const g = geo.filter(g => g.l <= x + 1).pop() || geo[0];
+    return { p: g.p, f: g.w ? (x - g.l) / g.w : 0 };
+  }
+  const stripTop = (p, f = 0) => Math.min(st().start + p.offsetLeft + f * p.offsetWidth, st().end);
+
+  let gsapLoading = null;
+  function loadGsap() {
+    if (window.gsap && window.ScrollTrigger) return Promise.resolve();
+    const base = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/';
+    const add = src => new Promise((ok, fail) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = ok; s.onerror = fail;
+      document.head.appendChild(s);
+    });
+    return gsapLoading || (gsapLoading = add(base + 'gsap.min.js').then(() => add(base + 'ScrollTrigger.min.js')));
+  }
+
+  function buildStrip() {
+    gsap.registerPlugin(ScrollTrigger);
+    const setBar = gsap.quickSetter(bar, 'scaleX');
+    ctx = gsap.context(() => {
+      hTween = gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        onUpdate() { setBar(this.progress()); },
+        scrollTrigger: {
+          trigger: scroller,
+          start: 'top top',
+          end: () => '+=' + distance(),
+          pin: true,
+          scrub: .6,
+          invalidateOnRefresh: true,
+          onRefresh: measure
+        }
+      });
+      armReveals();
+    });
+    setBar(hTween.progress());
+    // lazy images load as the strip brings them near; once the page has loaded, the rest follow, so a fast scroll
+    // never meets an empty frame
+    const eager = () => $$('img[loading="lazy"]', track).forEach(img => { img.loading = 'eager'; });
+    document.readyState === 'complete' ? setTimeout(eager, 300) : addEventListener('load', () => setTimeout(eager, 300), { once: true });
+  }
+  function destroyStrip() {
+    if (!ctx) return;
+    ctx.revert();   // unpins, removes the transform and every strip trigger
+    ctx = hTween = null;
+    track.style.transform = bar.style.transform = '';
+  }
+
+  // The mode follows the window: ≥1024px without "reduce motion" the desktop layout (html.is-h.is-v), and on the home
+  // page the sideways strip (html.is-x) on top of it; below, the vertical page. The section on screen stays on screen.
+  // the vertical page's section on screen, noted while scrolling — never right after a resize, when the layout has
+  // already changed under it
+  const sectionOnScreen = () => sections.find(s => s.getBoundingClientRect().bottom > innerHeight * .3);
+  let onScreen = null, notedW = innerWidth, noting = false;
+  addEventListener('scroll', () => {
+    if (hTween || noting) return;
+    noting = true;
+    requestAnimationFrame(() => {
+      noting = false;
+      if (innerWidth === notedW) onScreen = sectionOnScreen();
+      notedW = innerWidth;
+    });
+  }, { passive: true });
+
+  function setMode(first) {
+    const wide = wideMq.matches && !reduceMotion;
+    const from = first ? null : hTween ? stripSpot().p : onScreen || sectionOnScreen();
+    if (!first) finishReveals();
+    root.classList.toggle('is-h', wide);
+    root.classList.toggle('is-v', wide);
+    if (!(wide && strip)) {
+      const had = !!hTween;
+      destroyStrip();
+      root.classList.remove('is-x');
+      if (had) {
+        // ScrollTrigger's own (delayed) resize refresh would put back the old scroll offset: run it now, then land on
+        // the section that was on screen
+        ScrollTrigger.refresh();
+        if (from) from.scrollIntoView({ behavior: 'auto' });
+        onScreen = from;
+      }
+      return;
+    }
+    root.classList.add('is-x');
+    loadGsap().then(() => {
+      if (hTween || !root.classList.contains('is-x')) return;
+      buildStrip();
+      if (from) jumpTo(stripTop(from));
+    }).catch(() => {
+      // no GSAP (CDN blocked): the desktop sections simply stack top to bottom
+      root.classList.remove('is-x');
+      armReveals();
+    });
+  }
+  setMode(true);
+  wideMq.addEventListener('change', () => setMode(false));
+
+  if (strip) {
+    // Trackpad: a sideways swipe moves the strip too. Passive, so the browser never waits for this handler.
+    addEventListener('wheel', e => {
+      if (!hTween || e.ctrlKey || root.classList.contains('modal-open')) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) scrollBy(0, e.deltaX);
+    }, { passive: true });
+    // Keyboard: ← → move along the strip (↑ ↓ PageUp / PageDown / Space / Home / End scroll natively)
+    addEventListener('keydown', e => {
+      if (!hTween || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.target.closest('input, textarea, select, [contenteditable], dialog')) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        scrollBy({ top: (e.key === 'ArrowRight' ? 1 : -1) * innerWidth * .6, behavior: 'smooth' });
+      }
+    });
+    // Tab focus: bring the focused element on screen through the page scroll (the strip itself is clipped, so the
+    // browser never scrolls it sideways)
+    document.addEventListener('focusin', e => {
+      if (!hTween || !track.contains(e.target)) return;
+      const r = e.target.getBoundingClientRect();
+      if (r.left >= 0 && r.right <= root.clientWidth) return;
+      const x = r.left - track.getBoundingClientRect().left;
+      jumpTo(Math.max(st().start, Math.min(st().start + x - innerWidth * .3, st().end)));
+    });
+    // Language: the texts change, the strip is re-measured, and the same spot stays on screen
+    let spot = null;
+    document.addEventListener('beforelangchange', () => { spot = hTween ? stripSpot() : null; });
+    document.addEventListener('langchange', () => {
+      if (!hTween) return;
+      ScrollTrigger.refresh();
+      if (spot) jumpTo(stripTop(spot.p, spot.f));
+      spot = null;
+    });
+    // fonts and images settle the widths: re-measure
+    const refresh = () => { if (hTween) ScrollTrigger.refresh(); };
+    document.fonts && document.fonts.ready.then(refresh);
+    addEventListener('load', refresh);
+  }
+
   /* ---------- Anchor links ---------- */
   function scrollToTarget(id) {
     const target = id === 'top' ? null : document.getElementById(id);
     const behavior = reduceMotion ? 'auto' : 'smooth';
+    if (hTween) return scrollTo({ top: target ? stripTop(target.closest('.panel') || target) : 0, behavior });
     if (!target) return scrollTo({ top: 0, behavior });
     target.scrollIntoView({ behavior });
   }
@@ -296,14 +476,15 @@
     };
     prev.addEventListener('click', () => go(i - 1));
     next.addEventListener('click', () => go(i + 1));
+    const off = () => root.classList.contains('is-x');   // the sideways strip shows all five cards in one row: no slider
     slider.addEventListener('keydown', e => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (off() || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
       e.preventDefault();
       go(i + (e.key === 'ArrowRight' ? 1 : -1));
     });
     slider.addEventListener('focusin', e => {
       const item = e.target.closest('.cert');
-      if (!item) return;
+      if (!item || off()) return;
       const { step } = metrics(), l = item.offsetLeft, r = l + item.offsetWidth;
       if (l < x) go(Math.floor(l / step));
       else if (r > x + slider.clientWidth) go(Math.ceil((r - slider.clientWidth) / step));
@@ -312,7 +493,7 @@
     // swipe / drag: the row follows the pointer, then snaps one card on (> 40px) or back
     let x0 = null, dx = 0, dragged = false;
     slider.addEventListener('pointerdown', e => {
-      if (e.button) return;
+      if (e.button || off()) return;
       x0 = e.clientX; dx = 0; dragged = false;
     });
     slider.addEventListener('pointermove', e => {

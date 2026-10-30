@@ -34,13 +34,16 @@
 
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=130">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=131">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
-    // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
+    // "reduce motion"); html.is-x on top of it: the sections side by side on one sideways strip (main.js; without GSAP it
+    // comes off and the sections stack top to bottom). Phones, tablets and reduced motion: the plain vertical page.
+    // main.js switches these classes live when the window crosses 1024px.
     document.documentElement.classList.add('js');
     if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.classList.add('is-h', 'is-v');
+      document.documentElement.classList.add('is-h', 'is-v', 'is-x');
     }
     // animated elements wait hidden for main.js (html.anim); if it never takes over, show everything after 3 s
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -91,7 +94,7 @@
 
   <!-- ============ PAGE ============ -->
   <div class="scroller" id="top">
-    <main class="track" id="track">
+    <main class="track" id="track" data-strip>
 
       <!-- 1. HERO -->
       <section class="panel hero" data-tone="photo" aria-labelledby="hero-title">
@@ -211,7 +214,7 @@
                 </picture>
               </figure>
               <p class="caption card__meta" data-i18n="products.c2.meta">Олія / лінолева та високоолеїнова</p>
-              <h3 class="card__title" data-i18n="products.c2.title">Олія рафінована</h3>
+              <h3 class="card__title" data-i18n="products.c2.title">Олія</h3>
             </a>
           </li>
           <li class="card" data-reveal>
@@ -223,7 +226,7 @@
                 </picture>
               </figure>
               <p class="caption card__meta" data-i18n="products.c3.meta">Макуха / для кормів тварин</p>
-              <h3 class="card__title" data-i18n="products.c3.title">Макуха соняшникова</h3>
+              <h3 class="card__title" data-i18n="products.c3.title">Макуха соняшникова, ріпакова</h3>
             </a>
           </li>
         </ul>
@@ -517,6 +520,9 @@
     </main>
   </div>
 
+  <!-- the sideways strip's progress (desktop, html.is-x only): a 2px line along the screen's bottom edge -->
+  <div class="hprogress" aria-hidden="true"><span class="hprogress__fill"></span></div>
+
   <!-- Contact form popup -->
   <dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
     <div class="modal__box">
@@ -573,8 +579,16 @@
     </button>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=38"></script>
-  <!-- the fades are CSS transitions and the count-up is a few requestAnimationFrame steps: no animation library -->
-  <script src="assets/js/main.js?v=47"></script>
+  <script src="assets/js/i18n.js?v=39"></script>
+  <!-- Desktop (sideways strip): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are CSS
+       transitions; main.js loads GSAP itself if the window later grows past 1024px. Inserted in order (async = false). -->
+  <script>
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=48';
+    (document.documentElement.classList.contains('is-x')
+      ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
+      : [mainSrc]).forEach(function (src) {
+      var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s);
+    });
+  </script>
 </body>
 </html>

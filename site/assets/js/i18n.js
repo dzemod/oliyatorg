@@ -50,9 +50,9 @@ window.I18N = {
     'products.c1.meta': 'Oil / double pressed',
     'products.c1.title': 'Unrefined oil',
     'products.c2.meta': 'Oil / linoleic and high-oleic',
-    'products.c2.title': 'Refined oil',
+    'products.c2.title': 'Oil',
     'products.c3.meta': 'Press cake / animal feed',
-    'products.c3.title': 'Sunflower press cake',
+    'products.c3.title': 'Sunflower and rapeseed cake',
 
     'production.eyebrow': 'Production',
     'production.title': 'Four steps <em>to quality oil</em>',
