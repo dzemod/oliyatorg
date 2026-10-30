@@ -331,8 +331,8 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .cert-grid--home .cert__body { display: contents; }
 .cert-grid--home .cert__title { margin-top: 24px; }
 
-/* the head row, like Production's: label, heading, text on the left; arrows + button on the right, on the heading's
-   bottom line. Phones: the controls under the text — the two arrows, then the button over the rest of the row. */
+/* the head: label, heading, text, then the "all certificates" button on the same left line (tablets and desktop: the
+   slider arrows after it). Phones: the controls under the cards — the two arrows, then the full-width button. */
 .certs__controls { display: flex; align-items: stretch; gap: 8px; margin-top: 32px; }
 .certs__controls .certs__all { margin-left: 8px; }
 .slider__arrow {
@@ -347,7 +347,10 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   .certs__head .eyebrow { grid-column: 1; justify-self: start; }
   .certs__head .certs__title { grid-column: 1; grid-row: 2; }
   .certs .certs__lead { grid-column: 1; grid-row: 3; }
-  .certs__controls { grid-column: 2; grid-row: 2; align-self: end; margin: 0; }
+  .certs__controls { grid-column: 1; grid-row: 4; justify-self: start; margin: 32px 0 0; }
+}
+@media (min-width: 768px) {
+  .certs__controls .certs__all { order: -1; margin: 0 8px 0 0; }   /* the button first, on the text's left line */
 }
 @media (max-width: 639px) {
   .certs__controls { flex-wrap: wrap; }
@@ -1197,8 +1200,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
     display: grid; grid-template-columns: var(--certs-head) auto; grid-template-rows: minmax(0, 1fr); column-gap: var(--certs-gap);
     width: calc(2 * var(--pad) + var(--certs-head) + var(--certs-gap) + 5 * var(--cert-w) + 4 * 24px);
   }
-  html.is-x .certs .certs__head { display: flex; flex-direction: column; align-items: flex-start; }
-  html.is-x .certs .certs__controls { margin-top: clamp(28px, 5vh, 56px); }
+  html.is-x .certs .certs__head { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
+  /* the button on the left line and on the bottom line, level with the cards' bottom */
+  html.is-x .certs .certs__controls { align-self: flex-start; margin-top: auto; padding-top: clamp(28px, 5vh, 56px); }
   html.is-x .certs .certs__controls .certs__all { margin-left: 0; }
   html.is-x .certs .slider__arrow { display: none; }
   html.is-x .certs .slider { --g: 24px; height: 100%; margin: 0; padding: 0; overflow: visible; }
