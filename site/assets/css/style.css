@@ -1179,8 +1179,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
      text fades and slides in 12px under the title. All four titles are always visible. */
   html.is-x .track > .panel.esg { display: grid; grid-template-columns: repeat(12, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap); }
   html.is-x .esg .esg__head { grid-column: 1 / 5; align-self: start; }
-  /* the longest word ("Енергонезалежність") always fits the four columns */
-  html.is-x .esg .esg__title { max-width: none; font-size: min(var(--h2-size), calc((4 * var(--col) + 3 * var(--gap)) / 9.6)); }
+  html.is-x .esg .esg__title { max-width: none; }
   html.is-x .esg .esg-list {
     --row-pad: clamp(10px, 2vh, 24px);
     --media-w: calc(3 * var(--col) + 2 * var(--gap));
@@ -1252,4 +1251,34 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 @media (max-width: 1023px) {
   .about .h2.about__title { font-size: clamp(34px, 9vw, 44px); }
   .about .about__body .text { font-size: 18px; }
+}
+
+/* =========================================================================
+   One section-heading style for every home-page panel (desktop: the sideways strip and the stacked page alike) — the
+   size of the About heading: clamp(48px, 6.4vh, 88px), line-height 1.05, tight tracking, balanced lines; the gold
+   words stay gold. Label → heading 16px, heading → intro text 32px; intro texts clamp(19px, 2.2vh, 22px), 640px wide.
+   The size follows the screen height, so on a short screen (1366×768) every panel still fits.
+   Phones and tablets: headings clamp(34px, 9vw, 44px), intro texts 18px.
+   ========================================================================= */
+@media (min-width: 1024px) {
+  html.is-h .track > .panel:not(.hero) :is(.eyebrow, .pill) { margin-bottom: 16px; }
+  html.is-h .track > .panel:not(.hero) :is(.about__title, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) {
+    min-height: 0; margin: 0; white-space: normal; text-wrap: balance;
+    font-size: clamp(48px, 6.4vh, 88px); line-height: 1.05; letter-spacing: -.02em;
+  }
+  html.is-h .track > .panel .certs__lead { max-width: 640px; margin: 32px 0 0; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; text-wrap: pretty; }
+  /* Certificates (sideways strip): the left column on 4 of the 12 columns, as tall as the cards */
+  html.is-x .track > .panel.certs { --certs-head: calc(4 * var(--col) + 3 * var(--gap)); }
+  /* label on the cards' top line; heading, text and button as one block on their bottom line (the button 32px under the
+     text, its bottom level with the cards' bottom) — the free height sits between the label and the heading */
+  html.is-x .track > .panel.certs .certs__head .eyebrow { margin-bottom: auto; }
+  html.is-x .track > .panel.certs .certs__title { margin-top: 16px; }
+  html.is-x .track > .panel.certs .certs__controls { margin-top: 32px; padding-top: 0; }
+  /* ESG (Ukrainian): "Енергонезалежність" is 8.8em wide — the heading never gets wider than its four columns, so on
+     1366–1440px screens it stays a little under the shared size instead of running into the table */
+  html.is-x[lang="uk"] .track > .panel.esg .esg__title { font-size: min(clamp(48px, 6.4vh, 88px), calc((4 * var(--col) + 3 * var(--gap)) / 8.9)); }
+}
+@media (max-width: 1023px) {
+  .track > .panel :is(.about__title, .products__title, .production__title, .esg__title, .export__title, .certs__title, .contacts__title) { font-size: clamp(34px, 9vw, 44px); }
+  .track > .panel .certs__lead { font-size: 18px; }
 }
