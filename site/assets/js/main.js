@@ -481,6 +481,19 @@
     if (id !== 'top') history.replaceState(null, '', '#' + id);
   });
 
+  /* ---------- Products page: the hero's product links ----------
+     The link of the product on screen (or the one in the address) gets aria-current: CSS shows its gold dot. */
+  const jump = $('[data-jump]');
+  if (jump) {
+    const links = $$('a[href^="#"]', jump);
+    const mark = id => links.forEach(a => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + id));
+    if (location.hash) mark(location.hash.slice(1));
+    if ('IntersectionObserver' in window) {
+      const spy = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) mark(en.target.id); }), { rootMargin: '-45% 0px -45% 0px' });
+      links.forEach(a => { const s = document.getElementById(a.getAttribute('href').slice(1)); if (s) spy.observe(s); });
+    }
+  }
+
   /* ---------- Hero video: every screen size, never with "reduce motion" ---------- */
   const video = $('.hero__video');
   if (video && !reduceMotion) {
@@ -662,7 +675,13 @@
   if (modal && modal.showModal) {
     const open = () => { modal.showModal(); root.classList.add('modal-open'); };
     const close = () => modal.close();
-    $$('[data-modal-open]').forEach(b => b.addEventListener('click', open));
+    // a product's "Request cooperation" button (data-product: the i18n key of its name) fills in the message
+    const plain = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); };
+    const message = $('#f-message', modal);
+    $$('[data-modal-open]').forEach(b => b.addEventListener('click', () => {
+      if (b.dataset.product && message) message.value = t('pp.ask').replace('{p}', plain(t(b.dataset.product)));
+      open();
+    }));
     $$('[data-modal-close]', modal).forEach(b => b.addEventListener('click', close));
     modal.addEventListener('click', e => { if (e.target === modal) close(); });
     modal.addEventListener('close', () => root.classList.remove('modal-open'));

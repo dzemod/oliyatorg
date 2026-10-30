@@ -35,7 +35,7 @@
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920-v2.webp" media="(min-width: 1024px)">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960-v2.webp" media="(max-width: 1023px)">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=145">
+  <link rel="stylesheet" href="assets/css/style.css?v=146">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"); html.is-x on top of it: the sections side by side on one sideways strip (main.js; without GSAP it
@@ -69,7 +69,7 @@
     <nav class="nav" id="nav" aria-label="Головне меню" data-i18n-attr="aria-label:ui.menu">
       <ul class="nav__list">
         <li><a href="#top" aria-current="page" data-i18n="nav.home">Головна</a></li>
-        <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.products">Продукція</a></li>
+        <li><a href="products.html" data-i18n="nav.products">Продукція</a></li>
         <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.production">Виробництво</a></li>
         <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.contacts">Контакти</a></li>
       </ul>
@@ -206,16 +206,15 @@
         <header class="products__head">
           <p class="pill" data-reveal><span data-i18n="products.eyebrow">Продукція</span></p>
           <h2 class="h2 products__title" id="products-title" data-reveal data-i18n="products.title">Натуральний продукт <em>із&nbsp;соняшнику</em></h2>
-          <!-- TODO: products.html when the page is built --><a class="btn products__all" href="#contacts" data-reveal>
+          <a class="btn products__all" href="products.html" data-reveal>
             <span data-i18n="products.all">Вся продукція</span>
             <span class="btn__box" aria-hidden="true"><svg class="btn__arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
           </a>
         </header>
 
-        <!-- TODO: the cards link to products.html#unrefined / #refined / #meal when the products page is built -->
         <ul class="cards">
           <li class="card" data-reveal>
-            <a class="card__link" href="#contacts">
+            <a class="card__link" href="products.html#unrefined-oil">
               <figure class="card__media">
                 <picture>
                   <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-unrefined-card-800.webp 800w, assets/img/product-oil-unrefined-card-1400.webp 1400w, assets/img/product-oil-unrefined-card-2000.webp 2000w">
@@ -227,7 +226,7 @@
             </a>
           </li>
           <li class="card" data-reveal>
-            <a class="card__link" href="#contacts">
+            <a class="card__link" href="products.html#refined-oil">
               <figure class="card__media">
                 <picture>
                   <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-oil-refined-card-800.webp 800w, assets/img/product-oil-refined-card-1400.webp 1400w, assets/img/product-oil-refined-card-2000.webp 2000w">
@@ -239,7 +238,7 @@
             </a>
           </li>
           <li class="card" data-reveal>
-            <a class="card__link" href="#contacts">
+            <a class="card__link" href="products.html#sunflower-cake">
               <figure class="card__media">
                 <picture>
                   <source type="image/webp" sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 150vw" srcset="assets/img/product-cake-card-800.webp 800w, assets/img/product-cake-card-1400.webp 1400w, assets/img/product-cake-card-2000.webp 2000w">
@@ -524,7 +523,7 @@
             </a>
             <ul class="foot__nav">
               <li><a href="#top" data-i18n="nav.home">Головна</a></li>
-              <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.products">Продукція</a></li>
+              <li><a href="products.html" data-i18n="nav.products">Продукція</a></li>
               <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.production">Виробництво</a></li>
               <li><a aria-disabled="true" title="Сторінка в розробці" data-i18n-attr="title:ui.soon" data-i18n="nav.contacts">Контакти</a></li>
             </ul>
@@ -600,11 +599,11 @@
     </button>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=42"></script>
+  <script src="assets/js/i18n.js?v=43"></script>
   <!-- Desktop (sideways strip): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are CSS
        transitions; main.js loads GSAP itself if the window later grows past 1024px. Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=50';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=51';
     (document.documentElement.classList.contains('is-x')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {
