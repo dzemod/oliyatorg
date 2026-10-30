@@ -32,8 +32,8 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-500-normal.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-600-normal.woff2" crossorigin>
 
-  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920.webp" media="(min-width: 1024px)">
-  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960.webp" media="(max-width: 1023px)">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920-v2.webp" media="(min-width: 1024px)">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960-v2.webp" media="(max-width: 1023px)">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css?v=145">
   <script>
@@ -100,15 +100,16 @@
       <section class="panel hero" data-tone="photo" aria-labelledby="hero-title">
         <div class="hero__media" aria-hidden="true">
           <picture>
-            <source type="image/webp" media="(min-width: 1024px)" srcset="assets/img/hero-poster-1920.webp">
-            <source type="image/webp" srcset="assets/img/hero-poster-960.webp">
-            <img class="hero__poster" src="assets/img/hero-poster-1920.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+            <source type="image/webp" media="(min-width: 1024px)" srcset="assets/img/hero-poster-1920-v2.webp">
+            <source type="image/webp" srcset="assets/img/hero-poster-960-v2.webp">
+            <img class="hero__poster" src="assets/img/hero-poster-1920-v2.jpg" alt="" width="1920" height="1080" fetchpriority="high">
           </picture>
           <!-- Video is attached by main.js (phones get the vertical mobile file); never with "reduce motion" — the poster stays. -->
-          <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster-960.webp"
-                 data-src-large="assets/img/hero-1920.mp4"
-                 data-src-small="assets/img/hero-960.mp4"
-                 data-src-mobile="assets/img/hero-mobile.mp4"></video>
+          <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster-960-v2.webp"
+                 data-src-large="assets/img/hero-1920-v2.mp4"
+                 data-src-small="assets/img/hero-960-v2.mp4"
+                 data-src-mobile="assets/img/hero-mobile-v2.mp4"></video>
+          <div class="hero__tint"></div>
         </div>
 
         <div class="hero__inner photo-text">
