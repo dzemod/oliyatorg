@@ -221,6 +221,8 @@ Extra: `--size 1K|2K|4K` (default `1K` — cheapest, use for tests), `--model <i
 
 ---
 
+- **2026-11-02 (Oliyatorg, pellets/briquettes):** with `--ref images/product-meal.jpg` (bowl of meal + pellets) Gemini copied the reference's *content*, not just its style: the bowl came back full of meal. For a new subject, use a reference that shows a different product (e.g. only the oil photo) and say explicitly what fills the bowl. `node tools/optimize_media.mjs` also builds every stray image in `images/` (e.g. untracked `fixes*.png`) and old-named hero files (`hero-1920.mp4`, `hero-poster-*`; the site uses `-v2`): delete those outputs before committing.
+
 ## Comparison vs Alternatives
 
 | Tool             | Quality      | Text rendering | Specific details | Cost  |

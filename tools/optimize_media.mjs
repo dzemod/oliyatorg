@@ -56,8 +56,8 @@ const RATIO = 2;
 const FILL = .53;
 const CARDS = {
   'product-oil-unrefined': [.1667, .932],
-  'product-oil-refined': [.1667, .932],
-  'product-meal': [.24, .98],    // taller band: the bowl + pellets are wide and must fit a ~1:1 box
+  'product-pellets': [.36, .9],   // taller band: the bowl + pellets are wide and must fit a ~1:1 box
+  'product-briquettes': [.42, .9],
   'product-cake': { box: [.139, .29, .80, .968], crop: .915, fill: .46 },   // grey strip on the right; whole down to ~0.92:1
 };
 
