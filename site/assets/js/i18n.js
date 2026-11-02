@@ -23,6 +23,7 @@ window.I18N = {
     'nav.home': 'Home',
     'nav.products': 'Products',
     'nav.production': 'Production',
+    'nav.certificates': 'Certificates',
     'nav.contacts': 'Contacts',
 
     'hero.eyebrow': 'Sunflower oil from Ukraine',

@@ -135,6 +135,7 @@
   const strip = !!(track && track.hasAttribute('data-strip'));   // only the home page scrolls sideways
   const wideMq = matchMedia('(min-width: 1024px)');
   let hTween = null;      // the sideways strip's scrubbed tween (desktop home page), null when the page is vertical
+  let aboutInView = null; // About tabs: (on, source) → the About panel is / is not really on screen (set further down)
   let reveals = [];       // blocks that play once as they enter: { el, play, done }
   let revealIo = null;
 
@@ -342,6 +343,22 @@
       }
       tl.to(track, { x: -dist, duration: Math.max(dist - esgL, .001) }, esgL + hold);
       hTween = tl;
+      // About tabs: on screen once at least 60% of the panel is in the window (60% of the window's width when the
+      // panel is wider), measured along the strip (containerAnimation). containerAnimation reads the timeline as one
+      // even move from 0 to -dist over dist + hold, but About sits before the ESG hold, where scroll = x exactly: the
+      // positions are scaled by dist / (dist + hold) so the trigger lands on the real 60% points.
+      const about = $('#about', track);
+      if (about && aboutInView) {
+        const need = () => .6 * Math.min(about.offsetWidth, root.clientWidth);
+        const k = () => dist / (dist + hold);
+        ScrollTrigger.create({
+          trigger: about, containerAnimation: tl,
+          // strip x where 60% has come in from the right / where only 60% is left on the left
+          start: () => ((about.offsetLeft + need() - root.clientWidth) * k() - about.offsetLeft + root.clientWidth) + 'px right',
+          end: () => ((about.offsetLeft + about.offsetWidth - need()) * k() - about.offsetLeft) + 'px left',
+          onToggle: self => aboutInView(self.isActive, 'x')
+        });
+      }
     });
     stripUpdate.call(hTween);   // a page reloaded mid-way plays what is already on screen
     // lazy images load as the strip brings them near; once the page has loaded, the rest follow, so a fast scroll
@@ -514,8 +531,10 @@
   /* ---------- About: values tabs ----------
      Three tabs switch the photo (stacked, crossfade) and the text under them. Auto-advance every 6 s in a loop: the gold
      line under the active tab is a CSS animation, and its end moves on to the next tab. It runs only while the section
-     is on screen, pauses on hover and while focus is inside, and stops for good once the visitor picks a tab (click or
-     ← → Home End, which also move the focus). Reduced motion: no auto-advance, instant switch. */
+     is really on screen (at least 60% of the panel: ScrollTrigger along the sideways strip, an IntersectionObserver on
+     the vertical page) and always starts on the first tab with an empty line; off screen it stops and resets. It pauses
+     on hover and while focus is inside, and stops for good once the visitor picks a tab (click or ← → Home End, which
+     also move the focus). Reduced motion: no auto-advance, instant switch. */
   const tabsBox = $('[data-about-tabs]');
   if (tabsBox) {
     const tabs = $$('[role="tab"]', tabsBox), texts = $$('[role="tabpanel"]', tabsBox), imgs = $$('[data-about-img]');
@@ -524,11 +543,11 @@
     // the fill animation starts over for each tab (the class comes off, a reflow, and back on)
     const restart = () => {
       tabsBox.classList.remove('is-auto');
-      if (stopped) return;
+      if (stopped || !seen) return;
       void fill.offsetWidth;
       tabsBox.classList.add('is-auto');
     };
-    const pause = () => tabsBox.classList.toggle('is-paused', hover || focused || !seen);
+    const pause = () => tabsBox.classList.toggle('is-paused', hover || focused);
     function show(k, moveFocus) {
       cur = (k + tabs.length) % tabs.length;
       tabs.forEach((t, i) => { t.setAttribute('aria-selected', String(i === cur)); t.tabIndex = i === cur ? 0 : -1; });
@@ -552,9 +571,31 @@
     tabsBox.addEventListener('mouseleave', () => { hover = false; pause(); });
     tabsBox.addEventListener('focusin', () => { focused = true; pause(); });
     tabsBox.addEventListener('focusout', e => { if (!tabsBox.contains(e.relatedTarget)) { focused = false; pause(); } });
-    // only while the section is on screen (the observer follows the sideways strip's transform too)
+    // on / off screen: auto-advance starts from the first tab (or stays on the visitor's pick); off screen it resets.
+    // Sources: 'x' = the sideways strip's ScrollTrigger (built in buildStrip), 'v' = the observer below; only the
+    // current mode's source counts
+    const panel = tabsBox.closest('.panel');
+    const isX = () => root.classList.contains('is-x');
+    aboutInView = (on, src) => {
+      if (src !== (isX() ? 'x' : 'v') || on === seen) return;
+      seen = on;
+      show(stopped ? cur : 0);
+    };
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([en]) => { seen = en.isIntersecting; pause(); }, { threshold: .35 }).observe(tabsBox.closest('.panel'));
+      // vertical page: 60% of the panel on screen (or 60% of the screen filled by it when the panel is taller)
+      let vis = false;
+      new IntersectionObserver(([en]) => {
+        vis = en.isIntersecting && en.intersectionRect.height >= .6 * Math.min(en.boundingClientRect.height, innerHeight) - 1;
+        aboutInView(vis, 'v');
+      }, { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }).observe(panel);
+      // the window crossed 1024px: start over, with what the new mode's source sees
+      let wasX = isX();
+      new MutationObserver(() => {
+        if (isX() === wasX) return;
+        wasX = isX();
+        if (seen) { seen = false; show(stopped ? cur : 0); }
+        if (!wasX) aboutInView(vis, 'v');
+      }).observe(root, { attributeFilter: ['class'] });
     } else seen = true;
     pause();
     restart();
@@ -758,7 +799,7 @@
       if (!endpoint) {
         const to = ($('a[href^="mailto:"]') || {}).href?.replace('mailto:', '') || '';
         const body = `${data.name}${data.company ? ' — ' + data.company : ''}\n${data.email}\n\n${data.message || ''}`;
-        location.href = `mailto:${to}?subject=${encodeURIComponent('Oliyatorg — ' + data.name)}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${to}?subject=${encodeURIComponent((lang === 'en' ? 'Oliyatorg' : 'Оліяторг') + ' — ' + data.name)}&body=${encodeURIComponent(body)}`;
         say('form.mail');
         return;
       }
