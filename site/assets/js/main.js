@@ -46,6 +46,7 @@
     let word = false;
     for (let k = nodes.length - 1; k >= 0; k--) {
       const node = nodes[k], v = node.nodeValue;
+      if (word && /^\s*\n\s*$/.test(v)) return null;   // source formatting between two blocks (e.g. a one-word card title): never tie across it
       for (let i = v.length - 1; i >= 0; i--) {
         if (v[i] === ' ') return null;         // already tied by the short-word rule
         if (!/\s/.test(v[i])) { word = true; continue; }
