@@ -1413,11 +1413,15 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .pp-jump a::before { content: ""; position: absolute; left: -16px; top: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .25s ease; }
 .pp-jump a:hover, .pp-jump a[aria-current] { color: var(--text); }
 .pp-jump a:hover::before, .pp-jump a:focus-visible::before, .pp-jump a[aria-current]::before { opacity: 1; }
+/* "Refined oil — coming soon": smaller, muted, its gold dot always on */
+.pp-jump a.pp-jump__soon { font-size: 13px; color: var(--text-muted); }
+.pp-jump a.pp-jump__soon::before { opacity: 1; }
+.pp-jump a.pp-jump__soon:hover, .pp-jump a.pp-jump__soon[aria-current] { color: var(--text); }
 /* tablets and up: two columns that share three rows (the group captions, then the first and the second product), so
    the items of a row line up across the columns (subgrid); every item sits on its row's top line */
 @media (min-width: 640px) {
-  .pp-jump { grid-template-columns: repeat(2, minmax(0, max-content)); grid-template-rows: repeat(3, auto); row-gap: 4px; }
-  .pp-jump__group { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-items: start; }
+  .pp-jump { grid-template-columns: repeat(2, minmax(0, max-content)); grid-template-rows: repeat(4, auto); row-gap: 4px; }
+  .pp-jump__group { display: grid; grid-row: span 4; grid-template-rows: subgrid; align-items: start; }
   .pp-jump__group ul { display: contents; }
   .pp-jump__label { margin: 0; }
   .pp-jump a { align-items: flex-start; padding: 12px 0 5px; }
@@ -1675,4 +1679,47 @@ html.fade .panel.spread:not(.in) .rv { opacity: 0; transform: translateY(24px); 
   html.is-v .panel.ct-map { display: block; height: auto; min-height: 0; overflow: visible; padding: clamp(64px, 9vh, 112px) 0 0; }
   .ct-map__frame { height: 480px; }
   html.is-v .panel.page-foot { display: block; height: auto; min-height: 0; overflow: visible; padding: clamp(48px, 7vh, 80px) var(--pad) clamp(32px, 4vh, 48px); }
+}
+
+/* Refined oil — coming soon (products.html, after the oil spread): a block on --surface, no borders. Phones and tablets:
+   the photo 4:3 on top, then the label, heading (the shared heading one size smaller), text, the progress line and the
+   button. Desktop: the photo 4:5 on the left (as tall as one screen allows), the content on the right, centred against it. */
+.panel.spread.soon, html.is-v .panel.spread.soon { padding-top: var(--pp-gap); padding-bottom: var(--pp-gap); }
+.soon__media { position: relative; }
+.soon__tag {
+  position: absolute; top: 16px; left: 16px; z-index: 1; padding: 6px 12px;
+  font: 600 12px/1.2 var(--sans); letter-spacing: .12em; text-transform: uppercase; background: var(--accent); color: #0A1220;
+}
+.h2.soon__title { margin: 12px 0 0; font-size: clamp(28px, 7.5vw, 36px); }
+
+/* the progress line: three points on a thin line, gold up to the middle point (construction — the current stage, its
+   point pulses: opacity only); labels under the points (left, centre, right) */
+.soon-steps { position: relative; display: flex; justify-content: space-between; max-width: 520px; margin: 32px 0 0; padding: 0; list-style: none; }
+.soon-steps::before, .soon-steps::after { content: ""; position: absolute; top: 5px; left: 0; height: 1px; }
+.soon-steps::before { right: 0; background: rgba(239, 236, 230, .2); }
+.soon-steps::after { width: 50%; background: var(--accent); }
+.soon-steps__item { position: relative; padding-top: 24px; font: 600 12px/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+.soon-steps__item::before {
+  content: ""; position: absolute; top: 0; left: 0; z-index: 1; width: 11px; height: 11px; border-radius: 50%;
+  background: var(--bg); box-shadow: inset 0 0 0 1px rgba(239, 236, 230, .35);
+}
+.soon-steps__item:nth-child(2) { text-align: center; }
+.soon-steps__item:nth-child(2)::before { left: calc(50% - 5.5px); }
+.soon-steps__item:last-child { text-align: right; }
+.soon-steps__item:last-child::before { left: auto; right: 0; }
+.soon-steps__item.is-done::before, .soon-steps__item.is-current::before { background: var(--accent); box-shadow: none; }
+.soon-steps__item.is-current { color: var(--text); }
+.soon-steps__item.is-current::before { animation: soon-pulse 1.8s ease-in-out infinite; }
+@keyframes soon-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .soon-steps__item.is-current::before { animation: none; } }
+
+@media (min-width: 1024px) {
+  /* the 4:5 photo on columns 1–5, never taller than the screen under the header (minus the block's padding) */
+  .spread.soon .soon__media {
+    align-self: center; justify-self: start; width: min(100%, calc((100svh - var(--header-h) - 2 * var(--pp-gap)) * .8));
+    aspect-ratio: 4 / 5;
+  }
+  .spread.soon .soon__body { align-self: center; }
+  .h2.soon__title { margin-top: 16px; font-size: clamp(36px, 3.4vw, 56px); }
+  .soon-steps { margin-top: 40px; }
 }
