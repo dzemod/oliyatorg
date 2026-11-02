@@ -669,6 +669,43 @@
     document.addEventListener('langchange', () => { if (lightbox.open) show(k); });
   }
 
+  /* ---------- Photo gallery lightbox (production.html) ----------
+     A tile ([data-gallery], its large file in data-large) opens the photo with its description and "3 / 8";
+     ← → / Esc on desktop, swipe on phones; a click on the dark area closes it. */
+  const gbox = $('#gallery-lightbox');
+  if (gbox && gbox.showModal) {
+    const tiles = $$('[data-gallery]');
+    const img = $('.lightbox__img', gbox), cap = $('.lightbox__title', gbox), count = $('.lightbox__count', gbox);
+    let k = 0;
+    const show = i => {
+      k = (i + tiles.length) % tiles.length;
+      const alt = $('img', tiles[k]).alt;
+      img.classList.remove('is-ready');
+      img.onload = () => img.classList.add('is-ready');
+      img.src = tiles[k].dataset.large;
+      img.alt = alt;
+      cap.textContent = alt;
+      count.textContent = `${k + 1} / ${tiles.length}`;
+    };
+    tiles.forEach((el, i) => el.addEventListener('click', () => { show(i); gbox.showModal(); root.classList.add('modal-open'); }));
+    $$('[data-lightbox-step]', gbox).forEach(b => b.addEventListener('click', () => show(k + +b.dataset.lightboxStep)));
+    $('[data-lightbox-close]', gbox).addEventListener('click', () => gbox.close());
+    gbox.addEventListener('click', e => { if (e.target === gbox || e.target.matches('.lightbox__figure')) gbox.close(); });
+    gbox.addEventListener('close', () => root.classList.remove('modal-open'));
+    gbox.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(k + (e.key === 'ArrowRight' ? 1 : -1)); }
+    });
+    let gx = null;
+    gbox.addEventListener('touchstart', e => { gx = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+    gbox.addEventListener('touchend', e => {
+      if (gx === null) return;
+      const dx = e.changedTouches[0].clientX - gx;
+      gx = null;
+      if (Math.abs(dx) > 50) show(k + (dx < 0 ? 1 : -1));
+    });
+    document.addEventListener('langchange', () => { if (gbox.open) show(k); });
+  }
+
   /* ---------- Contact form popup ---------- */
   // Native <dialog>: Esc closes it and keeps focus inside. A click on the dark area outside the box closes it too.
   const modal = $('#contact-modal');
