@@ -1412,7 +1412,16 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .pp-jump a::before { content: ""; position: absolute; left: -16px; top: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .25s ease; }
 .pp-jump a:hover, .pp-jump a[aria-current] { color: var(--text); }
 .pp-jump a:hover::before, .pp-jump a:focus-visible::before, .pp-jump a[aria-current]::before { opacity: 1; }
-@media (min-width: 640px) { .pp-jump { grid-template-columns: repeat(2, minmax(0, max-content)); } }
+/* tablets and up: two columns that share three rows (the group captions, then the first and the second product), so
+   the items of a row line up across the columns (subgrid); every item sits on its row's top line */
+@media (min-width: 640px) {
+  .pp-jump { grid-template-columns: repeat(2, minmax(0, max-content)); grid-template-rows: repeat(3, auto); row-gap: 4px; }
+  .pp-jump__group { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-items: start; }
+  .pp-jump__group ul { display: contents; }
+  .pp-jump__label { margin: 0; }
+  .pp-jump a { align-items: flex-start; padding: 12px 0 5px; }
+  .pp-jump a::before { top: calc(12px + .65em - 3px); }   /* centred on the first line */
+}
 
 /* product spreads */
 .panel.spread { padding: calc(var(--pp-gap) / 2) var(--pad); }
@@ -1457,8 +1466,9 @@ html.fade .panel.spread:not(.in) .rv { opacity: 0; transform: translateY(24px); 
     align-items: stretch; height: auto; min-height: calc(var(--header-h) + 80svh); padding: var(--header-h) var(--pad) 0; overflow: visible;
   }
   .pp-hero .pp-hero__text { grid-column: 1 / 7; grid-row: 1; align-self: center; padding: clamp(48px, 8vh, 96px) var(--split) clamp(48px, 8vh, 96px) 0; }
-  .pp-hero .pp-hero__media { grid-column: 7 / 13; grid-row: 1; position: relative; aspect-ratio: auto; margin: 0; }
-  .pp-hero .pp-hero__media img { position: absolute; inset: 0; }
+  /* the photo runs from column 7 to the screen's right edge (over the right margin), header to hero bottom */
+  .pp-hero .pp-hero__media { grid-column: 7 / 13; grid-row: 1; position: relative; aspect-ratio: auto; margin: 0 calc(-1 * var(--pad)) 0 0; }
+  .pp-hero .pp-hero__media img { position: absolute; inset: 0; object-position: 87% 50%; }   /* bottle and bowl (≈39–90% of the width) centred in the crop */
   html.is-h .panel.pp-hero .eyebrow { margin: 0 0 16px; }
   html.is-h .pp-hero .pp-hero__title { margin: 0; font-size: clamp(48px, 6.4vh, 88px); line-height: 1.05; letter-spacing: -.02em; }
   html.is-h .pp-hero .pp-hero__lead { max-width: 640px; margin-top: 32px; font-size: clamp(19px, 2.2vh, 22px); line-height: 1.6; }
