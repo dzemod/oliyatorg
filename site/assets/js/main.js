@@ -706,51 +706,52 @@
     document.addEventListener('langchange', () => { if (gbox.open) show(k); });
   }
 
-  /* ---------- Contact form popup ---------- */
-  // Native <dialog>: Esc closes it and keeps focus inside. A click on the dark area outside the box closes it too.
-  const modal = $('#contact-modal');
-  if (modal && modal.showModal) {
-    const open = () => { modal.showModal(); root.classList.add('modal-open'); };
-    const close = () => modal.close();
-    // a product's "Request cooperation" button (data-product: the i18n key of its name) fills in the message
-    const plain = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); };
-    const message = $('#f-message', modal);
-    $$('[data-modal-open]').forEach(b => b.addEventListener('click', () => {
-      if (b.dataset.product && message) message.value = t('pp.ask').replace('{p}', plain(t(b.dataset.product)));
-      open();
-    }));
-    $$('[data-modal-close]', modal).forEach(b => b.addEventListener('click', close));
-    modal.addEventListener('click', e => { if (e.target === modal) close(); });
-    modal.addEventListener('close', () => root.classList.remove('modal-open'));
-    // the page behind must not scroll (no overflow:hidden — hiding the scrollbar would shift the page sideways)
-    const block = e => {
-      if (!root.classList.contains('modal-open')) return;
-      const box = e.target.closest('.modal__box, textarea'); // these scroll themselves (contained in CSS)
-      if (!box || box.scrollHeight <= box.clientHeight) e.preventDefault();
-    };
-    addEventListener('wheel', block, { passive: false });
-    addEventListener('touchmove', block, { passive: false });
-  }
+  /* ---------- Dialogs: the page behind never scrolls ----------
+     (no overflow:hidden — hiding the scrollbar would shift the page sideways) */
+  const block = e => {
+    if (!root.classList.contains('modal-open')) return;
+    const box = e.target.closest('textarea');   // scrolls itself (contained in CSS)
+    if (!box || box.scrollHeight <= box.clientHeight) e.preventDefault();
+  };
+  addEventListener('wheel', block, { passive: false });
+  addEventListener('touchmove', block, { passive: false });
 
-  /* ---------- Contact form ---------- */
-  // data-endpoint="" (no backend yet) → opens the visitor's e-mail app with the message filled in.
-  // TODO: set data-endpoint on <form> to the client's form handler (POST, JSON body).
-  const form = $('.form');
+  /* ---------- "Request cooperation" links (products page) ----------
+     Each links to the contacts page form with the product's name in the current language:
+     contacts.html?product=<name>#form (data-product: the i18n key of the name). */
+  const plain = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); };
+  const productLinks = () => $$('a[data-product]').forEach(a => { a.href = `contacts.html?product=${encodeURIComponent(plain(t(a.dataset.product)))}#form`; });
+  productLinks();
+  document.addEventListener('langchange', productLinks);
+
+  /* ---------- Contact form (contacts.html) ----------
+     Sending: a JSON POST to the form's data-endpoint (e.g. a Formspree form URL — "Accept: application/json" makes it
+     answer with JSON instead of a redirect). The success message shows only after the endpoint has answered OK; on an
+     error the entered text stays and the e-mail address is offered. While data-endpoint is empty, "Send" opens the
+     visitor's e-mail app with the message addressed to the office (and says so) — nothing is reported as sent.
+     TODO: set data-endpoint on the form in contacts.html (the client's form handler / recipient e-mail). */
+  const form = $('#form.form');
   if (form) {
     const status = $('.form__status', form);
     const say = (key, error = false) => { status.textContent = t(key); status.classList.toggle('is-error', error); };
+    const message = form.elements.message;
+    // ?product=<name> (the products page buttons): "Мене цікавить: <name>." in the message
+    const product = new URLSearchParams(location.search).get('product');
+    if (product && message && !message.value) message.value = t('pp.ask').replace('{p}', product.trim().slice(0, 120));
 
+    const mark = (el, ok) => {
+      (el.closest('.field, .consent')).classList.toggle('is-invalid', !ok);
+      el.setAttribute('aria-invalid', String(!ok));
+    };
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      const name = form.elements.name;
-      const email = form.elements.email;
+      const { name, email, consent } = form.elements;
       const okName = name.value.trim().length > 1;
       const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
-      name.closest('.field').classList.toggle('is-invalid', !okName);
-      email.closest('.field').classList.toggle('is-invalid', !okEmail);
-      name.setAttribute('aria-invalid', String(!okName));
-      email.setAttribute('aria-invalid', String(!okEmail));
+      const okConsent = !consent || consent.checked;
+      mark(name, okName); mark(email, okEmail); if (consent) mark(consent, okConsent);
       if (!okName || !okEmail) { say('form.invalid', true); (okName ? email : name).focus(); return; }
+      if (!okConsent) { say('form.consentNeeded', true); consent.focus(); return; }
 
       const data = Object.fromEntries(new FormData(form));
       const endpoint = form.dataset.endpoint;
@@ -762,13 +763,17 @@
         return;
       }
       say('form.sending');
+      const submit = $('[type="submit"]', form);
+      submit.disabled = true;
       try {
-        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data, lang }) });
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, lang, page: location.href }) });
         if (!res.ok) throw new Error(res.status);
         form.reset();
         say('form.ok');
       } catch (err) {
-        say('form.error', true); // entered data stays in the fields
+        say('form.error', true);   // the entered data stays in the fields
+      } finally {
+        submit.disabled = false;
       }
     });
   }

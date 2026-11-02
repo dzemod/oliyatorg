@@ -122,6 +122,20 @@ window.I18N = {
     'pp.cta': 'Request cooperation',
     'pp.ask': 'I’m interested in: {p}.',
 
+    // contacts.html
+    'meta.ctTitle': 'Contacts — Oliyatorg',
+    'meta.ctDesc': 'Oliyatorg contacts: 5 Symona Petliury Street, Kyiv; phone +38 044 228 11 97; office@oliyatorg.ua. Write to us about cooperation.',
+    'ct.lead': 'Send us a message and our manager will get back to you soon, in whatever way suits you best.',
+    'ct.social': 'Social media',
+    'ct.linkedin': 'Oliyatorg on LinkedIn',
+    'ct.facebook': 'Oliyatorg on Facebook',
+    'ct.form': 'Contact form',
+    'ct.map': 'How to find us',
+    'ct.mapTitle': 'Map: 5 Symona Petliury Street, Kyiv',
+    'ct.footer': 'Site footer',
+    'form.consent': 'I agree to the processing of my personal data to answer this message',
+    'form.consentNeeded': 'Please confirm your consent to the processing of your data',
+
     // production.html
     'meta.prodTitle': 'Production — Oliyatorg',
     'meta.prodDesc': 'Oliyatorg production: double mechanical pressing without chemical solvents, processing of 100 thousand tonnes of sunflower seeds a year, a certified laboratory, a solar power plant and a husk-fired generator.',
@@ -277,6 +291,7 @@ window.I18N = {
     'ui.closeMenu': 'Закрити меню',
     'pp.ask': 'Мене цікавить: {p}.',
     'form.invalid': 'Вкажіть ім’я та коректний e-mail',
+    'form.consentNeeded': 'Підтвердіть згоду на обробку даних',
     'form.sending': 'Надсилаємо…',
     'form.ok': 'Дякуємо! Ми скоро відповімо',
     'form.mail': 'Відкрився ваш поштовий застосунок із листом — залишилося натиснути «Надіслати»',
