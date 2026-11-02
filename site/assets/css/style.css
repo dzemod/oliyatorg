@@ -237,7 +237,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .hero__video { opacity: 0; transition: opacity 1.2s var(--ease); }
 .hero__video.is-ready { opacity: 1; }
 /* even navy tint over the whole video (calms the sunlit sky); the text gradient below sits on top of it */
-.hero__tint { position: absolute; inset: 0; background: rgba(10, 18, 32, .25); }
+.hero__tint { position: absolute; inset: 0; background: rgba(10, 18, 32, .15); }
 /* the photo keeps its colours: a soft gradient only where text sits — the bottom (heading, lead, button) and a thin
    band under the transparent header menu */
 .hero__media::after {

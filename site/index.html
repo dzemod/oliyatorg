@@ -32,10 +32,10 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-500-normal.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-600-normal.woff2" crossorigin>
 
-  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-1920-v2.webp" media="(min-width: 1024px)">
-  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-960-v2.webp" media="(max-width: 1023px)">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-desktop-v3.webp" media="(min-width: 768px)">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-poster-mobile-v3.webp" media="(max-width: 767px)">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=156">
+  <link rel="stylesheet" href="assets/css/style.css?v=157">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"); html.is-x on top of it: the sections side by side on one sideways strip (main.js; without GSAP it
@@ -100,15 +100,15 @@
       <section class="panel hero" data-tone="photo" aria-labelledby="hero-title">
         <div class="hero__media" aria-hidden="true">
           <picture>
-            <source type="image/webp" media="(min-width: 1024px)" srcset="assets/img/hero-poster-1920-v2.webp">
-            <source type="image/webp" srcset="assets/img/hero-poster-960-v2.webp">
-            <img class="hero__poster" src="assets/img/hero-poster-1920-v2.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+            <source type="image/webp" media="(max-width: 767px)" srcset="assets/img/hero-poster-mobile-v3.webp">
+            <source media="(max-width: 767px)" srcset="assets/img/hero-poster-mobile-v3.jpg">
+            <source type="image/webp" srcset="assets/img/hero-poster-desktop-v3.webp">
+            <img class="hero__poster" src="assets/img/hero-poster-desktop-v3.jpg" alt="" width="1920" height="1080" fetchpriority="high">
           </picture>
-          <!-- Video is attached by main.js (phones get the vertical mobile file); never with "reduce motion" — the poster stays. -->
-          <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster-960-v2.webp"
-                 data-src-large="assets/img/hero-1920-v2.mp4"
-                 data-src-small="assets/img/hero-960-v2.mp4"
-                 data-src-mobile="assets/img/hero-mobile-v2.mp4"></video>
+          <!-- Video is attached by main.js (phones get the vertical 9:16 file, its poster in the picture above); never with "reduce motion" — the poster stays. -->
+          <video class="hero__video" autoplay muted loop playsinline preload="metadata" 
+                 data-src-desktop="assets/img/hero-desktop-v3.mp4"
+                 data-src-mobile="assets/img/hero-mobile-v3.mp4"></video>
           <div class="hero__tint"></div>
         </div>
 
@@ -567,7 +567,7 @@
   <!-- Desktop (sideways strip): GSAP + ScrollTrigger, then main.js. Phones and tablets: main.js only — the fades are CSS
        transitions; main.js loads GSAP itself if the window later grows past 1024px. Inserted in order (async = false). -->
   <script>
-    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=54';
+    var gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/', mainSrc = 'assets/js/main.js?v=55';
     (document.documentElement.classList.contains('is-x')
       ? [gsapSrc + 'gsap.min.js', gsapSrc + 'ScrollTrigger.min.js', mainSrc]
       : [mainSrc]).forEach(function (src) {

@@ -500,8 +500,7 @@
   if (video && !reduceMotion) {
     // starts after the page has loaded, so it never competes with the first screen's poster, fonts and images
     const start = () => {
-      video.src = matchMedia('(max-width: 767px)').matches ? video.dataset.srcMobile
-        : innerWidth > 1600 ? video.dataset.srcLarge : video.dataset.srcSmall;
+      video.src = matchMedia('(max-width: 767px)').matches ? video.dataset.srcMobile : video.dataset.srcDesktop;
       // shown only once it really plays: if autoplay is blocked (e.g. Low Power Mode) the poster stays, no frozen frame or play button
       video.addEventListener('playing', () => video.classList.add('is-ready'), { once: true });
       video.play().catch(() => { /* autoplay blocked — poster stays */ });
