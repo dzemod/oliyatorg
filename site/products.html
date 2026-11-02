@@ -32,7 +32,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-500-normal.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-cyrillic-600-normal.woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=148">
+  <link rel="stylesheet" href="assets/css/style.css?v=150">
   <script>
     // Decide the layout before first paint. html.is-h.is-v: the designed desktop layout (wide screens without
     // "reduce motion"), its sections stacked top to bottom. Phones, tablets and reduced motion: the plain vertical page.
@@ -134,27 +134,32 @@
       <section class="panel spread" id="oil" data-tone="base" aria-labelledby="p1-title">
         <figure class="spread__media" data-reveal>
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-oil-unrefined-700.webp 700w, assets/img/product-oil-unrefined-1200.webp 1200w, assets/img/product-oil-unrefined-1800.webp 1800w">
-            <img src="assets/img/product-oil-unrefined-1200.jpg" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-oil-unrefined-700.jpg 700w, assets/img/product-oil-unrefined-1200.jpg 1200w, assets/img/product-oil-unrefined-1800.jpg 1800w" alt="Пляшка і скляна мисочка соняшникової олії з насінням" data-i18n-attr="alt:alt.unrefined" width="1200" height="1490" loading="lazy" decoding="async">
+            <source type="image/webp" sizes="(min-width: 1024px) 40vw, 100vw" srcset="assets/img/product-oil-unrefined-card-800.webp 800w, assets/img/product-oil-unrefined-card-1400.webp 1400w, assets/img/product-oil-unrefined-card-2000.webp 2000w">
+            <img src="assets/img/product-oil-unrefined-card-1400.jpg" sizes="(min-width: 1024px) 40vw, 100vw" srcset="assets/img/product-oil-unrefined-card-800.jpg 800w, assets/img/product-oil-unrefined-card-1400.jpg 1400w, assets/img/product-oil-unrefined-card-2000.jpg 2000w" alt="Пляшка і скляна мисочка соняшникової олії з насінням" data-i18n-attr="alt:alt.unrefined" width="1400" height="700" loading="lazy" decoding="async">
           </picture>
         </figure>
         <div class="spread__body" data-reveal>
           <p class="caption spread__meta" data-i18n="products.c1.meta">Олія / подвійне пресування</p>
           <h2 class="spread__title" id="p1-title" data-i18n="pp.p1.name">Соняшникова олія</h2>
           <p class="spread__text" data-i18n="pp.p1.desc">Отримуємо з&nbsp;насіння соняшнику технологією подвійного механічного віджиму, без&nbsp;застосування хімічних розчинників. Двоетапний процес пресування зберігає природні властивості сировини.</p>
-          <dl class="spec">
-            <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.sun">Насіння соняшнику</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.tech">Технологія</dt><dd data-i18n="pp.v.press">Подвійне механічне пресування</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.solv">Хімічні розчинники</dt><dd data-i18n="pp.v.none">Не&nbsp;застосовуються</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.certs">Сертифікати</dt><dd><a href="certificates.html">ISO 22000 · Organic EU · Halal</a></dd></div>
-          </dl>
-          <div class="spread__use">
-            <p class="caption" data-i18n="pp.types">Види олії</p>
-            <dl class="spec">
-              <div class="spec__row"><dt data-i18n="pp.k.linoleic">Лінолева</dt><dd data-i18n="pp.v.crudeRef">Сира, рафінована</dd></div>
-              <div class="spec__row"><dt data-i18n="pp.k.oleic">Високоолеїнова</dt><dd data-i18n="pp.v.crudeRef">Сира, рафінована</dd></div>
-              <div class="spec__row"><dt data-i18n="pp.k.organic">Органічна</dt><dd data-i18n="pp.v.linOleic">Лінолева, високоолеїнова</dd></div>
-            </dl>
+          <div class="spec-cols" style="--rows: 5">
+            <div class="spec-col">
+              <span class="spec-col__title" aria-hidden="true"></span>
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.sun">Насіння соняшнику</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.tech">Технологія</dt><dd data-i18n="pp.v.press">Подвійне механічне пресування</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.solv">Хімічні розчинники</dt><dd data-i18n="pp.v.none">Не&nbsp;застосовуються</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.certs">Сертифікати</dt><dd><a href="certificates.html">ISO 22000 · Organic EU · Halal</a></dd></div>
+              </dl>
+            </div>
+            <div class="spec-col">
+              <p class="caption spec-col__title" data-i18n="pp.types">Види олії</p>
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.linoleic">Лінолева</dt><dd data-i18n="pp.v.crudeRef">Сира, рафінована</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.oleic">Високоолеїнова</dt><dd data-i18n="pp.v.crudeRef">Сира, рафінована</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.organic">Органічна</dt><dd data-i18n="pp.v.linOleic">Лінолева, високоолеїнова</dd></div>
+              </dl>
+            </div>
           </div>
           <p class="spread__note" data-i18n="pp.note">Якісні показники, обсяги, умови та&nbsp;терміни поставки запитуйте в&nbsp;наших фахівців.</p>
           <button class="btn spread__cta" type="button" data-modal-open data-product="pp.p1.name">
@@ -169,33 +174,37 @@
       <section class="panel spread spread--flip" id="cake" data-tone="base" aria-labelledby="p2-title">
         <figure class="spread__media" data-reveal>
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-cake-portrait-700.webp 700w, assets/img/product-cake-portrait-1200.webp 1200w">
-            <img src="assets/img/product-cake-portrait-1200.jpg" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-cake-portrait-700.jpg 700w, assets/img/product-cake-portrait-1200.jpg 1200w" alt="Шматки соняшникової макухи та насіння соняшнику" data-i18n-attr="alt:alt.cakePieces" width="1200" height="1500" loading="lazy" decoding="async">
+            <source media="(min-width: 1024px)" type="image/webp" sizes="40vw" srcset="assets/img/product-cake-spread-800.webp 800w, assets/img/product-cake-spread-1400.webp 1400w">
+            <source media="(min-width: 1024px)" sizes="40vw" srcset="assets/img/product-cake-spread-800.jpg 800w, assets/img/product-cake-spread-1400.jpg 1400w">
+            <source type="image/webp" sizes="100vw" srcset="assets/img/product-cake-card-800.webp 800w, assets/img/product-cake-card-1400.webp 1400w, assets/img/product-cake-card-2000.webp 2000w">
+            <img src="assets/img/product-cake-card-1400.jpg" sizes="100vw" srcset="assets/img/product-cake-card-800.jpg 800w, assets/img/product-cake-card-1400.jpg 1400w, assets/img/product-cake-card-2000.jpg 2000w" alt="Соняшникова макуха в керамічній мисці" data-i18n-attr="alt:alt.meal" width="1400" height="700" style="--pos: 50% 100%" loading="lazy" decoding="async">
           </picture>
         </figure>
         <div class="spread__body" data-reveal>
           <p class="caption spread__meta" data-i18n="products.c2.meta">Макуха / для кормів тварин</p>
           <h2 class="spread__title" id="p2-title" data-i18n="pp.p2.name">Макуха соняшникова, ріпакова</h2>
           <p class="spread__text" data-i18n="pp.p2.desc">Цінна макуха, яку ми&nbsp;отримуємо під&nbsp;час двоетапного пресування насіння соняшнику та&nbsp;ріпаку, без&nbsp;хімічних розчинників. Макуху соняшника виробляємо органічну та&nbsp;неорганічну.</p>
-          <dl class="spec">
-            <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.sunRape">Насіння соняшнику та&nbsp;ріпаку</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.tech">Технологія</dt><dd data-i18n="pp.v.press">Подвійне механічне пресування</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.certs">Сертифікати</dt><dd><a href="certificates.html">ISO 22000 · Organic EU · Halal</a></dd></div>
-          </dl>
-          <div class="spread__use">
-            <p class="caption" data-i18n="pp.quality.sun">Якісні показники макухи соняшникової</p>
-            <dl class="spec">
-              <div class="spec__row"><dt data-i18n="pp.k.protein">Протеїн</dt><dd data-i18n="pp.v.protein">не&nbsp;менше 32,0&nbsp;%</dd></div>
-              <div class="spec__row"><dt data-i18n="pp.k.fat">Жир</dt><dd data-i18n="pp.v.fat">не&nbsp;менше 7,0&nbsp;%</dd></div>
-              <div class="spec__row"><dt data-i18n="pp.k.fibre">Клітковина</dt><dd data-i18n="pp.v.fibre">не&nbsp;більше 21,0&nbsp;%</dd></div>
-              <div class="spec__row"><dt data-i18n="pp.k.moist">Волога</dt><dd data-i18n="pp.v.moist">не&nbsp;більше 9,0&nbsp;%</dd></div>
-            </dl>
-            <p class="spread__note" data-i18n="pp.quality.basis">Протеїн, жир і&nbsp;клітковина — у&nbsp;перерахунку на&nbsp;сиру речовину.</p>
+          <div class="spec-cols" style="--rows: 5">
+            <div class="spec-col">
+              <span class="spec-col__title" aria-hidden="true"></span>
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.sunRape">Насіння соняшнику та&nbsp;ріпаку</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.tech">Технологія</dt><dd data-i18n="pp.v.press">Подвійне механічне пресування</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.certs">Сертифікати</dt><dd><a href="certificates.html">ISO 22000 · Organic EU · Halal</a></dd></div>
+                <div class="spec__row"><dt data-i18n="pp.use">Застосування</dt><dd data-i18n="pp.use.feed">Поживний компонент кормів для&nbsp;тварин.</dd></div>
+              </dl>
+            </div>
+            <div class="spec-col">
+              <p class="caption spec-col__title" data-i18n="pp.quality.sun">Якісні показники макухи соняшникової</p>
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.protein">Протеїн</dt><dd data-i18n="pp.v.protein">не&nbsp;менше 32,0&nbsp;%</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.fat">Жир</dt><dd data-i18n="pp.v.fat">не&nbsp;менше 7,0&nbsp;%</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.fibre">Клітковина</dt><dd data-i18n="pp.v.fibre">не&nbsp;більше 21,0&nbsp;%</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.moist">Волога</dt><dd data-i18n="pp.v.moist">не&nbsp;більше 9,0&nbsp;%</dd></div>
+              </dl>
+            </div>
           </div>
-          <div class="spread__use">
-            <p class="caption" data-i18n="pp.use">Застосування</p>
-            <p class="spread__text" data-i18n="pp.use.feed">Поживний компонент кормів для&nbsp;тварин.</p>
-          </div>
+          <p class="spread__note spec-cols__note" data-i18n="pp.quality.basis">Протеїн, жир і&nbsp;клітковина — у&nbsp;перерахунку на&nbsp;сиру речовину.</p>
           <p class="spread__note" data-i18n="pp.note">Якісні показники, обсяги, умови та&nbsp;терміни поставки запитуйте в&nbsp;наших фахівців.</p>
           <button class="btn spread__cta" type="button" data-modal-open data-product="pp.p2.name">
             <span data-i18n="pp.cta">Запит співпраці</span>
@@ -209,8 +218,8 @@
       <section class="panel spread" id="pellets" data-tone="base" aria-labelledby="p3-title">
         <figure class="spread__media" data-reveal>
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-pellets-700.webp 700w, assets/img/product-pellets-1200.webp 1200w, assets/img/product-pellets-1800.webp 1800w">
-            <img src="assets/img/product-pellets-1200.jpg" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-pellets-700.jpg 700w, assets/img/product-pellets-1200.jpg 1200w, assets/img/product-pellets-1800.jpg 1800w" alt="Паливні гранули з лушпиння соняшника в керамічній мисці" data-i18n-attr="alt:alt.pellets" width="1200" height="1490" loading="lazy" decoding="async">
+            <source type="image/webp" sizes="(min-width: 1024px) 40vw, 100vw" srcset="assets/img/product-pellets-card-800.webp 800w, assets/img/product-pellets-card-1400.webp 1400w, assets/img/product-pellets-card-2000.webp 2000w">
+            <img src="assets/img/product-pellets-card-1400.jpg" sizes="(min-width: 1024px) 40vw, 100vw" srcset="assets/img/product-pellets-card-800.jpg 800w, assets/img/product-pellets-card-1400.jpg 1400w, assets/img/product-pellets-card-2000.jpg 2000w" alt="Паливні гранули з лушпиння соняшника в керамічній мисці" data-i18n-attr="alt:alt.pellets" width="1400" height="700" loading="lazy" decoding="async">
           </picture>
         </figure>
         <div class="spread__body" data-reveal>
@@ -234,23 +243,33 @@
       <section class="panel spread spread--flip" id="briquettes" data-tone="base" aria-labelledby="p4-title">
         <figure class="spread__media" data-reveal>
           <picture>
-            <source type="image/webp" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-briquettes-700.webp 700w, assets/img/product-briquettes-1200.webp 1200w, assets/img/product-briquettes-1800.webp 1800w">
-            <img src="assets/img/product-briquettes-1200.jpg" sizes="(min-width: 1024px) 50vw, 100vw" srcset="assets/img/product-briquettes-700.jpg 700w, assets/img/product-briquettes-1200.jpg 1200w, assets/img/product-briquettes-1800.jpg 1800w" alt="Паливні брикети з лушпиння соняшника та насіння соняшнику" data-i18n-attr="alt:alt.briquettes" width="1200" height="1490" loading="lazy" decoding="async">
+            <source media="(min-width: 1024px)" type="image/webp" sizes="40vw" srcset="assets/img/product-briquettes-700.webp 700w, assets/img/product-briquettes-1200.webp 1200w, assets/img/product-briquettes-1800.webp 1800w">
+            <source media="(min-width: 1024px)" sizes="40vw" srcset="assets/img/product-briquettes-700.jpg 700w, assets/img/product-briquettes-1200.jpg 1200w, assets/img/product-briquettes-1800.jpg 1800w">
+            <source type="image/webp" sizes="100vw" srcset="assets/img/product-briquettes-card-800.webp 800w, assets/img/product-briquettes-card-1400.webp 1400w, assets/img/product-briquettes-card-2000.webp 2000w">
+            <img src="assets/img/product-briquettes-card-1400.jpg" sizes="100vw" srcset="assets/img/product-briquettes-card-800.jpg 800w, assets/img/product-briquettes-card-1400.jpg 1400w, assets/img/product-briquettes-card-2000.jpg 2000w" alt="Паливні брикети з лушпиння соняшника та насіння соняшнику" data-i18n-attr="alt:alt.briquettes" width="1400" height="700" style="--pos: 50% 90%" loading="lazy" decoding="async">
           </picture>
         </figure>
         <div class="spread__body" data-reveal>
           <p class="caption spread__meta" data-i18n="products.c4.meta">Біопаливо / з&nbsp;лушпиння соняшника</p>
           <h2 class="spread__title" id="p4-title" data-i18n="pp.p4.name">Брикети з&nbsp;лушпиння соняшника</h2>
           <p class="spread__text" data-i18n="pp.p4.desc">Виробляємо та&nbsp;реалізуємо паливні брикети з&nbsp;лушпиння соняшника. Вони горять із&nbsp;мінімальною кількістю диму, не&nbsp;«стріляють» і&nbsp;не&nbsp;іскрять, не&nbsp;потребують попереднього сушіння та&nbsp;можуть замінювати вугілля й&nbsp;дрова без&nbsp;модернізації котлів і&nbsp;печей.</p>
-          <dl class="spec">
-            <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.husk">Лушпиння соняшника</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.heat">Теплота згоряння</dt><dd data-i18n="pp.v.heat">17,5&nbsp;МДж/кг</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.kcal">Калорійність</dt><dd data-i18n="pp.v.kcal">4180&nbsp;ккал</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.ash">Зольність</dt><dd data-i18n="pp.v.ash">2,5–3&nbsp;%</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.sulfur">Сірка</dt><dd data-i18n="pp.v.sulfur">0,1&nbsp;%</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.volume">Об’єм</dt><dd data-i18n="pp.v.volume">1&nbsp;т (≈&nbsp;1&nbsp;м³) еквівалентна 3–4&nbsp;м³ дров</dd></div>
-            <div class="spec__row"><dt data-i18n="pp.k.pack">Фасування</dt><dd data-i18n="pp.v.pack">По&nbsp;45&nbsp;кг</dd></div>
-          </dl>
+          <div class="spec-cols" style="--rows: 4">
+            <div class="spec-col">
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.raw">Сировина</dt><dd data-i18n="pp.v.husk">Лушпиння соняшника</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.heat">Теплота згоряння</dt><dd data-i18n="pp.v.heat">17,5&nbsp;МДж/кг</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.kcal">Калорійність</dt><dd data-i18n="pp.v.kcal">4180&nbsp;ккал</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.ash">Зольність</dt><dd data-i18n="pp.v.ash">2,5–3&nbsp;%</dd></div>
+              </dl>
+            </div>
+            <div class="spec-col">
+              <dl class="spec">
+                <div class="spec__row"><dt data-i18n="pp.k.sulfur">Сірка</dt><dd data-i18n="pp.v.sulfur">0,1&nbsp;%</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.volume">Об’єм</dt><dd data-i18n="pp.v.volume">1&nbsp;т (≈&nbsp;1&nbsp;м³) еквівалентна 3–4&nbsp;м³ дров</dd></div>
+                <div class="spec__row"><dt data-i18n="pp.k.pack">Фасування</dt><dd data-i18n="pp.v.pack">По&nbsp;45&nbsp;кг</dd></div>
+              </dl>
+            </div>
+          </div>
           <p class="spread__note" data-i18n="pp.note">Якісні показники, обсяги, умови та&nbsp;терміни поставки запитуйте в&nbsp;наших фахівців.</p>
           <button class="btn spread__cta" type="button" data-modal-open data-product="pp.p4.name">
             <span data-i18n="pp.cta">Запит співпраці</span>
@@ -348,7 +367,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=44"></script>
+  <script src="assets/js/i18n.js?v=45"></script>
   <!-- the fades are CSS transitions: no animation library -->
   <script src="assets/js/main.js?v=51"></script>
 </body>

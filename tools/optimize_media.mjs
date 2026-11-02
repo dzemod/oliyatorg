@@ -61,29 +61,36 @@ const CARDS = {
   'product-cake': { box: [.139, .29, .80, .968], crop: .915, fill: .46 },   // grey strip on the right; whole down to ~0.92:1
 };
 
-async function cardFromBox(file, name) {
-  const { box: [l, t, r, b], crop, fill = FILL } = CARDS[name];
+// Square crops for the products page spreads (desktop): the photo box there is as tall as the text beside it, so its
+// proportion runs from about 0.7:1 to 1.2:1; a square with the product at the bottom (the page shows it with
+// object-position: 50% 100%) keeps the product whole across that range. Same box / crop / fill format as CARDS.
+const SPREADS = {
+  'product-cake': { box: [.139, .29, .80, .968], crop: .915, fill: .62 },   // the landscape original: bowl and pieces whole
+};
+
+async function cardFromBox(file, name, cfg = CARDS[name], suffix = 'card', ratio = RATIO, widths = [800, 1400, 2000]) {
+  const { box: [l, t, r, b], crop, fill = FILL } = cfg;
   const src = path.join(SRC, file);
   const { width: W, height: H } = await sharp(src).metadata();
   const keepW = Math.round(crop * W);
-  const cw = Math.round((r - l) * W / fill), ch = Math.round(cw / RATIO);
+  const cw = Math.round((r - l) * W / fill), ch = Math.round(cw / ratio);
   const cx = Math.round((l + r) / 2 * W);
   const left = cx - Math.round(cw / 2), right = left + cw;
   const below = Math.round(.02 * ch);                              // a little backdrop under the product
   const top = Math.round(b * H) + below - ch, bottom = top + ch;
-  for (const w of [800, 1400, 2000]) {
-    const jpg = path.join(OUT, `${name}-card-${w}.jpg`);
-    const webp = path.join(OUT, `${name}-card-${w}.webp`);
+  for (const w of widths) {
+    const jpg = path.join(OUT, `${name}-${suffix}-${w}.jpg`);
+    const webp = path.join(OUT, `${name}-${suffix}-${w}.webp`);
     if (fresh(jpg) && fresh(webp)) continue;
     const x0 = Math.max(0, left), y0 = Math.max(0, top);
     const buf = await sharp(src).rotate()
       .extract({ left: x0, top: y0, width: Math.min(keepW, right) - x0, height: Math.min(H, bottom) - y0 })
       .extend({ left: x0 - left, right: Math.max(0, right - keepW), top: y0 - top, bottom: Math.max(0, bottom - H), extendWith: 'copy' })
       .toBuffer();
-    const img = sharp(buf).resize({ width: w, height: Math.round(w / RATIO), fit: 'cover' });
+    const img = sharp(buf).resize({ width: w, height: Math.round(w / ratio), fit: 'cover' });
     await img.clone().jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(jpg);
     await img.clone().webp({ quality: 74 }).toFile(webp);
-    console.log(`${name}-card-${w}: jpg ${kb(jpg)}, webp ${kb(webp)}`);
+    console.log(`${name}-${suffix}-${w}: jpg ${kb(jpg)}, webp ${kb(webp)}`);
   }
 }
 
@@ -152,6 +159,7 @@ for (const f of files) {
   const name = baseName(f);
   if (/\.(jpe?g|png)$/i.test(f) && name !== 'hero-poster') await photo(f, name);
   if (/\.(jpe?g|png)$/i.test(f) && CARDS[name]) await card(f, name);
+  if (/\.(jpe?g|png)$/i.test(f) && SPREADS[name]) await cardFromBox(f, name, SPREADS[name], 'spread', 1, [800, 1400]);
 }
 const vid = files.find(f => /\.mp4$/i.test(f) && baseName(f).startsWith('hero'));
 if (vid) { video(vid); await poster(vid); } else console.log('No hero video found in images/');
