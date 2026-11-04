@@ -1205,19 +1205,19 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-x .production .steps { flex: 1; min-height: 0; grid-template-columns: repeat(4, var(--step-w)); grid-template-rows: minmax(0, 1fr) auto auto auto; }
   html.is-x .steps .step .step__media { aspect-ratio: auto; height: 100%; margin-top: 0; }
 
-  /* ESG: one screen — label and heading on columns 1–4, a table of the four rows on columns 5–12: the photo on 3 of the
+  /* ESG: one screen — label and heading on columns 1–4, a table of the five rows on columns 5–12: the photo on 3 of the
      8 columns, the icon + title and the text beside it, thin rules between the rows; the table is as
      tall as the panel and its rows share the free height evenly (so it never grows or shrinks while rows open). main.js drives each row's
      openness --o (0 closed, 1 open) while the strip holds still: the photo grows from a 72px strip to 16:9 (smaller on
      short screens, so the table always fits), the title moves from the strip's middle to the photo's top line, the
-     text fades and slides in 12px under the title. All four titles are always visible. */
+     text fades and slides in 12px under the title. All five titles are always visible. */
   html.is-x .track > .panel.esg { display: grid; grid-template-columns: repeat(12, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap); }
   html.is-x .esg .esg__head { grid-column: 1 / 5; align-self: start; }
   html.is-x .esg .esg__title { max-width: none; }
   html.is-x .esg .esg-list {
     --row-pad: clamp(10px, 2vh, 24px);
     --media-w: calc(3 * var(--col) + 2 * var(--gap));
-    --open-h: min(calc(var(--media-w) * 9 / 16), calc(var(--panel-h) - var(--top) - var(--bottom) - 3 * 72px - 6 * var(--row-pad) - 8px));
+    --open-h: min(calc(var(--media-w) * 9 / 16), calc(var(--panel-h) - var(--top) - var(--bottom) - 4 * 72px - 8 * var(--row-pad) - 8px));
     grid-column: 5 / 13; align-self: stretch; display: flex; flex-direction: column; margin: 0;
   }
   html.is-x .esg-list .esg-row {

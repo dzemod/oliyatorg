@@ -58,7 +58,7 @@
   <!-- ============ HEADER ============ -->
   <header class="header" id="header">
     <a class="header__logo" href="#top" aria-label="Оліяторг — на головну" data-i18n-attr="aria-label:ui.home">
-      <!-- LOGO: the client's original (brand_assets/original-logo-200.png), only resized — never redrawn or recoloured.
+      <!-- LOGO: the client's logo without the white outline around the petals (brand_assets/logo-no-outline-200.png, made by tools/remove_logo_outline.mjs from original-logo-200.png), only resized.
            The header is solid (the page colour) at all times. -->
       <picture>
         <source type="image/webp" srcset="assets/brand/logo-64.webp 1x, assets/brand/logo-128.webp 2x">
@@ -316,8 +316,8 @@
         </ol>
       </section>
 
-      <!-- 6. ESG — label and heading, then four rows, all open (photo 16:9 · line icon + title, text). The texts are the
-           brief's ESG block (point 13), split into four rows; the rows rise in one after another (main.js, data-stagger).
+      <!-- 6. ESG — label and heading, then five rows, all open (photo 16:9 · line icon + title, text). The texts are the
+           brief's ESG block (point 13), split into five rows; the rows rise in one after another (main.js, data-stagger).
            Photos: generated (tools/generate_image.mjs), no real plant. -->
       <section class="panel esg" id="esg" data-tone="gold" aria-labelledby="esg-title">
         <header class="esg__head">
@@ -341,8 +341,18 @@
               <img src="assets/img/esg-husk-800.webp" srcset="assets/img/esg-husk-800.webp 800w, assets/img/esg-husk-1600.webp 1600w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1600" height="1200" loading="lazy" decoding="async">
             </figure>
             <div class="esg-row__content">
-              <h3 class="esg-row__title"><span class="esg-row__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5c5 4.5 6.5 11.5 0 21-6.5-9.5-5-16.5 0-21Z"/><path d="M14 9.5v10"/></svg></span><span class="esg-row__label" data-i18n="esg.r2.title">Генератор на&nbsp;лушпинні соняшнику&nbsp;— 1,5&nbsp;мегавата</span></h3>
-              <p class="esg-row__text" data-i18n="esg.r2.text">Генератор електроенергії потужністю 1,5&nbsp;мегавата працює на&nbsp;лушпинні соняшнику. Ми&nbsp;прагнемо мінімізувати використання викопних видів палива, зокрема природного газу.</p>
+              <h3 class="esg-row__title"><span class="esg-row__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5c.8 4 6.5 6.6 6.5 12.5a6.5 6.5 0 0 1-13 0c0-3.2 1.6-5.3 3.2-6.4.1 2.6 1 3.7 2.1 4.2.6-4.2-.1-7.2 1.2-10.3Z"/></svg></span><span class="esg-row__label" data-i18n="esg.r2.title">Котельня на&nbsp;лушпинні соняшнику</span></h3>
+              <p class="esg-row__text" data-i18n="esg.r2.text">Котельня підприємства працює на&nbsp;лушпинні соняшнику. Ми&nbsp;прагнемо мінімізувати використання викопних видів палива, зокрема природного газу</p>
+            </div>
+          </li>
+          <li class="esg-row">
+            <!-- TODO: replace with client's real photo of the generator -->
+            <figure class="esg-row__media" aria-hidden="true">
+              <img src="assets/img/production-interior-800.webp" srcset="assets/img/production-interior-800.webp 800w, assets/img/production-interior-1400.webp 1400w" sizes="(min-width: 1024px) 22vw, 100vw" alt="" width="1400" height="781" loading="lazy" decoding="async">
+            </figure>
+            <div class="esg-row__content">
+              <h3 class="esg-row__title"><span class="esg-row__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="21" height="14" rx="2"/><path d="M8 8V5M20 8V5M15.5 11 12 15.5h4L12.5 20"/></svg></span><span class="esg-row__label" data-i18n="esg.r5.title">Генератор 1,5&nbsp;мегавата</span></h3>
+              <p class="esg-row__text" data-i18n="esg.r5.text">Власний генератор потужністю 1,5&nbsp;мегавата дає змогу працювати без&nbsp;зупинок під&nbsp;час відключень електроенергії</p>
             </div>
           </li>
           <li class="esg-row">

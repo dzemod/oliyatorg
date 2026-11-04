@@ -1,7 +1,8 @@
 // Builds the site's logo files from the client's original logo — resized only: no redrawing, recolouring or effects.
 //
-// Usage: node tools/make_logo_assets.mjs [source.png]   (default: brand_assets/original-logo-200.png, the largest
-//        version the client has — there is no vector file yet)
+// Usage: node tools/make_logo_assets.mjs [source.png]   (default: brand_assets/logo-no-outline-200.png — the client's
+//        200px logo with the white outline around the petals removed by tools/remove_logo_outline.mjs; the untouched
+//        original stays in brand_assets/original-logo-200.png)
 //
 // Output in site/assets/brand/:
 //   logo-64 / logo-128    .png + .webp — header (64px tall, 1x / 2x; phones show it at 48px)
@@ -11,7 +12,7 @@
 import fs from 'node:fs';
 import sharp from 'sharp';
 
-const src = process.argv[2] || 'brand_assets/original-logo-200.png';
+const src = process.argv[2] || 'brand_assets/logo-no-outline-200.png';
 const OUT = 'site/assets/brand';
 const STONE = '#EFECE6';
 fs.mkdirSync(OUT, { recursive: true });
@@ -36,6 +37,6 @@ for (const [name, size] of [['apple-touch-icon.png', 180], ['icon-512.png', 512]
 const card = 248;
 const logoCard = await sharp({ create: { width: card, height: card, channels: 4, background: STONE } })
   .composite([{ input: src, gravity: 'centre' }]).png().toBuffer();
-await sharp('site/assets/img/hero-poster-1920.jpg').resize(1200, 630, { fit: 'cover' })
+await sharp('site/assets/img/hero-poster-desktop-v3.jpg').resize(1200, 630, { fit: 'cover' })
   .composite([{ input: logoCard, gravity: 'centre' }]).jpeg({ quality: 86, mozjpeg: true }).toFile(`${OUT}/og-image.jpg`);
 console.log('Logo assets written to', OUT);
