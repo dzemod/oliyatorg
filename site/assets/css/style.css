@@ -302,7 +302,7 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
 .esg-row__icon { flex: none; margin-top: 1px; color: var(--fg); }
 .esg-row__icon svg { display: block; }
 .esg-row__text { max-width: 760px; margin-top: 12px; font-size: 17px; line-height: 1.65; color: var(--body); }
-@media (max-width: 639px) { .panel.esg { padding-left: 24px; padding-right: 24px; } }
+@media (max-width: 639px) { .panel.esg { padding-left: 24px; padding-right: 24px; } .esg-row__title { font-size: 17px; letter-spacing: .03em; } }
 
 /* Certificates — cards on --surface (the sections around them are --bg), no border: padding 32px; a 6px gold square +
    the tag (14px); the thumbnail (contained, on --surface-2, one fixed height); the title (20px, 2 lines at most) and the
@@ -1208,31 +1208,33 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   /* ESG: one screen — label and heading on columns 1–4, a table of the five rows on columns 5–12: the photo on 3 of the
      8 columns, the icon + title and the text beside it, thin rules between the rows; the table is as
      tall as the panel and its rows share the free height evenly (so it never grows or shrinks while rows open). main.js drives each row's
-     openness --o (0 closed, 1 open) while the strip holds still: the photo grows from a 72px strip to 16:9 (smaller on
-     short screens, so the table always fits), the title moves from the strip's middle to the photo's top line, the
-     text fades and slides in 12px under the title. All five titles are always visible. */
+     openness --o (0 closed, 1 open) while the strip holds still: the photo grows from a closed strip (--strip, from the
+     screen height) to the open height (--open-h: 16:9, smaller on short screens — sized so the five rows always fit
+     the panel), the same for every row; the title and text stay centred against the photo, the text (two lines at most)
+     fades and slides in 12px under the title. All collapsed rows are the same height; all five titles always visible. */
   html.is-x .track > .panel.esg { display: grid; grid-template-columns: repeat(12, var(--col)); grid-template-rows: minmax(0, 1fr); column-gap: var(--gap); }
   html.is-x .esg .esg__head { grid-column: 1 / 5; align-self: start; }
   html.is-x .esg .esg__title { max-width: none; }
   html.is-x .esg .esg-list {
-    --row-pad: clamp(10px, 2vh, 24px);
+    --row-pad: clamp(8px, 1.8vh, 22px);
+    --strip: clamp(52px, 7vh, 72px);
     --media-w: calc(3 * var(--col) + 2 * var(--gap));
-    --open-h: min(calc(var(--media-w) * 9 / 16), calc(var(--panel-h) - var(--top) - var(--bottom) - 4 * 72px - 8 * var(--row-pad) - 8px));
+    --open-h: min(calc(var(--media-w) * 9 / 16), calc(var(--panel-h) - var(--top) - var(--bottom) - 4 * var(--strip) - 10 * var(--row-pad) - 8px));
     grid-column: 5 / 13; align-self: stretch; display: flex; flex-direction: column; margin: 0;
   }
   html.is-x .esg-list .esg-row {
     --o: 0;
     grid-template-columns: var(--media-w) minmax(0, 1fr); column-gap: var(--gap); align-items: start;
-    flex: 1 1 auto; align-content: center; padding: var(--row-pad) 0; cursor: pointer;
+    flex: 1 1 0; align-content: center; padding: var(--row-pad) 0; cursor: pointer;
   }
   html.is-x .esg-list .esg-row:first-child { --o: 1; }   /* open when the panel arrives */
   html.is-x .esg-list .esg-row + .esg-row::before { left: 0; }
-  html.is-x .esg-row .esg-row__media { grid-column: 1; height: calc(72px + (var(--open-h) - 72px) * var(--o)); aspect-ratio: auto; }
-  /* closed: the title centred on the 72px strip; open: on the photo's top line */
-  html.is-x .esg-row .esg-row__content { grid-column: 2; align-self: start; display: flex; flex-direction: column; justify-content: center; min-height: calc(72px * (1 - var(--o))); }
-  html.is-x .esg-row .esg-row__title { margin-top: 0; }
+  html.is-x .esg-row .esg-row__media { grid-column: 1; height: calc(var(--strip) + (var(--open-h) - var(--strip)) * var(--o)); aspect-ratio: auto; }
+  /* the title (and the open text) centred against the photo, closed and open */
+  html.is-x .esg-row .esg-row__content { grid-column: 2; align-self: start; display: flex; flex-direction: column; justify-content: center; height: calc(var(--strip) + (var(--open-h) - var(--strip)) * var(--o)); }
+  html.is-x .esg-row .esg-row__title { margin-top: 0; font-size: clamp(16px, 1.2vw, 20px); }   /* every title on one line down to 1366px */
   html.is-x .esg-row .esg-row__text {
-    max-width: 620px; max-height: calc(var(--o) * var(--o) * 16em); margin-top: calc(12px * var(--o)); overflow: hidden;
+    max-width: 620px; max-height: calc(var(--o) * var(--o) * 3.3em); margin-top: calc(12px * var(--o)); overflow: hidden;
     font-size: 17px; line-height: 1.6; opacity: var(--o); transform: translateY(calc((1 - var(--o)) * 12px));
   }
 
@@ -1303,6 +1305,9 @@ p, li, dd, figcaption, label { text-wrap: pretty; }
   html.is-x .track > .panel.certs { --certs-head: calc(4 * var(--col) + 3 * var(--gap)); }
   /* ESG (Ukrainian): "Енергонезалежність" is 8.8em wide — the heading never gets wider than its four columns, so on
      1366–1440px screens it stays a little under the shared size instead of running into the table */
+  /* Contacts: "нашим партнером?" is about 9em wide — the heading never gets wider than the gold panel (a container),
+     so on 1366–1440px screens it keeps a margin before the panel's edge */
+  html.is-h .track > .panel.contacts:not(.hero) .contacts__cta .contacts__title { font-size: min(clamp(48px, 6.4vh, 88px), calc((100cqi - var(--pad) - 32px) / 9.4)); }
   html.is-x[lang="uk"] .track > .panel.esg .esg__title { font-size: min(clamp(48px, 6.4vh, 88px), calc((4 * var(--col) + 3 * var(--gap)) / 8.9)); }
 }
 @media (max-width: 1023px) {
